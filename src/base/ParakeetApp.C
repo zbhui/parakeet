@@ -1,7 +1,7 @@
 #include "ParakeetApp.h"
 #include "Moose.h"
 #include "AppFactory.h"
-#include "ModulesApp.h"
+//#include "ModulesApp.h"
 
 template<>
 InputParameters validParams<ParakeetApp>()
@@ -19,11 +19,11 @@ ParakeetApp::ParakeetApp(const std::string & name, InputParameters parameters) :
   srand(processor_id());
 
   Moose::registerObjects(_factory);
-  ModulesApp::registerObjects(_factory);
+  //ModulesApp::registerObjects(_factory);
   ParakeetApp::registerObjects(_factory);
 
   Moose::associateSyntax(_syntax, _action_factory);
-  ModulesApp::associateSyntax(_syntax, _action_factory);
+  //ModulesApp::associateSyntax(_syntax, _action_factory);
   ParakeetApp::associateSyntax(_syntax, _action_factory);
 }
 
