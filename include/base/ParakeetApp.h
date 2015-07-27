@@ -11,7 +11,8 @@ InputParameters validParams<ParakeetApp>();
 class ParakeetApp : public MooseApp
 {
 public:
-  ParakeetApp(const std::string & name, InputParameters parameters);
+  ParakeetApp(const InputParameters &parameters);
+
   virtual ~ParakeetApp();
 
   static void registerApps();

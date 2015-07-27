@@ -63,8 +63,8 @@ InputParameters validParams<ParakeetApp>()
   return params;
 }
 
-ParakeetApp::ParakeetApp(const std::string & name, InputParameters parameters) :
-    MooseApp(name, parameters)
+ParakeetApp::ParakeetApp(const InputParameters &parameters) :
+    MooseApp(parameters)
 {
   srand(processor_id());
 
@@ -86,7 +86,14 @@ extern "C" void ParakeetApp__registerApps() { ParakeetApp::registerApps(); }
 void
 ParakeetApp::registerApps()
 {
+#undef  registerApp
+#define registerApp(name) AppFactory::instance().reg<name>(#name)
+
   registerApp(ParakeetApp);
+
+
+#undef  registerApp
+#define registerApp(name) AppFactory::instance().regLegacy<name>(#name)
 }
 
 // External entry point for dynamic object registration
