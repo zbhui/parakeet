@@ -1,0 +1,206 @@
+
+#include "EulerFaceKernel.h"
+
+template<>
+InputParameters validParams<EulerFaceKernel>()
+{
+	  InputParameters params = validParams<MultiDGKernel>();
+	  params += validParams<CFDBase>();
+
+	  return params;
+}
+EulerFaceKernel::EulerFaceKernel(const std::string & name, InputParameters parameters):
+		MultiDGKernel(name, parameters),
+		CFDBase(name, parameters)
+{
+	std::string var_name = _var.name();
+
+	if(var_name == "rho")
+		_eq = 0;
+	if(var_name == "momentum_x")
+		_eq = 1;
+	if(var_name == "momentum_y")
+		_eq = 2;
+	if(var_name == "momentum_z")
+		_eq = 3;
+	if(var_name == "rhoe")
+		_eq = 4;
+}
+
+Real EulerFaceKernel::computeQpResidual(Moose::DGResidualType type)
+{
+	if(type == Moose::Element)
+	{
+		return _flux[_qp][_eq] * _test[_i][_qp];
+	}
+	if(type == Moose::Neighbor)
+	{
+		return -_flux[_qp][_eq] * _test_neighbor[_i][_qp];
+	}
+	mooseError("face flux error.");
+	return 0.;
+}
+
+void EulerFaceKernel::precalculateResidual()
+{
+	mooseAssert(_n_equation < 10, "multiFaceKernek方程个数应<10");
+	mooseAssert(_qrule->n_points() < 40, "mulitFaceKernel积分点个数应<40");
+
+	Real ul[10], ur[10];
+	for (_qp = 0; _qp < _qrule->n_points(); _qp++)
+	{
+		valueAtLeftFace(ul);
+		valueAtRightFace(ur);
+		Point normal = _normals[_qp];
+		fluxRiemann(_flux[_qp], ul, ur, normal);
+	}
+}
+
+void EulerFaceKernel::precalculateJacobian()
+{
+	Real flux_new[10], flux[10];
+	Real ul[10], ur[10];
+
+	for (_qp = 0; _qp < _qrule->n_points(); _qp++)
+	{
+		valueAtLeftFace(ul);
+		valueAtRightFace(ur);
+		Point normal = _normals[_qp];
+		fluxRiemann(flux, ul, ur, normal);
+		for (int q = 0; q < _n_equation; ++q)
+		{
+			ul[q] += _ds;
+			fluxRiemann(flux_new, ul, ur, normal);
+			for (int p = 0; p < _n_equation; ++p)
+			{
+				Real tmp = (flux_new[p] - flux[p])/_ds;
+				_jacobi_variable_ee[_qp][p][q] = tmp;
+				_jacobi_variable_ne[_qp][p][q] = -tmp;
+			}
+			ul[q] -= _ds;
+
+			ur[q] += _ds;
+			fluxRiemann(flux_new, ul, ur, normal);
+			for (int p = 0; p < _n_equation; ++p)
+			{
+				Real tmp = (flux_new[p] - flux[p])/_ds;
+				_jacobi_variable_en[_qp][p][q] = tmp;
+				_jacobi_variable_nn[_qp][p][q] = -tmp;
+			}
+			ur[q] -= _ds;
+		}
+	}
+}
+
+void EulerFaceKernel::fluxRiemann(Real* flux, Real* ul, Real* ur, Point& normal)
+{
+	RealVectorValue fl[10], fr[10];
+	inviscousTerm(fl, ul);
+	inviscousTerm(fr, ur);
+
+	Real rho, u, v, w, pre;
+	rho = (ul[0] + ur[0])/2.;
+	u = (ul[1] + ur [1])/rho/2;
+	v = (ul[2] + ur [2])/rho/2;
+	w = (ul[3] + ur [3])/rho/2;
+	pre = (pressure(ul) + pressure(ur))/2.;
+//	Real lam = fabs(u*normal(0) + v * normal(1) + w * normal(2)) + sqrt(_gamma*pre/rho);
+	Real lam = 1.;
+	for (int eq = 0; eq < _n_equation; ++eq)
+	{
+		flux[eq] = 0.5*(fl[eq] + fr[eq])*normal + lam*(ul[eq] - ur[eq]);
+	}
+
+}
+
+Real EulerFaceKernel::computeQpJacobian(Moose::DGJacobianType type)
+{
+	Real ul[10], ur[10];
+	Matrix5x5 jacobi_ee[3], jacobi_en[3], jacobi_ne[3], jacobi_nn[3];
+
+	valueAtLeftFace(ul);
+	valueAtRightFace(ur);
+	inviscousJacobian(jacobi_ee, ul);
+	inviscousJacobian(jacobi_ne, ul);
+	inviscousJacobian(jacobi_en, ur);
+	inviscousJacobian(jacobi_nn, ur);
+	Point normal = _normals[_qp];
+	for (int p = 0; p < _n_equation; ++p)
+	{
+		for (int q = 0; q < _n_equation; ++q)
+		{
+			_jacobi_variable_ee[_qp][p][q] =  0.5*(jacobi_ee[0](p,q)*normal(0)+jacobi_ee[1](p,q)*normal(1))+1;
+			_jacobi_variable_ne[_qp][p][q] = -0.5*(jacobi_ne[0](p,q)*normal(0)+jacobi_ne[1](p,q)*normal(1))-1;
+			_jacobi_variable_en[_qp][p][q] =  0.5*(jacobi_en[0](p,q)*normal(0)+jacobi_en[1](p,q)*normal(1))-1;
+			_jacobi_variable_nn[_qp][p][q] = -0.5*(jacobi_nn[0](p,q)*normal(0)+jacobi_nn[1](p,q)*normal(1))+1;
+		}
+	}
+
+	Real r = 0;
+	switch (type)
+	{
+	case Moose::ElementElement:
+		r = _jacobi_variable_ee[_qp][_eq][_eq]*_phi[_j][_qp]*_test[_i][_qp];
+		break;
+
+	case Moose::ElementNeighbor:
+		r = _jacobi_variable_en[_qp][_eq][_eq]*_phi_neighbor[_j][_qp]*_test[_i][_qp];
+		break;
+
+	case Moose::NeighborElement:
+		r = _jacobi_variable_ne[_qp][_eq][_eq]*_phi[_j][_qp]*_test_neighbor[_i][_qp];
+		break;
+
+	case Moose::NeighborNeighbor:
+		r = _jacobi_variable_nn[_qp][_eq][_eq]*_phi_neighbor[_j][_qp]*_test_neighbor[_i][_qp];
+		break;
+	}
+
+	return r;
+}
+Real EulerFaceKernel::computeQpOffDiagJacobian(Moose::DGJacobianType type, unsigned int jvar)
+{
+	Real ul[10], ur[10];
+	Matrix5x5 jacobi_ee[3], jacobi_en[3], jacobi_ne[3], jacobi_nn[3];
+	std::cout << _jacobi_variable_ee[_qp][_eq][_eq]*_phi[_j][_qp]*_test[_i][_qp] <<std::endl;
+	valueAtLeftFace(ul);
+	valueAtRightFace(ur);
+	inviscousJacobian(jacobi_ee, ul);
+	inviscousJacobian(jacobi_ne, ul);
+	inviscousJacobian(jacobi_en, ur);
+	inviscousJacobian(jacobi_nn, ur);
+	Point normal = _normals[_qp];
+	for (int p = 0; p < _n_equation; ++p)
+	{
+		for (int q = 0; q < _n_equation; ++q)
+		{
+			_jacobi_variable_ee[_qp][p][q] =  0.5*(jacobi_ee[0](p,q)*normal(0)+jacobi_ee[1](p,q)*normal(1))+1;
+			_jacobi_variable_ne[_qp][p][q] = -0.5*(jacobi_ne[0](p,q)*normal(0)+jacobi_ne[1](p,q)*normal(1))-1;
+			_jacobi_variable_en[_qp][p][q] =  0.5*(jacobi_en[0](p,q)*normal(0)+jacobi_en[1](p,q)*normal(1))-1;
+			_jacobi_variable_nn[_qp][p][q] = -0.5*(jacobi_nn[0](p,q)*normal(0)+jacobi_nn[1](p,q)*normal(1))+1;
+		}
+	}
+
+	Real r = 0;
+	switch (type)
+	{
+	case Moose::ElementElement:
+		r = _jacobi_variable_ee[_qp][_eq][jvar]*_phi[_j][_qp]*_test[_i][_qp];
+		break;
+
+	case Moose::ElementNeighbor:
+		r = _jacobi_variable_en[_qp][_eq][jvar]*_phi_neighbor[_j][_qp]*_test[_i][_qp];
+		break;
+
+	case Moose::NeighborElement:
+		r = _jacobi_variable_ne[_qp][_eq][jvar]*_phi[_j][_qp]*_test_neighbor[_i][_qp];
+		break;
+
+	case Moose::NeighborNeighbor:
+		r = _jacobi_variable_nn[_qp][_eq][jvar]*_phi_neighbor[_j][_qp]*_test_neighbor[_i][_qp];
+		break;
+	}
+
+	return r;
+}
+
