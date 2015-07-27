@@ -14,7 +14,7 @@ public Kernel,
 public SAModelBase
 {
 public:
-	SACellKernel(const std::string & name, InputParameters parameters);
+	SACellKernel(const InputParameters & parameters);
 	virtual ~SACellKernel(){}
 
 protected:

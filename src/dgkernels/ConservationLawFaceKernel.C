@@ -8,8 +8,8 @@ InputParameters validParams<ConservationLawFaceKernel>()
 
 	  return params;
 }
-ConservationLawFaceKernel::ConservationLawFaceKernel(const std::string & name, InputParameters parameters):
-		MultiDGKernel(name, parameters)
+ConservationLawFaceKernel::ConservationLawFaceKernel(const InputParameters & parameters):
+		MultiDGKernel(parameters)
 {
 }
 

@@ -16,7 +16,7 @@ public Material,
 public CFDBase
 {
 public:
-	FluidMaterial(const std::string & name, InputParameters parameters);
+	FluidMaterial(const InputParameters & parameters);
 
 protected:
   virtual void computeQpProperties();

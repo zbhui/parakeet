@@ -9,8 +9,8 @@ InputParameters validParams<IsoVortexBC>()
 	return params;
 }
 
-IsoVortexBC::IsoVortexBC(const std::string &name, InputParameters parameters):
-		EulerBC(name, parameters)
+IsoVortexBC::IsoVortexBC(const InputParameters & parameters):
+		EulerBC(parameters)
 {
 }
 

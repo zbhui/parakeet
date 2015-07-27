@@ -15,7 +15,7 @@ class NearestWallDistance :
 public AuxKernel
 {
 public:
-	NearestWallDistance(const std::string & name, InputParameters parameters);
+	NearestWallDistance(const InputParameters & parameters);
 
 protected:
     virtual Real computeValue();

@@ -9,9 +9,9 @@ InputParameters validParams<CouetteFlowExact>()
   return params;
 }
 
-CouetteFlowExact::CouetteFlowExact(const std::string & name, InputParameters parameters) :
-    Function(name, parameters),
-    CFDBase(name, parameters)
+CouetteFlowExact::CouetteFlowExact(const InputParameters & parameters) :
+    Function(parameters),
+    CFDBase(parameters)
 {}
 
 Real

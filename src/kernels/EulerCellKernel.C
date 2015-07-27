@@ -9,9 +9,9 @@ InputParameters validParams<EulerCellKernel>()
   return params;
 }
 
-EulerCellKernel::EulerCellKernel(const std::string & name, InputParameters parameters):
-		MultiKernel(name, parameters),
-		CFDBase(name, parameters)
+EulerCellKernel::EulerCellKernel(const InputParameters & parameters):
+		MultiKernel(parameters),
+		CFDBase(parameters)
 {
 	std::string var_name = _var.name();
 

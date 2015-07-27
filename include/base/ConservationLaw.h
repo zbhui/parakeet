@@ -12,7 +12,7 @@ class ConservationLaw;
 class ConservationLaw
 {
 public:
-	ConservationLaw(const std::string & name, InputParameters parameters){};
+	ConservationLaw(const InputParameters & parameters){};
   virtual ~ConservationLaw(){};
 
 protected:

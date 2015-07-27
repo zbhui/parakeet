@@ -11,9 +11,9 @@ InputParameters validParams<NSAuxVariable>()
   return params;
 }
 
-NSAuxVariable::NSAuxVariable(const std::string & name, InputParameters parameters) :
-    AuxKernel(name, parameters),
-    CFDBase(name, parameters)
+NSAuxVariable::NSAuxVariable(const InputParameters & parameters) :
+    AuxKernel(parameters),
+    CFDBase(parameters)
 {
 	size_t n_equation = coupledComponents("variables");
 	for (size_t i = 0; i < n_equation; ++i)

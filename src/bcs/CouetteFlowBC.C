@@ -9,8 +9,8 @@ InputParameters validParams<CouetteFlowBC>()
 	return params;
 }
 
-CouetteFlowBC::CouetteFlowBC(const std::string &name, InputParameters parameters):
-		NavierStokesBC(name, parameters)
+CouetteFlowBC::CouetteFlowBC(const InputParameters & parameters):
+		NavierStokesBC(parameters)
 {
 }
 

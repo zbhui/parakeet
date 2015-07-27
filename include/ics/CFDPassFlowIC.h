@@ -17,7 +17,7 @@ class CFDPassFlowIC : public CFDInitialCondition
 {
 public:
 
-  CFDPassFlowIC(const std::string & name, InputParameters parameters);
+  CFDPassFlowIC(const InputParameters & parameters);
 
 private:
   Real _velocity;

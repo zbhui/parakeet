@@ -17,7 +17,7 @@ InputParameters validParams<CFDBase>();
 class CFDBase
 {
 public:
-	CFDBase(const std::string & name, InputParameters parameters);
+	CFDBase(const InputParameters & parameters);
   virtual ~CFDBase(){};
 
 protected:

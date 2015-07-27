@@ -12,7 +12,7 @@ class ConservationLawCellKernel :
 public MultiKernel
 {
 public:
-	ConservationLawCellKernel(const std::string & name, InputParameters parameters);
+	ConservationLawCellKernel(const InputParameters & parameters);
 	virtual ~ConservationLawCellKernel(){}
 
 protected:

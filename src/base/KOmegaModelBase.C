@@ -8,8 +8,8 @@ InputParameters validParams<KOmegaModelBase>()
 	return params;
 }
 
-KOmegaModelBase::KOmegaModelBase(const std::string& name, InputParameters parameters):
-		CFDBase(name, parameters),
+KOmegaModelBase::KOmegaModelBase(const InputParameters & parameters):
+		CFDBase(parameters),
 		_sigma_k(0.5), _sigma_o(0.5), _beta_k(0.09), _beta_o(0.0075), _alpha_o(5./9),
 		_prandtl_turb(0.9),
 		_tu_infty(0.005), _r_mu(1e-05)

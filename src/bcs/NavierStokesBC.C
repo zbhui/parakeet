@@ -7,8 +7,8 @@ InputParameters validParams<NavierStokesBC>()
 	InputParameters params = validParams<EulerBC>();
 	return params;
 }
-NavierStokesBC::NavierStokesBC(const std::string& name, InputParameters parameters):
-		EulerBC(name, parameters)
+NavierStokesBC::NavierStokesBC(const InputParameters & parameters):
+		EulerBC(parameters)
 {
 }
 void NavierStokesBC::precalculateResidual()

@@ -12,8 +12,8 @@ InputParameters validParams<FullJacobianPreconditioner>()
 }
 
 
-FullJacobianPreconditioner::FullJacobianPreconditioner(const std::string & name, InputParameters params) :
-		MoosePreconditioner(name, params)
+FullJacobianPreconditioner::FullJacobianPreconditioner(const InputParameters & params) :
+		MoosePreconditioner(params)
 {
 	 NonlinearSystem & nl = _fe_problem.getNonlinearSystem();
 	 unsigned int n_vars = nl.nVariables();

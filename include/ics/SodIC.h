@@ -18,7 +18,7 @@ public CFDInitialCondition
 {
 public:
 
-  SodIC(const std::string & name, InputParameters parameters);
+  SodIC(const InputParameters & parameters);
 
 protected:
   virtual Real density(const Point &p);

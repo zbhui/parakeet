@@ -12,7 +12,7 @@ class CFDNonBC :
 public EulerBC
 {
 public:
-	  CFDNonBC(const std::string & name, InputParameters params);
+	  CFDNonBC(const InputParameters & params);
 	  virtual ~CFDNonBC(){}
 
 protected:

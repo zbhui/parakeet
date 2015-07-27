@@ -13,7 +13,7 @@ class CouetteFlowBC :
 public NavierStokesBC
 {
 public:
-	CouetteFlowBC(const std::string & name, InputParameters params);
+	CouetteFlowBC(const InputParameters & params);
 	virtual ~CouetteFlowBC(){}
 
 

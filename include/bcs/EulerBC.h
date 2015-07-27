@@ -15,7 +15,7 @@ public CFDBC,
 public CFDBase
 {
 public:
-	  EulerBC(const std::string & name, InputParameters params);
+	  EulerBC(const InputParameters & params);
 	  virtual ~EulerBC(){}
 
 

@@ -7,8 +7,8 @@ InputParameters validParams<ConservationLawCellKernel>()
 
 	  return params;
 }
-ConservationLawCellKernel::ConservationLawCellKernel(const std::string & name, InputParameters parameters):
-		MultiKernel(name, parameters)
+ConservationLawCellKernel::ConservationLawCellKernel(const InputParameters &parameters):
+		MultiKernel(parameters)
 {
 }
 

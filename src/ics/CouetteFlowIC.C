@@ -8,8 +8,8 @@ InputParameters validParams<CouetteFlowIC>()
   return params;
 }
 
-CouetteFlowIC::CouetteFlowIC(const std::string & name, InputParameters parameters) :
-    CFDInitialCondition(name, parameters)
+CouetteFlowIC::CouetteFlowIC(const InputParameters & parameters) :
+    CFDInitialCondition(parameters)
 {}
 
 Real CouetteFlowIC::density(const Point &p)

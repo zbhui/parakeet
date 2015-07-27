@@ -15,7 +15,7 @@ public FDKernel,
 public BurgersBase
 {
 public:
-	BurgersCellKernel(const std::string & name, InputParameters parameters);
+	BurgersCellKernel(const InputParameters & parameters);
 	virtual ~BurgersCellKernel(){}
 
 protected:

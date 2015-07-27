@@ -16,7 +16,7 @@ class MultiKernel :
   public Kernel
 {
 public:
-	MultiKernel(const std::string & name, InputParameters parameters);
+	MultiKernel(const InputParameters & parameters);
 
   virtual ~MultiKernel(){};
 

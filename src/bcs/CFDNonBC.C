@@ -7,8 +7,8 @@ InputParameters validParams<CFDNonBC>()
 
 	  return params;
 }
-CFDNonBC::CFDNonBC(const std::string & name, InputParameters parameters):
-		EulerBC(name, parameters)
+CFDNonBC::CFDNonBC(const InputParameters & parameters):
+		EulerBC(parameters)
 {
 }
 

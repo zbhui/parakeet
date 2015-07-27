@@ -17,7 +17,7 @@ class IsoVortexIC : public CFDInitialCondition
 {
 public:
 
-  IsoVortexIC(const std::string & name, InputParameters parameters);
+  IsoVortexIC(const InputParameters & parameters);
 
 private:
 //  Point &centre;

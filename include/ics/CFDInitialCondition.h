@@ -22,7 +22,7 @@ public:
   /**
    * Constructor: Same as the rest of the MOOSE Objects
    */
-	CFDInitialCondition(const std::string & name, InputParameters parameters);
+	CFDInitialCondition(const InputParameters & parameters);
 
   /**
    * The value of the variable at a point.

@@ -14,7 +14,7 @@ InputParameters validParams<FullJacobianPreconditioner>();
 class FullJacobianPreconditioner : public MoosePreconditioner
 {
 public:
-  FullJacobianPreconditioner(const std::string & name, InputParameters params);
+  FullJacobianPreconditioner(const InputParameters & params);
   virtual ~FullJacobianPreconditioner(){};
 };
 

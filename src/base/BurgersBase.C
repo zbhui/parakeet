@@ -9,7 +9,7 @@ InputParameters validParams<BurgersBase>()
   return params;
 }
 
-BurgersBase::BurgersBase(const std::string & name, InputParameters parameters)
+BurgersBase::BurgersBase(const InputParameters &parameters)
 {
 }
 

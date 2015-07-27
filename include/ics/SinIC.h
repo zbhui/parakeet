@@ -22,7 +22,7 @@ public:
   /**
    * Constructor: Same as the rest of the MOOSE Objects
    */
-	SinIC(const std::string & name, InputParameters parameters);
+	SinIC(const InputParameters & parameters);
 
   virtual Real value(const Point & p);
 

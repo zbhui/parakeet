@@ -10,9 +10,9 @@ InputParameters validParams<BurgersBC>()
 	return params;
 }
 
-BurgersBC::BurgersBC(const std::string &name, InputParameters parameters):
-		IntegratedBC(name, parameters),
-		BurgersBase(name, parameters)
+BurgersBC::BurgersBC(const InputParameters &parameters):
+		IntegratedBC(parameters),
+		BurgersBase(parameters)
 {
 }
 

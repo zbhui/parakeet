@@ -13,7 +13,7 @@ InputParameters validParams<MultiTimeDerivative>();
 class MultiTimeDerivative : public MultiTimeKernel
 {
 public:
-  MultiTimeDerivative(const std::string & name, InputParameters parameters);
+  MultiTimeDerivative(const InputParameters & parameters);
 
   virtual void computeJacobian();
 

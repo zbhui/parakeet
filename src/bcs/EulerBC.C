@@ -11,9 +11,9 @@ InputParameters validParams<EulerBC>()
 	return params;
 }
 
-EulerBC::EulerBC(const std::string & name, InputParameters parameters):
-		CFDBC(name, parameters),
-		CFDBase(name, parameters)
+EulerBC::EulerBC(const InputParameters & parameters):
+		CFDBC(parameters),
+		CFDBase(parameters)
 {
 	std::string var_name = _var.name();
 

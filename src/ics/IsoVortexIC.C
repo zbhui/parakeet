@@ -21,8 +21,8 @@ InputParameters validParams<IsoVortexIC>()
   return params;
 }
 
-IsoVortexIC::IsoVortexIC(const std::string & name, InputParameters parameters) :
-    CFDInitialCondition(name, parameters)
+IsoVortexIC::IsoVortexIC(const InputParameters & parameters) :
+    CFDInitialCondition(parameters)
 {}
 
 Real IsoVortexIC::density(const Point &p)

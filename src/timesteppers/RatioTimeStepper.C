@@ -15,8 +15,8 @@ InputParameters validParams<RatioTimeStepper>()
   return params;
 }
 
-RatioTimeStepper::RatioTimeStepper(const std::string & name, InputParameters parameters) :
-    TimeStepper(name, parameters),
+RatioTimeStepper::RatioTimeStepper(const InputParameters & parameters) :
+    TimeStepper(parameters),
     _ratio(getParam<Real>("ratio")),
     _max_dt(getParam<Real>("max_dt")),
     _step(getParam<int>("step"))

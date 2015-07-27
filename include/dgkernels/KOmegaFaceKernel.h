@@ -16,7 +16,7 @@ public MultiDGKernel,
 public KOmegaModelBase
 {
 public:
-	KOmegaFaceKernel(const std::string &name, InputParameters parameters);
+	KOmegaFaceKernel(const InputParameters & parameters);
 	virtual ~KOmegaFaceKernel(){}
 
 protected:

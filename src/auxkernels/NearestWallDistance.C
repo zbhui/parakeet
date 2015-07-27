@@ -11,8 +11,8 @@ InputParameters validParams<NearestWallDistance>()
   return params;
 }
 
-NearestWallDistance::NearestWallDistance(const std::string & name, InputParameters parameters) :
-    AuxKernel(name, parameters),
+NearestWallDistance::NearestWallDistance(const InputParameters & parameters) :
+    AuxKernel(parameters),
 	_psi(coupledValue("potential")),
 	_grad_psi(coupledGradient("potential"))
 {}

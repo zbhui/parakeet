@@ -14,7 +14,7 @@ public MultiDGKernel,
 public CFDBase
 {
 public:
-	EulerFaceKernel(const std::string &name, InputParameters parameters);
+	EulerFaceKernel(const InputParameters & parameters);
 	virtual ~EulerFaceKernel(){}
 
 protected:

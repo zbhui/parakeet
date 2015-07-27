@@ -9,9 +9,9 @@ InputParameters validParams<EulerFaceKernel>()
 
 	  return params;
 }
-EulerFaceKernel::EulerFaceKernel(const std::string & name, InputParameters parameters):
-		MultiDGKernel(name, parameters),
-		CFDBase(name, parameters)
+EulerFaceKernel::EulerFaceKernel(const InputParameters & parameters):
+		MultiDGKernel(parameters),
+		CFDBase(parameters)
 {
 	std::string var_name = _var.name();
 

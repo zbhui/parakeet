@@ -10,9 +10,9 @@ InputParameters validParams<BurgersCellKernel>()
   return params;
 }
 
-BurgersCellKernel::BurgersCellKernel(const std::string & name, InputParameters parameters):
-		FDKernel(name, parameters),
-		BurgersBase(name, parameters)
+BurgersCellKernel::BurgersCellKernel(const InputParameters & parameters):
+		FDKernel(parameters),
+		BurgersBase(parameters)
 {
 }
 

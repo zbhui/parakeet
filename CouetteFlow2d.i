@@ -1,10 +1,10 @@
 # 全局变量
 [GlobalParams]
- 	order = FIRST
+ 	order = THIRD
  	family = MONOMIAL
 	  	
-  mach = 0.1
-  reynolds = 1000.0
+  mach = 0.2
+  reynolds = 100.0
   	
 	variable = rho
  	variables = 'rho momentum_x momentum_y momentum_z rhoe'
@@ -15,8 +15,8 @@
   type = GeneratedMesh
   dim = 2
   
-  nx = 10
-  ny = 5  
+  nx = 20
+  ny = 10  
   
   xmin = 0
   xmax = 4
@@ -63,50 +63,6 @@
 		[../]
   [../]	
 		
-[]
-
-[AuxVariables]
-  [./pressure]
-  [../]
-
-  [./mach]
-  [../]
-
-  [./velocity_x]
-  [../]
-
-  [./velocity_y]
-  [../]
-
-  [./velocity_z]
-  [../]
-[]
-
-[AuxKernels]
-	[./pressure]
-   	type = NSAuxVariable
-   	variable = pressure
- 	[../]
-
-	[./mach]
-   	type = NSAuxVariable
-   	variable = mach
- 	[../]
-
-	[./velocity_x]
-   	type = NSAuxVariable
-   	variable = velocity_x
- 	[../]
-
-	[./velocity_y]
-   	type = NSAuxVariable
-   	variable = velocity_y
- 	[../]
-
-	[./velocity_z]
-   	type = NSAuxVariable
-   	variable = velocity_z
- 	[../]
 []
   
 # 体积分
@@ -159,9 +115,9 @@
 # 非线性系统求解
 [Executioner]
   type = Transient
-  solve_type = JFNK
+  solve_type = PJFNK
   petsc_options_iname = '-pc_type'
-  petsc_options_value = 'jacobi'
+  petsc_options_value = 'bjacobi'
   dt = 1
   num_steps = 10000
   
@@ -181,20 +137,6 @@
   [../]
 []
 
-[Postprocessors]
-
-  [./l2_err]
-    type = ElementL2Error
-    variable = rho
-    function = exact_rho
-  [../]
-
-  [./residuals]
-    type = Residual
-  [../]
-
-
-[]
 
 # 输出和后处理
 [Outputs]

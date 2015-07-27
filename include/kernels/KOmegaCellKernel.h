@@ -14,7 +14,7 @@ public MultiKernel,
 public KOmegaModelBase
 {
 public:
-	KOmegaCellKernel(const std::string & name, InputParameters parameters);
+	KOmegaCellKernel(const InputParameters & parameters);
 	virtual ~KOmegaCellKernel(){}
 
 protected:

@@ -21,8 +21,8 @@ InputParameters validParams<SodIC>()
   return params;
 }
 
-SodIC::SodIC(const std::string & name, InputParameters parameters) :
-    CFDInitialCondition(name, parameters)
+SodIC::SodIC(const InputParameters & parameters) :
+    CFDInitialCondition(parameters)
 {}
 
 Real SodIC::density(const Point &p)

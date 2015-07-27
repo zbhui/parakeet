@@ -12,7 +12,7 @@ class IsoVortexBC :
 public EulerBC
 {
 public:
-	IsoVortexBC(const std::string & name, InputParameters params);
+	IsoVortexBC(const InputParameters & params);
 	virtual ~IsoVortexBC(){}
 
 

@@ -16,8 +16,8 @@ InputParameters validParams<CFDAction>()
   return params;
 }
 
-CFDAction::CFDAction(const std::string & name, InputParameters params) :
-    Action(name, params)
+CFDAction::CFDAction(InputParameters params) :
+    Action(params)
 {
 }
 

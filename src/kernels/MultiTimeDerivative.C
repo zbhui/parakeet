@@ -9,8 +9,8 @@ InputParameters validParams<MultiTimeDerivative>()
   return params;
 }
 
-MultiTimeDerivative::MultiTimeDerivative(const std::string & name, InputParameters parameters) :
-    MultiTimeKernel(name, parameters),
+MultiTimeDerivative::MultiTimeDerivative(const InputParameters & parameters) :
+    MultiTimeKernel(parameters),
     _lumping(getParam<bool>("lumping"))
 {
 }

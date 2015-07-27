@@ -21,9 +21,9 @@ InputParameters validParams<SinIC>()
   return params;
 }
 
-SinIC::SinIC(const std::string & name, InputParameters parameters) :
-    InitialCondition(name, parameters),
-    BurgersBase(name, parameters)
+SinIC::SinIC(const InputParameters & parameters) :
+    InitialCondition(parameters),
+    BurgersBase(parameters)
 {}
 
 Real SinIC::value(const Point &p)

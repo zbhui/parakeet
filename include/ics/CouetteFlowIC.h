@@ -17,7 +17,7 @@ class CouetteFlowIC : public CFDInitialCondition
 {
 public:
 
-  CouetteFlowIC(const std::string & name, InputParameters parameters);
+  CouetteFlowIC(const InputParameters & parameters);
 
 private:
 //  Point &centre;

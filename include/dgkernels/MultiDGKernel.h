@@ -16,7 +16,7 @@ class MultiDGKernel :
   public DGKernel
 {
 public:
-	MultiDGKernel(const std::string & name, InputParameters parameters);
+	MultiDGKernel(const InputParameters & parameters);
 
   virtual ~MultiDGKernel(){};
 

@@ -13,7 +13,7 @@ InputParameters validParams<BurgersBase>();
 class BurgersBase
 {
 public:
-	BurgersBase(const std::string & name, InputParameters parameters);
+	BurgersBase(const InputParameters & parameters);
   virtual ~BurgersBase(){};
 
 protected:

@@ -12,7 +12,7 @@ class ConservationLawFaceKernel :
 public MultiDGKernel
 {
 public:
-	ConservationLawFaceKernel(const std::string &name, InputParameters parameters);
+	ConservationLawFaceKernel(const InputParameters & parameters);
 	virtual ~ConservationLawFaceKernel(){}
 
 protected:

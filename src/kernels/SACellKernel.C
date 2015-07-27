@@ -9,9 +9,9 @@ InputParameters validParams<SACellKernel>()
 
 	  return params;
 }
-SACellKernel::SACellKernel(const std::string & name, InputParameters parameters):
-		Kernel(name, parameters),
-		SAModelBase(name, parameters)
+SACellKernel::SACellKernel(const InputParameters & parameters):
+		Kernel(parameters),
+		SAModelBase(parameters)
 {
 }
 

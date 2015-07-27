@@ -12,8 +12,8 @@ InputParameters validParams<MultiDGKernel>()
 	  return params;
 }
 
-MultiDGKernel::MultiDGKernel(const std::string & name, InputParameters parameters):
-		DGKernel(name, parameters),
+MultiDGKernel::MultiDGKernel(const InputParameters & parameters):
+		DGKernel(parameters),
 		_variables(getParam<std::vector<NonlinearVariableName> >("variables"))
 {
 

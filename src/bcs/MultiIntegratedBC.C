@@ -9,8 +9,8 @@ InputParameters validParams<MultiIntegratedBC>()
 	params.addRequiredParam<std::vector<NonlinearVariableName> >("variables", "多个求解变量");
 	return params;
 }
-MultiIntegratedBC::MultiIntegratedBC(const std::string& name, InputParameters parameters):
-		IntegratedBC(name, parameters),
+MultiIntegratedBC::MultiIntegratedBC(const InputParameters & parameters):
+		IntegratedBC(parameters),
 		_variables(getParam<std::vector<NonlinearVariableName> >("variables"))
 {
 	MooseVariable &val0 = _sys.getVariable(_tid, _variables[0]);

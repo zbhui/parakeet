@@ -11,9 +11,9 @@ InputParameters validParams<KOmegaBC>()
 	return params;
 }
 
-KOmegaBC::KOmegaBC(const std::string &name, InputParameters parameters):
-		CFDBC(name, parameters),
-		KOmegaModelBase(name, parameters)
+KOmegaBC::KOmegaBC(const InputParameters & parameters):
+		CFDBC(parameters),
+		KOmegaModelBase(parameters)
 //		_tu_infty(getParam<Real>("tu_infty")),
 //		_r_mu(getParam<Real>("r_mu"))
 {

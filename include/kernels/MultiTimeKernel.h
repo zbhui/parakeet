@@ -16,7 +16,7 @@ InputParameters validParams<MultiTimeKernel>();
 class MultiTimeKernel : public MultiKernel
 {
 public:
-	MultiTimeKernel(const std::string & name, InputParameters parameters);
+	MultiTimeKernel(const InputParameters & parameters);
 	virtual ~MultiTimeKernel(){};
 
 	virtual void computeResidual();

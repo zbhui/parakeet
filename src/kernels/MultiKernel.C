@@ -10,8 +10,8 @@ InputParameters validParams<MultiKernel>()
 	  return params;
 }
 
-MultiKernel::MultiKernel(const std::string & name, InputParameters parameters):
-		Kernel(name, parameters),
+MultiKernel::MultiKernel(const InputParameters & parameters):
+		Kernel(parameters),
 		_variables(parameters.get<std::vector<NonlinearVariableName> >("variables"))
 {
 	MooseVariable &val0 = _sys.getVariable(_tid, _variables[0]);

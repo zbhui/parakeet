@@ -18,7 +18,7 @@ public KOmegaModelBase
 {
 public:
 
-	KOmegaIC(const std::string & name, InputParameters parameters);
+	KOmegaIC(const InputParameters & parameters);
 	~KOmegaIC(){}
 protected:
 	virtual Real value(const Point & p);

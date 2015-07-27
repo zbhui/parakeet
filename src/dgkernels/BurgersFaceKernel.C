@@ -10,9 +10,9 @@ InputParameters validParams<BurgersFaceKernel>()
 	return params;
 }
 
-BurgersFaceKernel::BurgersFaceKernel(const std::string &name, InputParameters parameters):
-		DGKernel(name, parameters),
-		BurgersBase(name, parameters)
+BurgersFaceKernel::BurgersFaceKernel(const InputParameters & parameters):
+		DGKernel(parameters),
+		BurgersBase(parameters)
 {
 
 }

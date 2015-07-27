@@ -16,7 +16,7 @@ class RatioTimeStepper : public TimeStepper
 {
 public:
 
-	RatioTimeStepper(const std::string & name, InputParameters parameters);
+	RatioTimeStepper(const InputParameters & parameters);
 
 protected:
 	virtual Real computeInitialDT();

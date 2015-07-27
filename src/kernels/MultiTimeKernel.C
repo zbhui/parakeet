@@ -8,8 +8,8 @@ InputParameters validParams<MultiTimeKernel>()
   return params;
 }
 
-MultiTimeKernel::MultiTimeKernel(const std::string & name, InputParameters parameters) :
-    MultiKernel(name, parameters)
+MultiTimeKernel::MultiTimeKernel(const InputParameters & parameters) :
+    MultiKernel(parameters)
 {
 }
 

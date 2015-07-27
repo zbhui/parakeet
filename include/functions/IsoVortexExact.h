@@ -28,7 +28,7 @@ public Function
 //public IsoVortexIC
 {
 public:
-  IsoVortexExact(const std::string & name, InputParameters parameters);
+  IsoVortexExact(const InputParameters & parameters);
 
   Real value(Real t, const Point & p);
 

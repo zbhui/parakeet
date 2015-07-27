@@ -12,9 +12,9 @@ InputParameters validParams<FluidMaterial>()
 }
 
 
-FluidMaterial::FluidMaterial(const std::string & name, InputParameters parameters):
-		Material(name, parameters),
-		CFDBase(name, parameters),
+FluidMaterial::FluidMaterial(const InputParameters & parameters):
+		Material(parameters),
+		CFDBase(parameters),
 
 		_viscous_stress_tensor(declareProperty<RealTensorValue>("_viscous_stress_tensor")),
 		_test_viscosity(declareProperty<Real>("viscosity")),

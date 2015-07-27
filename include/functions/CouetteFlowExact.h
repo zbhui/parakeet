@@ -14,7 +14,7 @@ public Function,
 public CFDBase
 {
 public:
-  CouetteFlowExact(const std::string & name, InputParameters parameters);
+  CouetteFlowExact(const InputParameters & parameters);
 
   Real value(Real t, const Point & p);
 

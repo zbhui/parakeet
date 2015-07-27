@@ -18,7 +18,7 @@ class CFDBC :
 public MultiIntegratedBC
 {
 public:
-	CFDBC(const std::string & name, InputParameters params);
+	CFDBC(const InputParameters & params);
 	virtual ~CFDBC(){}
 
 

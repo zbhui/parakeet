@@ -20,9 +20,9 @@ InputParameters validParams<CFDBase>()
   return params;
 }
 
-CFDBase::CFDBase(const std::string & name, InputParameters parameters)
+CFDBase::CFDBase(const InputParameters &parameters)
 {
-	MooseObject moose_object(name, parameters);
+	MooseObject moose_object(parameters);
 	_gamma = (moose_object.getParam<Real>("gamma"));
 	_prandtl = (moose_object.getParam<Real>("prandtl"));
 	_mach = (moose_object.getParam<Real>("mach"));

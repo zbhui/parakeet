@@ -11,7 +11,7 @@ class NavierStokesFaceKernel :
 public EulerFaceKernel
 {
 public:
-	NavierStokesFaceKernel(const std::string &name, InputParameters parameters);
+	NavierStokesFaceKernel(const InputParameters & parameters);
 	virtual ~NavierStokesFaceKernel(){}
 
 protected:

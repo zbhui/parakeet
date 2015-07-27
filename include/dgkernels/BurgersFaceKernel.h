@@ -14,7 +14,7 @@ public DGKernel,
 public BurgersBase
 {
 public:
-	BurgersFaceKernel(const std::string &name, InputParameters parameters);
+	BurgersFaceKernel(const InputParameters & parameters);
 
 protected:
 	virtual Real computeQpResidual(Moose::DGResidualType type);

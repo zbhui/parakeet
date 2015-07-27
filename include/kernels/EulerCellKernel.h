@@ -14,7 +14,7 @@ public MultiKernel,
 public CFDBase
 {
 public:
-	EulerCellKernel(const std::string & name, InputParameters parameters);
+	EulerCellKernel(const InputParameters & parameters);
 	virtual ~EulerCellKernel(){}
 
 protected:

@@ -12,7 +12,7 @@ class NavierStokesCellKernel :
 public EulerCellKernel
 {
 public:
-	NavierStokesCellKernel(const std::string & name, InputParameters parameters);
+	NavierStokesCellKernel(const InputParameters & parameters);
 	virtual ~NavierStokesCellKernel(){}
 
 protected:

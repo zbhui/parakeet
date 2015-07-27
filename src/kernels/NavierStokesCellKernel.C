@@ -8,8 +8,8 @@ InputParameters validParams<NavierStokesCellKernel>()
   return params;
 }
 
-NavierStokesCellKernel::NavierStokesCellKernel(const std::string & name, InputParameters parameters):
-		EulerCellKernel(name, parameters)
+NavierStokesCellKernel::NavierStokesCellKernel(const InputParameters & parameters):
+		EulerCellKernel(parameters)
 {
 }
 

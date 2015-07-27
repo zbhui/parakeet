@@ -9,8 +9,8 @@ InputParameters validParams<CFDPassFlowIC>()
     return params;
 }
 
-CFDPassFlowIC::CFDPassFlowIC(const std::string & name, InputParameters parameters) :
-    CFDInitialCondition(name, parameters),
+CFDPassFlowIC::CFDPassFlowIC(const InputParameters & parameters) :
+    CFDInitialCondition(parameters),
     _velocity(getParam<Real>("velocity"))
 {}
 

@@ -11,7 +11,7 @@ InputParameters validParams<CFDAction>();
 class CFDAction : public Action
 {
 public:
-  CFDAction(const std::string & name, InputParameters params);
+  CFDAction(InputParameters params);
 
   virtual void act();
 };

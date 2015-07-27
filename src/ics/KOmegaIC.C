@@ -10,9 +10,9 @@ InputParameters validParams<KOmegaIC>()
   return params;
 }
 
-KOmegaIC::KOmegaIC(const std::string & name, InputParameters parameters) :
-		InitialCondition(name, parameters),
-		KOmegaModelBase(name, parameters),
+KOmegaIC::KOmegaIC(const InputParameters & parameters) :
+		InitialCondition(parameters),
+		KOmegaModelBase(parameters),
 	    _component(getParam<int>("component"))
 {
 }

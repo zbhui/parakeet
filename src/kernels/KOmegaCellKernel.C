@@ -9,9 +9,9 @@ InputParameters validParams<KOmegaCellKernel>()
 
 	  return params;
 }
-KOmegaCellKernel::KOmegaCellKernel(const std::string & name, InputParameters parameters):
-		MultiKernel(name, parameters),
-		KOmegaModelBase(name, parameters)
+KOmegaCellKernel::KOmegaCellKernel(const InputParameters & parameters):
+		MultiKernel(parameters),
+		KOmegaModelBase(parameters)
 {
 }
 

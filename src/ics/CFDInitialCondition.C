@@ -11,9 +11,9 @@ InputParameters validParams<CFDInitialCondition>()
   return params;
 }
 
-CFDInitialCondition::CFDInitialCondition(const std::string & name, InputParameters parameters) :
-    InitialCondition(name, parameters),
-    CFDBase(name, parameters)
+CFDInitialCondition::CFDInitialCondition(const InputParameters & parameters) :
+    InitialCondition(parameters),
+    CFDBase(parameters)
 //    _component(getParam<unsigned int>("component"))
 {}
 

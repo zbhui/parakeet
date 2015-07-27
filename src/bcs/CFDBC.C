@@ -12,8 +12,8 @@ InputParameters validParams<CFDBC>()
 	return params;
 }
 
-CFDBC::CFDBC(const std::string & name, InputParameters parameters):
-		MultiIntegratedBC(name, parameters),
+CFDBC::CFDBC(const InputParameters & parameters):
+		MultiIntegratedBC(parameters),
 		_bc_type(getParam<MooseEnum>("bc_type"))
 {
 

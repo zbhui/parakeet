@@ -11,9 +11,9 @@ InputParameters validParams<KOmegaFaceKernel>()
   return params;
 }
 
-KOmegaFaceKernel::KOmegaFaceKernel(const std::string & name, InputParameters parameters):
-		MultiDGKernel(name, parameters),
-		KOmegaModelBase(name, parameters)
+KOmegaFaceKernel::KOmegaFaceKernel(const InputParameters & parameters):
+		MultiDGKernel(parameters),
+		KOmegaModelBase(parameters)
 {
 }
 

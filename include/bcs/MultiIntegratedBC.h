@@ -12,7 +12,7 @@ class MultiIntegratedBC :
 public IntegratedBC
 {
 public:
-	  MultiIntegratedBC(const std::string & name, InputParameters params);
+	  MultiIntegratedBC(const InputParameters & params);
 	  virtual ~MultiIntegratedBC(){}
 
 	  virtual void computeResidual();

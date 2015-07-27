@@ -14,7 +14,7 @@ class KOmegaModelBase :
 public CFDBase
 {
 public:
-	KOmegaModelBase(const std::string & name, InputParameters parameters);
+	KOmegaModelBase(const InputParameters & parameters);
 	virtual ~KOmegaModelBase(){};
 
 protected:

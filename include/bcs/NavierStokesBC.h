@@ -15,7 +15,7 @@ class NavierStokesBC :
 public EulerBC
 {
 public:
-	NavierStokesBC(const std::string & name, InputParameters parameters);
+	NavierStokesBC(const InputParameters & parameters);
 	virtual ~NavierStokesBC(){}
 
 

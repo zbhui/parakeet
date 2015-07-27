@@ -14,7 +14,7 @@ class SAModelBase :
 public CFDBase
 {
 public:
-	SAModelBase(const std::string & name, InputParameters parameters);
+	SAModelBase(const InputParameters & parameters);
 	virtual ~SAModelBase(){};
 
 protected:

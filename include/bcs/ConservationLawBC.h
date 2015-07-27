@@ -14,7 +14,7 @@ public IntegratedBC,
 public BurgersBase
 {
 public:
-	  BurgersBC(const std::string & name, InputParameters params);
+	  BurgersBC(const InputParameters &parameters);
 	  virtual ~BurgersBC(){}
 
 

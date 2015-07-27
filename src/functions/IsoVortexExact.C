@@ -22,8 +22,8 @@ InputParameters validParams<IsoVortexExact>()
   return params;
 }
 
-IsoVortexExact::IsoVortexExact(const std::string & name, InputParameters parameters) :
-    Function(name, parameters)
+IsoVortexExact::IsoVortexExact(const InputParameters & parameters) :
+    Function(parameters)
 //    IsoVortexIC(name, parameters)
 {}
 

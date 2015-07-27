@@ -14,7 +14,7 @@ public CFDBC,
 public KOmegaModelBase
 {
 public:
-	KOmegaBC(const std::string & name, InputParameters params);
+	KOmegaBC(const InputParameters & params);
 	virtual ~KOmegaBC(){}
 
 protected:

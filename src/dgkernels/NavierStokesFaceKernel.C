@@ -10,8 +10,8 @@ InputParameters validParams<NavierStokesFaceKernel>()
   return params;
 }
 
-NavierStokesFaceKernel::NavierStokesFaceKernel(const std::string & name, InputParameters parameters):
-		EulerFaceKernel(name, parameters)
+NavierStokesFaceKernel::NavierStokesFaceKernel(const InputParameters & parameters):
+		EulerFaceKernel(parameters)
 {
 }
 
