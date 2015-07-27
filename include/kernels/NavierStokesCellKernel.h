@@ -18,8 +18,8 @@ public:
 protected:
 	RealTensorValue _jacobi_gradient[40][10][10];
 
-	virtual Real computeQpJacobian();
-	virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+	virtual Real computeQpResidual(unsigned int p);
+	virtual Real computeQpJacobian(unsigned int p, unsigned int q);
 
 	virtual void precalculateResidual();
 

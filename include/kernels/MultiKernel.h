@@ -22,7 +22,11 @@ public:
 
   /// 当前kernel对residual的贡献
   virtual void computeResidual();
+  virtual Real computeQpResidual();
+  virtual Real computeQpResidual(unsigned int p) = 0;
   virtual void computeJacobian();
+
+  virtual Real computeQpJacobian(unsigned int p, unsigned int q) = 0;
   virtual void computeOffDiagJacobian(unsigned int jvar);
   virtual void computeOffDiagJacobianScalar(unsigned int jvar);
 

@@ -119,7 +119,7 @@
   petsc_options_iname = '-pc_type'
   petsc_options_value = 'bjacobi'
   dt = 1
-  num_steps = 10000
+  num_steps = 1
   
  	l_tol = 1e-01
  	l_max_its = 10

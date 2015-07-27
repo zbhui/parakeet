@@ -15,9 +15,6 @@ NavierStokesCellKernel::NavierStokesCellKernel(const InputParameters & parameter
 
 void NavierStokesCellKernel::precalculateResidual()
 {
-	mooseAssert(_n_equation < 10, "multiKernel方程个数应<10");
-	mooseAssert(_qrule->n_points() < 40, "mulitKernel积分点个数应<40");
-
 	Real uh[10];
 	RealGradient duh[10];
 	for (_qp = 0; _qp < _qrule->n_points(); _qp++)
@@ -31,14 +28,14 @@ void NavierStokesCellKernel::precalculateResidual()
 	}
 }
 
-Real NavierStokesCellKernel::computeQpJacobian()
+Real NavierStokesCellKernel::computeQpResidual(unsigned int p)
 {
-	return -(_jacobi_variable[_qp][_ep][_eq]*_phi[_j][_qp] - _jacobi_gradient[_qp][_ep][_eq]*_grad_phi[_j][_qp])*_grad_test[_i][_qp];
+	return 0;
 }
 
-Real NavierStokesCellKernel::computeQpOffDiagJacobian(unsigned int jvar)
+Real NavierStokesCellKernel::computeQpJacobian(unsigned int p, unsigned int q)
 {
-	return 0.;
+	return -(_jacobi_variable[_qp][_ep][_eq]*_phi[_j][_qp] - _jacobi_gradient[_qp][_ep][_eq]*_grad_phi[_j][_qp])*_grad_test[_i][_qp];
 }
 
 void NavierStokesCellKernel::fluxTerm(RealVectorValue* flux_vector, Real* uh, RealGradient* duh)

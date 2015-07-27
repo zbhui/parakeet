@@ -39,27 +39,28 @@ Real EulerBC::computeQpResidual()
 }
 Real EulerBC::computeQpJacobian()
 {
-	Real ul[10], ur[10];
-	Matrix5x5 jacobi_ee[3], jacobi_en[3], jacobi_ne[3], jacobi_nn[3];
-
-	valueAtLeftFace(ul);
-	valueAtRightFace(ur);
-	inviscousJacobian(jacobi_ee, ul);
-	inviscousJacobian(jacobi_ne, ul);
-	inviscousJacobian(jacobi_en, ur);
-	inviscousJacobian(jacobi_nn, ur);
-
-	Point normal = _normals[_qp];
-	for (int p = 0; p < _n_equation; ++p)
-	{
-		for (int q = 0; q < _n_equation; ++q)
-		{
-			_jacobi_variable[_qp][p][q] =  0.5*(jacobi_ee[0](p,q)*normal(0)+jacobi_ee[1](p,q)*normal(1))+1;
-		}
-	}
-
-
-	return _jacobi_variable[_qp][_eq][_eq]*_phi[_j][_qp]*_test[_i][_qp];
+	return 0;
+//	Real ul[10], ur[10];
+//	Matrix5x5 jacobi_ee[3], jacobi_en[3], jacobi_ne[3], jacobi_nn[3];
+//
+//	valueAtLeftFace(ul);
+//	valueAtRightFace(ur);
+//	inviscousJacobian(jacobi_ee, ul);
+//	inviscousJacobian(jacobi_ne, ul);
+//	inviscousJacobian(jacobi_en, ur);
+//	inviscousJacobian(jacobi_nn, ur);
+//
+//	Point normal = _normals[_qp];
+//	for (int p = 0; p < _n_equation; ++p)
+//	{
+//		for (int q = 0; q < _n_equation; ++q)
+//		{
+//			_jacobi_variable[_qp][p][q] =  0.5*(jacobi_ee[0](p,q)*normal(0)+jacobi_ee[1](p,q)*normal(1))+1;
+//		}
+//	}
+//
+//
+//	return _jacobi_variable[_qp][_eq][_eq]*_phi[_j][_qp]*_test[_i][_qp];
 }
 Real EulerBC::computeQpOffDiagJacobian(unsigned int jvar)
 {

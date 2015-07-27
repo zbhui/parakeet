@@ -15,19 +15,14 @@ KOmegaCellKernel::KOmegaCellKernel(const InputParameters & parameters):
 {
 }
 
-Real KOmegaCellKernel::computeQpResidual()
+Real KOmegaCellKernel::computeQpResidual(unsigned int p)
 {
-	return -_flux_vector[_qp][_eq]*_grad_test[_i][_qp] - _source_term[_qp][_eq]*_test[_i][_qp];
+	return 0;
 }
 
-Real KOmegaCellKernel::computeQpJacobian()
+Real KOmegaCellKernel::computeQpJacobian(unsigned int p, unsigned int q)
 {
-	return 0.;
-}
-
-Real KOmegaCellKernel::computeQpOffDiagJacobian(unsigned int jvar)
-{
-	return 0.;
+	return 0;
 }
 
 void KOmegaCellKernel::precalculateResidual()
@@ -35,9 +30,6 @@ void KOmegaCellKernel::precalculateResidual()
 	Real uh[10];
 	RealGradient duh[10];
 	RealVectorValue vis_term[10];
-
-	mooseAssert(_n_equation < 10, "multiKernel方程个数应<10");
-	mooseAssert(_qrule->n_points() < 40, "mulitKernel积分点个数应<40");
 
 	for (_qp = 0; _qp < _qrule->n_points(); _qp++)
 	{

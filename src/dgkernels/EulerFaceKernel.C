@@ -43,9 +43,6 @@ Real EulerFaceKernel::computeQpResidual(Moose::DGResidualType type)
 
 void EulerFaceKernel::precalculateResidual()
 {
-	mooseAssert(_n_equation < 10, "multiFaceKernek方程个数应<10");
-	mooseAssert(_qrule->n_points() < 40, "mulitFaceKernel积分点个数应<40");
-
 	Real ul[10], ur[10];
 	for (_qp = 0; _qp < _qrule->n_points(); _qp++)
 	{

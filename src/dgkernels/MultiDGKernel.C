@@ -65,11 +65,11 @@ void MultiDGKernel::computeElemNeighResidual(Moose::DGResidualType type)
 
 void MultiDGKernel::computeJacobian()
 {
-	precalculateJacobian();
-	DGKernel::computeElemNeighJacobian(Moose::ElementElement);
-	DGKernel::computeElemNeighJacobian(Moose::ElementNeighbor);
-	DGKernel::computeElemNeighJacobian(Moose::NeighborElement);
-	DGKernel::computeElemNeighJacobian(Moose::NeighborNeighbor);
+//	precalculateJacobian();
+//	DGKernel::computeElemNeighJacobian(Moose::ElementElement);
+//	DGKernel::computeElemNeighJacobian(Moose::ElementNeighbor);
+//	DGKernel::computeElemNeighJacobian(Moose::NeighborElement);
+//	DGKernel::computeElemNeighJacobian(Moose::NeighborNeighbor);
 }
 
 void MultiDGKernel::computeElemNeighJacobian(Moose::DGJacobianType type)

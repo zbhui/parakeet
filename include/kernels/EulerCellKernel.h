@@ -24,7 +24,6 @@ protected:
 	virtual void precalculateResidual();
 	virtual void precalculateJacobian();
 
-	virtual Real computeQpResidual();
-	virtual Real computeQpJacobian();
-	virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+	virtual Real computeQpResidual(unsigned int p);
+	virtual Real computeQpJacobian(unsigned int p, unsigned int q);
 };
