@@ -19,24 +19,6 @@ CFDBC::CFDBC(const InputParameters & parameters):
 
 }
 
-void CFDBC::computeResidual()
-{
-	precalculateResidual();
-	IntegratedBC::computeResidual();
-}
-
-void CFDBC::computeJacobian()
-{
-	precalculateJacobian();
-	IntegratedBC::computeJacobian();
-}
-
-void CFDBC::computeJacobianBlock(unsigned int jvar)
-{
-	precalculateJacobian();
-	IntegratedBC::computeJacobianBlock(jvar);
-}
-
 void CFDBC::valueAtRightFace(Real* ur)
 {
 	if(_bc_type == "wall")

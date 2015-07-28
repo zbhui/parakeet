@@ -25,9 +25,8 @@ protected:
 	  Real _jacobi_variable[40][10][10];
 
 	  void fluxRiemann(Real *flux, Real *ul, Real *ur, Point &normal);
-	  virtual Real computeQpResidual();
-	  virtual Real computeQpJacobian();
-	  virtual Real computeQpOffDiagJacobian(unsigned int jvar);
+	  virtual Real computeQpResidual(unsigned int p);
+	  virtual Real computeQpJacobian(unsigned int p, unsigned int q);
 
 	  virtual void precalculateResidual();
 	  virtual void precalculateJacobian();

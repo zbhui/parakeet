@@ -90,90 +90,46 @@
 	
 	[./multi_kernel]
 		type = EulerCellKernel
-		variable = rho
+		variable = rhoe
 	[../]		
 []
 
-#面积分
 [DGKernels]
 	[./multi_dg_kernel]
-		type = EulerFaceKernel
-		variable = rho
-	[../]
-	[./multi_dg_kernel1]
-		type = EulerFaceKernel
-		variable = momentum_x
-	[../]
-	[./multi_dg_kernel2]
-		type = EulerFaceKernel
-		variable = momentum_y
-	[../]
-	[./multi_dg_kernel3]
-		type = EulerFaceKernel
-		variable = momentum_z
-	[../]
-	[./multi_dg_kernel4]
 		type = EulerFaceKernel
 		variable = rhoe
 	[../]
 []
 
-# 边界条件
 [BCs]
 	[./euler_far_field]
 		type = IsoVortexBC
 		boundary = '0 1 2 3'
-		variable = rho
-	[../]
-	[./euler_far_field1]
-		type = IsoVortexBC
-		boundary = '0 1 2 3'
-		variable = momentum_x
-	[../]
-	[./euler_far_field2]
-		type = IsoVortexBC
-		boundary = '0 1 2 3'
-		variable = momentum_y
-	[../]
-	[./euler_far_field3]
-		type = IsoVortexBC
-		boundary = '0 1 2 3'
-		variable = momentum_z
-	[../]
-	[./euler_far_field4]
-		type = IsoVortexBC
-		boundary = '0 1 2 3'
 		variable = rhoe
-	[../]	
-
+	[../]
 []
 
-# 非线性系统求解
+[Preconditioning]
+  [./SMP]
+    type = SMP
+    #full = true
+    off_diag_row ='rhoe '
+    off_diag_column = 'rhoe '
+  [../]
+[]
+
 [Executioner]
   type = Transient
-  solve_type = NEWTON
-  petsc_options_iname = '-pc_type'
-  petsc_options_value = 'bjacobi'
- 	scheme = 'bdf2'
-  dt = 0.001
-  num_steps = 1
-  
-  # 线性迭代步的残差下降（相对）量级
- 	l_tol = 1e-3
-	# l_abs_step_tol = -1e-04
-  # 最大线性迭代步	
- 	l_max_its = 100
+  solve_type = PJFNK
+  scheme = bdf2
+  dt = 0.02
+  num_steps = 10
+  l_tol = 1e-04
+  l_max_its = 100
  	
- 	# 最大非线性迭代步
- 	nl_max_its = 10
- 	# 非线性迭代的残值下降（相对）量级
- 	nl_rel_tol = 1e-02
- 	# 非线性迭代绝对残值
- 	#nl_abs_tol = 1e-05
-  	
-	#abort_on_solve_fail = true	
-  #end_time = 0.1
-  
+  nl_max_its = 100
+  nl_rel_tol = 1e-02
+  #nl_abs_tol = 1e-05
 []
 
 [Functions]
@@ -193,14 +149,9 @@
 [Outputs]
  	csv = true
 	gnuplot = true	
- 	#use_displaced = true
 	[./exodus]
 		type = Exodus
 		output_initial = true
-		
-		interval = 1 					#间隔
-		oversample = true
-		refinements = 0
 	[../]
 	
 	[./console]

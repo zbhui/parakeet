@@ -49,20 +49,6 @@ void EulerCellKernel::precalculateJacobian()
 
 Real EulerCellKernel::computeQpJacobian(unsigned int p, unsigned int q)
 {
-//	Real uh[10];
-//	Matrix5x5 jacobi[3];
-
-//	valueAtCellPoint(uh);
-//	inviscousJacobian(jacobi, uh);
-//	for (int p = 0; p < _n_equation; ++p)
-//	{
-//		for (int q = 0; q < _n_equation; ++q)
-//		{
-//			RealVectorValue tmp(jacobi[0](p,q), jacobi[1](p,q), jacobi[2](p,q));
-//			_jacobi_variable[_qp][p][q] = tmp;
-//		}
-//	}
-
 	return -(_jacobi_variable[_qp][p][q]*_phi[_j][_qp])*_grad_test[_i][_qp];
 }
 

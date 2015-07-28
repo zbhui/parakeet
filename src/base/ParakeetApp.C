@@ -112,9 +112,9 @@ ParakeetApp::registerObjects(Factory & factory)
 
 		/// 注册面积分
 		registerDGKernel(EulerFaceKernel);
-		registerDGKernel(NavierStokesFaceKernel);
-		registerDGKernel(KOmegaFaceKernel);
-		registerDGKernel(BurgersFaceKernel);
+//		registerDGKernel(NavierStokesFaceKernel);
+//		registerDGKernel(KOmegaFaceKernel);
+//		registerDGKernel(BurgersFaceKernel);
 
 		/// 注册初始条件
 		registerInitialCondition(IsoVortexIC);
@@ -128,9 +128,9 @@ ParakeetApp::registerObjects(Factory & factory)
 		registerBoundaryCondition(BurgersBC);
 		registerBoundaryCondition(EulerBC);
 		registerBoundaryCondition(IsoVortexBC);
-		registerBoundaryCondition(CouetteFlowBC);
-		registerBoundaryCondition(NavierStokesBC);
-		registerBoundaryCondition(KOmegaBC);
+//		registerBoundaryCondition(CouetteFlowBC);
+//		registerBoundaryCondition(NavierStokesBC);
+//		registerBoundaryCondition(KOmegaBC);
 
 		/// 注册函数
 		registerFunction(IsoVortexExact);

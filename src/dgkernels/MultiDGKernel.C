@@ -35,8 +35,8 @@ void MultiDGKernel::computeResidual()
 {
 	precalculateResidual();
 
-	DGKernel::computeElemNeighResidual(Moose::Element);
-	DGKernel::computeElemNeighResidual(Moose::Neighbor);
+	computeElemNeighResidual(Moose::Element);
+	computeElemNeighResidual(Moose::Neighbor);
 }
 
 void MultiDGKernel::computeElemNeighResidual(Moose::DGResidualType type)
@@ -49,27 +49,26 @@ void MultiDGKernel::computeElemNeighResidual(Moose::DGResidualType type)
 
 	  const VariableTestValue & test_space = is_elem ? _test : _test_neighbor;
 
-	  for (_eq = 0; _eq < _n_equation; ++_eq)
+	  for (unsigned int p = 0; p < _n_equation; ++p)
 	  {
-		  int var_number = _sys.getVariable(_tid, _variables[_eq]).number();
 		  DenseVector<Number> & re = is_elem ?
-				  	  	  	  	  	  	   _assembly.residualBlock(var_number) :
-	                                       _assembly.residualBlockNeighbor(var_number);
+				  	  	  	  	  	  	   _assembly.residualBlock(p) :
+	                                       _assembly.residualBlockNeighbor(p);
 
 		  for (_qp=0; _qp<_qrule->n_points(); _qp++)
 			  for (_i=0; _i< test_space.size(); _i++)
-				  re(_i) += _JxW[_qp]*_coord[_qp]*computeQpResidual(type);
+				  re(_i) += _JxW[_qp]*_coord[_qp]*computeQpResidual(type, p);
 
 	  }
 }
 
 void MultiDGKernel::computeJacobian()
 {
-//	precalculateJacobian();
-//	DGKernel::computeElemNeighJacobian(Moose::ElementElement);
-//	DGKernel::computeElemNeighJacobian(Moose::ElementNeighbor);
-//	DGKernel::computeElemNeighJacobian(Moose::NeighborElement);
-//	DGKernel::computeElemNeighJacobian(Moose::NeighborNeighbor);
+	precalculateJacobian();
+	computeElemNeighJacobian(Moose::ElementElement);
+	computeElemNeighJacobian(Moose::ElementNeighbor);
+	computeElemNeighJacobian(Moose::NeighborElement);
+	computeElemNeighJacobian(Moose::NeighborNeighbor);
 }
 
 void MultiDGKernel::computeElemNeighJacobian(Moose::DGJacobianType type)
@@ -79,61 +78,30 @@ void MultiDGKernel::computeElemNeighJacobian(Moose::DGJacobianType type)
   const VariablePhiValue & loc_phi = ( type == Moose::ElementElement || type == Moose::NeighborElement ) ?
                                        _phi : _phi_neighbor;
 
-  for (_ep = 0; _ep < _n_equation; ++_ep)
-  for (_eq = 0; _eq < _n_equation; ++_eq)
+  for (unsigned int p = 0; p < _n_equation; ++p)
+  for (unsigned int q = 0; q < _n_equation; ++q)
   {
-	  int var_number_p = _sys.getVariable(_tid, _variables[_ep]).number();
-	  int var_number_q = _sys.getVariable(_tid, _variables[_eq]).number();
-	  DenseMatrix<Number> & Kxx = type == Moose::ElementElement ?  _assembly.jacobianBlock(var_number_p, var_number_q) :
-                              	  type == Moose::ElementNeighbor ? _assembly.jacobianBlockNeighbor(Moose::ElementNeighbor, var_number_p, var_number_q) :
-                              	  type == Moose::NeighborElement ? _assembly.jacobianBlockNeighbor(Moose::NeighborElement, var_number_p, var_number_q) :
-                              	  	  	  	  	  			   	   _assembly.jacobianBlockNeighbor(Moose::NeighborNeighbor, var_number_p, var_number_q);
+	  DenseMatrix<Number> & Kxx = type == Moose::ElementElement ?  _assembly.jacobianBlock(p, q) :
+                              	  type == Moose::ElementNeighbor ? _assembly.jacobianBlockNeighbor(Moose::ElementNeighbor, p, q) :
+                              	  type == Moose::NeighborElement ? _assembly.jacobianBlockNeighbor(Moose::NeighborElement, p, q) :
+                              	  	  	  	  	  			   	   _assembly.jacobianBlockNeighbor(Moose::NeighborNeighbor, p, q);
 
 	  for (_qp=0; _qp<_qrule->n_points(); _qp++)
 		  for (_i=0; _i<test_space.size(); _i++)
 			  for (_j=0; _j<loc_phi.size(); _j++)
-				  Kxx(_i,_j) += _JxW[_qp]*_coord[_qp]*computeQpJacobian(type);
+				  Kxx(_i,_j) += _JxW[_qp]*_coord[_qp]*computeQpJacobian(type, p, q);
 
   	  }
 }
 
 void MultiDGKernel::computeOffDiagJacobian(unsigned int jvar)
 {
-//	mooseError("MultiDGKernel::computeOffDiagJacobian暂不支持");
-	precalculateJacobian();
-
-	DGKernel::computeOffDiagElemNeighJacobian(Moose::ElementElement,jvar);
-	DGKernel::computeOffDiagElemNeighJacobian(Moose::ElementNeighbor,jvar);
-	DGKernel::computeOffDiagElemNeighJacobian(Moose::NeighborElement,jvar);
-	DGKernel::computeOffDiagElemNeighJacobian(Moose::NeighborNeighbor,jvar);
-}
-
-void MultiDGKernel::computeOffDiagElemNeighJacobian(Moose::DGJacobianType type,unsigned int jvar)
-{
-	const VariableTestValue & test_space = ( type == Moose::ElementElement || type == Moose::ElementNeighbor ) ?
-                                           _test : _test_neighbor;
-	const VariablePhiValue & loc_phi = ( type == Moose::ElementElement || type == Moose::NeighborElement ) ?
-                                       	   _phi : _phi_neighbor;
-
-
-	for (_eq = 0; _eq < _n_equation; ++_eq)
+	if (jvar == _var.number())
+	    computeJacobian();
+	else
 	{
-		unsigned int var_number = _sys.getVariable(_tid, _variables[_eq]).number();
-		DenseMatrix<Number> & Kxx =
-								  type == Moose::ElementElement ?  _assembly.jacobianBlock(var_number, jvar) :
-	                              type == Moose::ElementNeighbor ? _assembly.jacobianBlockNeighbor(Moose::ElementNeighbor, var_number, jvar) :
-	                              type == Moose::NeighborElement ? _assembly.jacobianBlockNeighbor(Moose::NeighborElement, var_number, jvar) :
-	                            		  	  	  	  	  	  	   _assembly.jacobianBlockNeighbor(Moose::NeighborNeighbor, var_number, jvar);
-
-		for (_qp=0; _qp<_qrule->n_points(); _qp++)
-			for (_i=0; _i<test_space.size(); _i++)
-				for (_j=0; _j<loc_phi.size(); _j++)
-				{
-					if (jvar == var_number)
-						Kxx(_i,_j) += _JxW[_qp]*_coord[_qp]*computeQpJacobian(type);
-					else
-						Kxx(_i,_j) += _JxW[_qp]*_coord[_qp]*computeQpOffDiagJacobian(type, jvar);
-				}
+		return;
+		mooseError("MultiDGKernel::computeOffDiagJacobian");
 	}
 }
 
@@ -172,4 +140,10 @@ void MultiDGKernel::valueGradAtRightFace(RealGradient* dur)
 Real MultiDGKernel::computeQpJacobian(Moose::DGJacobianType type)
 {
 	return 0.;
+}
+
+Real MultiDGKernel::computeQpResidual(Moose::DGResidualType type)
+{
+	mooseError("MultiDGKernel::computeQpResidual");
+	return 0;
 }

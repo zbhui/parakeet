@@ -29,64 +29,15 @@ EulerBC::EulerBC(const InputParameters & parameters):
 		_eq = 4;
 }
 
-Real EulerBC::computeQpResidual()
+Real EulerBC::computeQpResidual(unsigned int p)
 {
-	valueAtLeftFace(_ul[_qp]);
-	valueAtRightFace(_ur[_qp]);
-	Point normal = _normals[_qp];
-	fluxRiemann(_flux[_qp], _ul[_qp], _ur[_qp], normal);
-	return _flux[_qp][_eq] * _test[_i][_qp];
+	return _flux[_qp][p] * _test[_i][_qp];
 }
-Real EulerBC::computeQpJacobian()
+Real EulerBC::computeQpJacobian(unsigned int p, unsigned int q)
 {
-	return 0;
-//	Real ul[10], ur[10];
-//	Matrix5x5 jacobi_ee[3], jacobi_en[3], jacobi_ne[3], jacobi_nn[3];
-//
-//	valueAtLeftFace(ul);
-//	valueAtRightFace(ur);
-//	inviscousJacobian(jacobi_ee, ul);
-//	inviscousJacobian(jacobi_ne, ul);
-//	inviscousJacobian(jacobi_en, ur);
-//	inviscousJacobian(jacobi_nn, ur);
-//
-//	Point normal = _normals[_qp];
-//	for (int p = 0; p < _n_equation; ++p)
-//	{
-//		for (int q = 0; q < _n_equation; ++q)
-//		{
-//			_jacobi_variable[_qp][p][q] =  0.5*(jacobi_ee[0](p,q)*normal(0)+jacobi_ee[1](p,q)*normal(1))+1;
-//		}
-//	}
-//
-//
-//	return _jacobi_variable[_qp][_eq][_eq]*_phi[_j][_qp]*_test[_i][_qp];
+	return _jacobi_variable[_qp][p][q]*_phi[_j][_qp]*_test[_i][_qp];
 }
-Real EulerBC::computeQpOffDiagJacobian(unsigned int jvar)
-{
-	Real ul[10], ur[10];
-	Matrix5x5 jacobi_ee[3], jacobi_en[3], jacobi_ne[3], jacobi_nn[3];
 
-	valueAtLeftFace(ul);
-	valueAtRightFace(ur);
-	inviscousJacobian(jacobi_ee, ul);
-	inviscousJacobian(jacobi_ne, ul);
-	inviscousJacobian(jacobi_en, ur);
-	inviscousJacobian(jacobi_nn, ur);
-	Point normal = _normals[_qp];
-
-	std::cout << _jacobi_variable[_qp][_eq][_eq]*_phi[_j][_qp]*_test[_i][_qp] <<std::endl;
-	for (int p = 0; p < _n_equation; ++p)
-	{
-		for (int q = 0; q < _n_equation; ++q)
-		{
-			_jacobi_variable[_qp][p][q] =  0.5*(jacobi_ee[0](p,q)*normal(0)+jacobi_ee[1](p,q)*normal(1))+1;
-		}
-	}
-	std::cout << _jacobi_variable[_qp][_eq][_eq]*_phi[_j][_qp]*_test[_i][_qp] <<std::endl;
-
-	return _jacobi_variable[_qp][_eq][jvar]*_phi[_j][_qp]*_test[_i][_qp];
-}
 void EulerBC::fluxRiemann(Real* flux, Real* ul, Real* ur, Point& normal)
 {
 	RealVectorValue fl[5], fr[5];
@@ -99,8 +50,7 @@ void EulerBC::fluxRiemann(Real* flux, Real* ul, Real* ur, Point& normal)
 	v = (ul[2] + ur [2])/rho/2;
 	w = (ul[3] + ur [3])/rho/2;
 	pre = (pressure(ul) + pressure(ur))/2.;
-//	Real lam = fabs(u*normal(0) + v * normal(1) + w * normal(2)) + sqrt(_gamma*pre/rho);
-	Real lam = 1.;
+	Real lam = fabs(u*normal(0) + v * normal(1) + w * normal(2)) + sqrt(_gamma*pre/rho);
 	for (int eq = 0; eq < 5; ++eq)
 	{
 		flux[eq] = 0.5*(fl[eq] + fr[eq])*normal + lam*(ul[eq] - ur[eq]);
@@ -109,16 +59,13 @@ void EulerBC::fluxRiemann(Real* flux, Real* ul, Real* ur, Point& normal)
 
 void EulerBC::precalculateResidual()
 {
-//	mooseAssert(_n_equation < 10, "multiBC方程个数应<10");
-//	mooseAssert(_qrule->n_points() < 40, "mulitBC积分点个数应<40");
-//
-//	for (_qp = 0; _qp < _qrule->n_points(); ++_qp)
-//	{
-//		valueAtLeftFace(_ul[_qp]);
-//		valueAtRightFace(_ur[_qp]);
-//		Point normal = _normals[_qp];
-//		fluxRiemann(_flux[_qp], _ul[_qp], _ur[_qp], normal);
-//	}
+	for (_qp = 0; _qp < _qrule->n_points(); ++_qp)
+	{
+		valueAtLeftFace(_ul[_qp]);
+		valueAtRightFace(_ur[_qp]);
+		Point normal = _normals[_qp];
+		fluxRiemann(_flux[_qp], _ul[_qp], _ur[_qp], normal);
+	}
 }
 
 void EulerBC::precalculateJacobian()

@@ -20,15 +20,18 @@ public:
 
   virtual ~MultiDGKernel(){};
 
-  /// 当前side对residual的贡献
   virtual void computeResidual();
+  virtual void  precalculateResidual() = 0;
+  virtual Real computeQpResidual(Moose::DGResidualType type, unsigned int p) = 0;
+  virtual Real computeQpResidual(Moose::DGResidualType type);
+
+  virtual void precalculateJacobian() = 0;
   virtual void computeJacobian();
+  virtual Real computeQpJacobian(Moose::DGJacobianType type, unsigned int p, unsigned int q) = 0;
   virtual void computeOffDiagJacobian(unsigned int jvar);
 
-   ///Computes the element/neighbor-element/neighbor Jacobian
   virtual void computeElemNeighResidual(Moose::DGResidualType type);
   virtual void computeElemNeighJacobian(Moose::DGJacobianType type);
-  virtual void computeOffDiagElemNeighJacobian(Moose::DGJacobianType type,unsigned int jvar);
 
 protected:
 
@@ -41,8 +44,6 @@ protected:
   virtual Real computeQpJacobian(Moose::DGJacobianType type);
 //  virtual Real computeQpOffDiagJacobian(Moose::DGJacobianType type, unsigned int jvar);
 
-  virtual void  precalculateResidual() = 0;
-  virtual void precalculateJacobian(){};
 
   /// 方程索引
   unsigned int _ep;

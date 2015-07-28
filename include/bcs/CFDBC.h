@@ -22,13 +22,7 @@ public:
 	virtual ~CFDBC(){}
 
 
-	virtual void computeResidual();
-	virtual void computeJacobian();
-	virtual void computeJacobianBlock(unsigned int jvar);
 protected:
-
-//	 virtual void precalculateResidual(){};
-//	 virtual void precalculateJacobian() {};
 
 	 virtual void valueAtRightFace(Real *ur);
 

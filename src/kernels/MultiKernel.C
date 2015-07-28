@@ -38,7 +38,7 @@ void MultiKernel::computeResidual()
 	precalculateResidual();
 	for (unsigned int p = 0; p < _n_equation; ++p)
 	{
-		DenseVector<Number> & re = _assembly.residualBlock(_sys.getVariable(_tid, _variables[p]).number());
+		DenseVector<Number> & re = _assembly.residualBlock(p);
 		_local_re.resize(re.size());
 		_local_re.zero();
 		for (_qp = 0; _qp < _qrule->n_points(); _qp++)
@@ -72,7 +72,13 @@ void MultiKernel::computeJacobian()
 
 void MultiKernel::computeOffDiagJacobian(unsigned int jvar)
 {
-	mooseError("MultiKernel::computeOffDiagJacobian");
+	 if (jvar == _var.number())
+	    computeJacobian();
+	 else
+	 {
+		 return;
+		 mooseError("MultiKernel::computeOffDiagJacobian");
+	 }
 }
 
 void MultiKernel::computeOffDiagJacobianScalar(unsigned int jvar)
