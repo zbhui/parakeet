@@ -15,65 +15,58 @@ EulerFaceKernel::EulerFaceKernel(const InputParameters & parameters):
 {
 }
 
+void EulerFaceKernel::precalculateResidual()
+{
+	Real ul[10], ur[10];
+	valueAtLeftFace(ul);
+	valueAtRightFace(ur);
+	Point normal = _normals[_qp];
+	fluxRiemann(_flux, ul, ur, normal);
+}
+
 Real EulerFaceKernel::computeQpResidual(Moose::DGResidualType type, unsigned int p)
 {
 	if(type == Moose::Element)
 	{
-		return _flux[_qp][p] * _test[_i][_qp];
+		return _flux[p] * _test[_i][_qp];
 	}
 	if(type == Moose::Neighbor)
 	{
-		return -_flux[_qp][p] * _test_neighbor[_i][_qp];
+		return -_flux[p] * _test_neighbor[_i][_qp];
 	}
 	mooseError("face flux error.");
 	return 0.;
 }
 
-void EulerFaceKernel::precalculateResidual()
-{
-	Real ul[10], ur[10];
-	for (_qp = 0; _qp < _qrule->n_points(); _qp++)
-	{
-		valueAtLeftFace(ul);
-		valueAtRightFace(ur);
-		Point normal = _normals[_qp];
-		fluxRiemann(_flux[_qp], ul, ur, normal);
-	}
-}
 
 void EulerFaceKernel::precalculateJacobian()
 {
 	Real flux_new[10], flux[10];
 	Real ul[10], ur[10];
 
-	for (_qp = 0; _qp < _qrule->n_points(); _qp++)
+	valueAtLeftFace(ul);
+	valueAtRightFace(ur);
+	Point normal = _normals[_qp];
+	fluxRiemann(flux, ul, ur, normal);
+	for (int q = 0; q < _n_equation; ++q)
 	{
-		valueAtLeftFace(ul);
-		valueAtRightFace(ur);
-		Point normal = _normals[_qp];
-		fluxRiemann(flux, ul, ur, normal);
-		for (int q = 0; q < _n_equation; ++q)
+		ul[q] += _ds;
+		fluxRiemann(flux_new, ul, ur, normal);
+		for (int p = 0; p < _n_equation; ++p)
 		{
-			ul[q] += _ds;
-			fluxRiemann(flux_new, ul, ur, normal);
-			for (int p = 0; p < _n_equation; ++p)
-			{
-				Real tmp = (flux_new[p] - flux[p])/_ds;
-				_jacobi_variable_ee[_qp][p][q] = tmp;
-//				_jacobi_variable_ne[_qp][p][q] = -tmp;
-			}
-			ul[q] -= _ds;
-
-			ur[q] += _ds;
-			fluxRiemann(flux_new, ul, ur, normal);
-			for (int p = 0; p < _n_equation; ++p)
-			{
-				Real tmp = (flux_new[p] - flux[p])/_ds;
-				_jacobi_variable_en[_qp][p][q] = tmp;
-//				_jacobi_variable_nn[_qp][p][q] = -tmp;
-			}
-			ur[q] -= _ds;
+			Real tmp = (flux_new[p] - flux[p])/_ds;
+			_jacobi_variable_ee[_qp][p][q] = tmp;
 		}
+		ul[q] -= _ds;
+
+		ur[q] += _ds;
+		fluxRiemann(flux_new, ul, ur, normal);
+		for (int p = 0; p < _n_equation; ++p)
+		{
+			Real tmp = (flux_new[p] - flux[p])/_ds;
+			_jacobi_variable_en[_qp][p][q] = tmp;
+		}
+		ur[q] -= _ds;
 	}
 }
 
@@ -90,7 +83,6 @@ void EulerFaceKernel::fluxRiemann(Real* flux, Real* ul, Real* ur, Point& normal)
 	w = (ul[3] + ur [3])/rho/2;
 	pre = (pressure(ul) + pressure(ur))/2.;
 	Real lam = fabs(u*normal(0) + v * normal(1) + w * normal(2)) + sqrt(_gamma*pre/rho);
-//	Real lam = 1.;
 	for (int eq = 0; eq < _n_equation; ++eq)
 	{
 		flux[eq] = 0.5*(fl[eq] + fr[eq])*normal + lam*(ul[eq] - ur[eq]);

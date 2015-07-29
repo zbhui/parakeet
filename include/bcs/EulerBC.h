@@ -20,9 +20,9 @@ public:
 
 
 protected:
-	  Real _flux[40][10];
-	  Real _ul[40][10], _ur[40][10];
-	  Real _jacobi_variable[40][10][10];
+	  Real _flux[10];
+	  Real _ul[10], _ur[10];
+	  Real _jacobi_variable[10][10];
 
 	  void fluxRiemann(Real *flux, Real *ul, Real *ur, Point &normal);
 	  virtual Real computeQpResidual(unsigned int p);

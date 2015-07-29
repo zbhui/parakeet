@@ -6,14 +6,6 @@
 #include "MultiIntegratedBC.h"
 #include "CFDBase.h"
 
-class CFDBC;
-
-template<>
-InputParameters validParams<CFDBC>();
-
-/**
- *  CFDBC abstract class
- */
 class CFDBC :
 public MultiIntegratedBC
 {
@@ -34,3 +26,6 @@ private:
 	MooseEnum _bc_type;
 
 };
+
+template<>
+InputParameters validParams<CFDBC>();

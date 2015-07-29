@@ -14,7 +14,8 @@ ConservationLawCellKernel::ConservationLawCellKernel(const InputParameters &para
 
 Real ConservationLawCellKernel::computeQpResidual()
 {
-	return -_flux_vector[_qp][_eq]*_grad_test[_i][_qp];
+	return 0;
+//	return -_flux_vector[_qp][_eq]*_grad_test[_i][_qp];
 }
 
 

@@ -15,27 +15,24 @@ EulerBC::EulerBC(const InputParameters & parameters):
 		CFDBC(parameters),
 		CFDBase(parameters)
 {
-	std::string var_name = _var.name();
+}
 
-	if(var_name == "rho")
-		_eq = 0;
-	if(var_name == "momentum_x")
-		_eq = 1;
-	if(var_name == "momentum_y")
-		_eq = 2;
-	if(var_name == "momentum_z")
-		_eq = 3;
-	if(var_name == "rhoe")
-		_eq = 4;
+void EulerBC::precalculateResidual()
+{
+	valueAtLeftFace(_ul);
+	valueAtRightFace(_ur);
+	Point normal = _normals[_qp];
+	fluxRiemann(_flux, _ul, _ur, normal);
 }
 
 Real EulerBC::computeQpResidual(unsigned int p)
 {
-	return _flux[_qp][p] * _test[_i][_qp];
+	return _flux[p] * _test[_i][_qp];
 }
+
 Real EulerBC::computeQpJacobian(unsigned int p, unsigned int q)
 {
-	return _jacobi_variable[_qp][p][q]*_phi[_j][_qp]*_test[_i][_qp];
+	return _jacobi_variable[p][q]*_phi[_j][_qp]*_test[_i][_qp];
 }
 
 void EulerBC::fluxRiemann(Real* flux, Real* ul, Real* ur, Point& normal)
@@ -57,53 +54,38 @@ void EulerBC::fluxRiemann(Real* flux, Real* ul, Real* ur, Point& normal)
 	}
 }
 
-void EulerBC::precalculateResidual()
-{
-	for (_qp = 0; _qp < _qrule->n_points(); ++_qp)
-	{
-		valueAtLeftFace(_ul[_qp]);
-		valueAtRightFace(_ur[_qp]);
-		Point normal = _normals[_qp];
-		fluxRiemann(_flux[_qp], _ul[_qp], _ur[_qp], normal);
-	}
-}
-
 void EulerBC::precalculateJacobian()
 {
 	Real flux_new[10], flux[10];
 	Real ul[10], ur[10];
 
-	for (_qp = 0; _qp < _qrule->n_points(); ++_qp)
+	Point normal = _normals[_qp];
+	valueAtLeftFace(_ul);
+	valueAtRightFace(_ur);
+	fluxRiemann(flux, _ul, _ur, normal);
+	for (int q = 0; q < _n_equation; ++q)
 	{
-		Point normal = _normals[_qp];
-		valueAtLeftFace(_ul[_qp]);
-		valueAtRightFace(_ur[_qp]);
-		fluxRiemann(flux, _ul[_qp], _ur[_qp], normal);
-		for (int q = 0; q < _n_equation; ++q)
-		{
-			_ul[_qp][q] += _ds;
-			valueAtRightFace(ur);
+		_ul[q] += _ds;
+		valueAtRightFace(ur);
 
-//			fluxRiemann(flux_new, _ul[_qp], _ur[_qp], normal);
-			fluxRiemann(flux_new, _ul[_qp], ur, normal);
-			for (int p = 0; p < _n_equation; ++p)
-				_jacobi_variable[_qp][p][q] = (flux_new[p] - flux[p])/_ds;
+		fluxRiemann(flux_new, _ul, ur, normal);
+		for (int p = 0; p < _n_equation; ++p)
+			_jacobi_variable[p][q] = (flux_new[p] - flux[p])/_ds;
 
-			_ul[_qp][q] -= _ds;
-		}
+		_ul[q] -= _ds;
 	}
 }
 
 void EulerBC::wallBC(Real* ur)
 {
-    Real pre = pressure(_ul[_qp]);
+    Real pre = pressure(_ul);
 	const Point &normal = _normals[_qp];
-    Real  vn = _ul[_qp][1]*normal(0) + _ul[_qp][2]*normal(1) + _ul[_qp][3]*normal(2);
+    Real  vn = _ul[1]*normal(0) + _ul[2]*normal(1) + _ul[3]*normal(2);
 
-    ur[0] = _ul[_qp][0];
-    ur[1] = _ul[_qp][1] - 2.0 * vn * normal(0);
-    ur[2] = _ul[_qp][2] - 2.0 * vn * normal(1);
-    ur[3] = _ul[_qp][3] - 2.0 * vn * normal(2);
+    ur[0] = _ul[0];
+    ur[1] = _ul[1] - 2.0 * vn * normal(0);
+    ur[2] = _ul[2] - 2.0 * vn * normal(1);
+    ur[3] = _ul[3] - 2.0 * vn * normal(2);
     ur[4] = pre/(_gamma-1) + 0.5*( ur[1]*ur[1] + ur[2]*ur[2] + ur[3]*ur[3] )/ur[0];
 }
 
@@ -127,23 +109,23 @@ void EulerBC::farFieldBC(Real* ur)
 	cR = sqrt(fabs(_gamma * pR / rhoR));
 	vnR = normal(0) * uR + normal(1) * vR + normal(2) * wR;
 
-	rhoL = _ul[_qp][0];
-	uL = _ul[_qp][1] / rhoL;
-	vL = _ul[_qp][2] / rhoL;
-	wL = _ul[_qp][3] / rhoL;
+	rhoL = _ul[0];
+	uL = _ul[1] / rhoL;
+	vL = _ul[2] / rhoL;
+	wL = _ul[3] / rhoL;
 	vel = sqrt(uL * uL + vL * vL + wL * wL);
-	pL = pressure(_ul[_qp]);
+	pL = pressure(_ul);
 	cL = sqrt(fabs(_gamma * pL / rhoL));
 	vnL =  normal(0) * uL + normal(1) * vL + normal(2) * wL;
 
 	if (vel >= cL) {	//超声速
 		if (vnL >= 0.0) //exit
 		{
-			ur[0] = _ul[_qp][0];
-			ur[1] = _ul[_qp][1];
-			ur[2] = _ul[_qp][2];
-			ur[3] = _ul[_qp][3];
-			ur[4] = _ul[_qp][4];
+			ur[0] = _ul[0];
+			ur[1] = _ul[1];
+			ur[2] = _ul[2];
+			ur[3] = _ul[3];
+			ur[4] = _ul[4];
 		}
 		else //inlet
 		{

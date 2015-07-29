@@ -4,11 +4,7 @@ template<>
 InputParameters validParams<MultiDGKernel>()
 {
 	  InputParameters params = validParams<DGKernel>();
-
 	  params.addRequiredParam<std::vector<NonlinearVariableName> >("variables", "多个求解变量");
-
-//	  params.addParam<bool>("use_displaced_mesh", true, "Whether or not this object should use the displaced mesh for computation.  Note that in the case this is true but no displacements are provided in the Mesh block the undisplaced mesh will still be used.");
-//	  params.addParamNamesToGroup("use_displaced_mesh", "Advanced");
 	  return params;
 }
 
@@ -33,42 +29,47 @@ MultiDGKernel::MultiDGKernel(const InputParameters & parameters):
 
 void MultiDGKernel::computeResidual()
 {
-	precalculateResidual();
-
-	computeElemNeighResidual(Moose::Element);
-	computeElemNeighResidual(Moose::Neighbor);
+	for (_qp=0; _qp<_qrule->n_points(); _qp++)
+	{
+		precalculateResidual();
+		computeElemNeighResidual(Moose::Element);
+		computeElemNeighResidual(Moose::Neighbor);
+	}
 }
+
 
 void MultiDGKernel::computeElemNeighResidual(Moose::DGResidualType type)
 {
-	  bool is_elem;
-	  if (type == Moose::Element)
-	    is_elem = true;
-	  else
-	    is_elem = false;
+	bool is_elem;
+	if (type == Moose::Element)
+		is_elem = true;
+	else
+		is_elem = false;
 
-	  const VariableTestValue & test_space = is_elem ? _test : _test_neighbor;
+	const VariableTestValue & test_space = is_elem ? _test : _test_neighbor;
 
-	  for (unsigned int p = 0; p < _n_equation; ++p)
-	  {
-		  DenseVector<Number> & re = is_elem ?
-				  	  	  	  	  	  	   _assembly.residualBlock(p) :
-	                                       _assembly.residualBlockNeighbor(p);
+	for (unsigned int p = 0; p < _n_equation; ++p)
+	{
+		DenseVector<Number> & re = is_elem ?
+				_assembly.residualBlock(p) :
+				_assembly.residualBlockNeighbor(p);
 
-		  for (_qp=0; _qp<_qrule->n_points(); _qp++)
-			  for (_i=0; _i< test_space.size(); _i++)
-				  re(_i) += _JxW[_qp]*_coord[_qp]*computeQpResidual(type, p);
+		for (_i=0; _i< test_space.size(); _i++)
+			re(_i) += _JxW[_qp]*_coord[_qp]*computeQpResidual(type, p);
 
-	  }
+	}
 }
 
 void MultiDGKernel::computeJacobian()
 {
-	precalculateJacobian();
-	computeElemNeighJacobian(Moose::ElementElement);
-	computeElemNeighJacobian(Moose::ElementNeighbor);
-	computeElemNeighJacobian(Moose::NeighborElement);
-	computeElemNeighJacobian(Moose::NeighborNeighbor);
+	for (_qp=0; _qp<_qrule->n_points(); _qp++)
+	{
+		precalculateJacobian();
+		computeElemNeighJacobian(Moose::ElementElement);
+		computeElemNeighJacobian(Moose::ElementNeighbor);
+		computeElemNeighJacobian(Moose::NeighborElement);
+		computeElemNeighJacobian(Moose::NeighborNeighbor);
+	}
 }
 
 void MultiDGKernel::computeElemNeighJacobian(Moose::DGJacobianType type)
@@ -86,7 +87,6 @@ void MultiDGKernel::computeElemNeighJacobian(Moose::DGJacobianType type)
                               	  type == Moose::NeighborElement ? _assembly.jacobianBlockNeighbor(Moose::NeighborElement, p, q) :
                               	  	  	  	  	  			   	   _assembly.jacobianBlockNeighbor(Moose::NeighborNeighbor, p, q);
 
-	  for (_qp=0; _qp<_qrule->n_points(); _qp++)
 		  for (_i=0; _i<test_space.size(); _i++)
 			  for (_j=0; _j<loc_phi.size(); _j++)
 				  Kxx(_i,_j) += _JxW[_qp]*_coord[_qp]*computeQpJacobian(type, p, q);
@@ -139,6 +139,7 @@ void MultiDGKernel::valueGradAtRightFace(RealGradient* dur)
 
 Real MultiDGKernel::computeQpJacobian(Moose::DGJacobianType type)
 {
+	mooseError("MultiDGKernel::computeQpJacobian");
 	return 0.;
 }
 

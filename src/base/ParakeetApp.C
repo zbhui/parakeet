@@ -105,9 +105,9 @@ ParakeetApp::registerObjects(Factory & factory)
 #define registerObject(name) factory.reg<name>(stringifyName(name))
 	/// 注册单元积分
 		registerKernel(EulerCellKernel);
-		registerKernel(NavierStokesCellKernel);
-		registerKernel(KOmegaCellKernel);
-		registerKernel(BurgersCellKernel);
+//		registerKernel(NavierStokesCellKernel);
+//		registerKernel(KOmegaCellKernel);
+//		registerKernel(BurgersCellKernel);
 	//	registerKernel(MultiTimeDerivative);
 
 		/// 注册面积分

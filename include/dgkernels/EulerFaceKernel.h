@@ -18,12 +18,10 @@ public:
 	virtual ~EulerFaceKernel(){}
 
 protected:
-	Real _flux[40][10];
+	Real _flux[10];
 
 	Real _jacobi_variable_ee[40][10][10];
 	Real _jacobi_variable_en[40][10][10];
-//	Real _jacobi_variable_ne[40][10][10];
-//	Real _jacobi_variable_nn[40][10][10];
 
 	virtual Real computeQpResidual(Moose::DGResidualType type, unsigned int p);
 	virtual Real computeQpJacobian(Moose::DGJacobianType type, unsigned int p, unsigned int q);

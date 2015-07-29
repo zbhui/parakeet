@@ -112,24 +112,23 @@
 [Preconditioning]
   [./SMP]
     type = SMP
-    #full = true
-    off_diag_row ='rhoe '
-    off_diag_column = 'rhoe '
+    full = true
+    #off_diag_row ='rhoe '
+    #off_diag_column = 'rhoe '
   [../]
 []
 
 [Executioner]
   type = Transient
-  solve_type = PJFNK
+  solve_type = newton
   scheme = bdf2
   dt = 0.02
-  num_steps = 10
+  num_steps = 1
   l_tol = 1e-04
   l_max_its = 100
  	
   nl_max_its = 100
-  nl_rel_tol = 1e-02
-  #nl_abs_tol = 1e-05
+  nl_rel_tol = 1e-04
 []
 
 [Functions]

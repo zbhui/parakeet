@@ -27,19 +27,20 @@ MultiIntegratedBC::MultiIntegratedBC(const InputParameters & parameters):
 
 void MultiIntegratedBC::computeResidual()
 {
-	precalculateResidual();
-
-	for (unsigned int p = 0; p < _n_equation; ++p)
+	for (_qp = 0; _qp < _qrule->n_points(); _qp++)
 	{
-		DenseVector<Number> & re = _assembly.residualBlock(p);
-		_local_re.resize(re.size());
-		_local_re.zero();
+		precalculateResidual();
+		for (unsigned int p = 0; p < _n_equation; ++p)
+		{
+			DenseVector<Number> & re = _assembly.residualBlock(p);
+			_local_re.resize(re.size());
+			_local_re.zero();
 
-		for (_qp = 0; _qp < _qrule->n_points(); _qp++)
 			for (_i = 0; _i < _test.size(); _i++)
 				_local_re(_i) += _JxW[_qp] * _coord[_qp] * computeQpResidual(p);
 
-		re += _local_re;
+			re += _local_re;
+		}
 	}
 }
 
@@ -71,21 +72,23 @@ void MultiIntegratedBC::valueGradAtRightFace(RealGradient* dur)
 
 void MultiIntegratedBC::computeJacobian()
 {
-	precalculateJacobian();
-
-	for (unsigned int p = 0; p < _n_equation; ++p)
-    for (unsigned int q = 0; q < _n_equation; ++q)
+	for (_qp = 0; _qp < _qrule->n_points(); _qp++)
 	{
-		DenseMatrix<Number> & ke = _assembly.jacobianBlock(p, q);
-		_local_ke.resize(ke.m(), ke.n());
-		_local_ke.zero();
+		precalculateJacobian();
 
-		for (_qp = 0; _qp < _qrule->n_points(); _qp++)
+		for (unsigned int p = 0; p < _n_equation; ++p)
+		for (unsigned int q = 0; q < _n_equation; ++q)
+		{
+			DenseMatrix<Number> & ke = _assembly.jacobianBlock(p, q);
+			_local_ke.resize(ke.m(), ke.n());
+			_local_ke.zero();
+
 			for (_i = 0; _i < _test.size(); _i++)
-				 for (_j = 0; _j < _phi.size(); _j++)
-					 _local_ke(_i, _j) += _JxW[_qp]*_coord[_qp]*computeQpJacobian(p, q);
+				for (_j = 0; _j < _phi.size(); _j++)
+					_local_ke(_i, _j) += _JxW[_qp]*_coord[_qp]*computeQpJacobian(p, q);
 
-		  ke += _local_ke;
+			ke += _local_ke;
+		}
 	}
 }
 

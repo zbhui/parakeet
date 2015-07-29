@@ -40,16 +40,8 @@ protected:
   virtual void valueGradAtLeftFace(RealGradient *dul);
   virtual void valueGradAtRightFace(RealGradient *dur);
 
-  /// Compute this Kernel's contribution to the Jacobian at the current quadrature point
   virtual Real computeQpJacobian(Moose::DGJacobianType type);
-//  virtual Real computeQpOffDiagJacobian(Moose::DGJacobianType type, unsigned int jvar);
 
-
-  /// 方程索引
-  unsigned int _ep;
-  unsigned int _eq;
-
-  /// 方程个数
   unsigned int _n_equation;
 
   /// 当前kernel的变量名
