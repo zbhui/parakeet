@@ -1,7 +1,6 @@
 
 #include "EulerBC.h"
 
-// Euler方程边界条件
 template<>
 InputParameters validParams<EulerBC>()
 {
@@ -13,16 +12,24 @@ InputParameters validParams<EulerBC>()
 
 EulerBC::EulerBC(const InputParameters & parameters):
 		CFDBC(parameters),
-		CFDBase(parameters)
+		CFDBase(parameters),
+		_cfd_data(_mach, _reynolds, _gamma, _prandtl),
+		_cfd_data_neighbor(_mach, _reynolds, _gamma, _prandtl)
 {
 }
 
 void EulerBC::precalculateResidual()
 {
-	valueAtLeftFace(_ul);
-	valueAtRightFace(_ur);
-	Point normal = _normals[_qp];
-	fluxRiemann(_flux, _ul, _ur, normal);
+	for (size_t i = 0; i < _uh.size(); ++i)
+	{
+		_cfd_data.uh[i] = (*_uh[i])[_qp];
+	}
+	boundaryCondition();
+
+	_cfd_data.reinit();
+	_cfd_data_neighbor.reinit();
+
+	fluxRiemann();
 }
 
 Real EulerBC::computeQpResidual(unsigned int p)
@@ -35,45 +42,38 @@ Real EulerBC::computeQpJacobian(unsigned int p, unsigned int q)
 	return _jacobi_variable[p][q]*_phi[_j][_qp]*_test[_i][_qp];
 }
 
-void EulerBC::fluxRiemann(Real* flux, Real* ul, Real* ur, Point& normal)
+void EulerBC::fluxRiemann()
 {
-	RealVectorValue fl[5], fr[5];
-	inviscousTerm(fl, ul);
-	inviscousTerm(fr, ur);
-
-	Real rho, u, v, w, pre;
-	rho = (ul[0] + ur[0])/2.;
-	u = (ul[1] + ur [1])/rho/2;
-	v = (ul[2] + ur [2])/rho/2;
-	w = (ul[3] + ur [3])/rho/2;
-	pre = (pressure(ul) + pressure(ur))/2.;
-	Real lam = fabs(u*normal(0) + v * normal(1) + w * normal(2)) + sqrt(_gamma*pre/rho);
-	for (int eq = 0; eq < 5; ++eq)
+	Real lam = fabs(_cfd_data.vel*_normals[_qp]) + _cfd_data.c;
+	lam += fabs(_cfd_data_neighbor.vel*_normals[_qp]) + _cfd_data_neighbor.c;
+	lam /= 2.;
+	for (int p = 0; p < _n_equation; ++p)
 	{
-		flux[eq] = 0.5*(fl[eq] + fr[eq])*normal + lam*(ul[eq] - ur[eq]);
+		_flux[p] = 0.5*(_cfd_data.invis_flux[p] + _cfd_data_neighbor.invis_flux[p])*_normals[_qp] +
+				    lam*(_cfd_data.uh[p] - _cfd_data_neighbor.uh[p]);
 	}
 }
 
 void EulerBC::precalculateJacobian()
 {
-	Real flux_new[10], flux[10];
-	Real ul[10], ur[10];
+	precalculateResidual();
+	for (int q = 0; q < _n_equation; ++q)
+		_flux_old[q] = _flux[q];
 
-	Point normal = _normals[_qp];
-	valueAtLeftFace(_ul);
-	valueAtRightFace(_ur);
-	fluxRiemann(flux, _ul, _ur, normal);
 	for (int q = 0; q < _n_equation; ++q)
 	{
-		_ul[q] += _ds;
-		valueAtRightFace(ur);
-
-		fluxRiemann(flux_new, _ul, ur, normal);
+		_cfd_data.uh[q] += _ds;
+		boundaryCondition();
+		_cfd_data.reinit();
+		_cfd_data_neighbor.reinit();
+		fluxRiemann();
 		for (int p = 0; p < _n_equation; ++p)
-			_jacobi_variable[p][q] = (flux_new[p] - flux[p])/_ds;
+			_jacobi_variable[p][q] = (_flux[p] - _flux_old[p])/_ds;
 
-		_ul[q] -= _ds;
+		_cfd_data.uh[q] -= _ds;
 	}
+//	_cfd_data.reinit();
+//	_cfd_data_neighbor.reinit();
 }
 
 void EulerBC::wallBC(Real* ur)
@@ -169,7 +169,31 @@ void EulerBC::farFieldBC(Real* ur)
 	}
 }
 
+void EulerBC::boundaryCondition()
+{
+}
+
 void EulerBC::symmetricBC(Real* ur)
 {
 	wallBC(ur);
+}
+
+void EulerBC::wallBC()
+{
+	const Point &normal = _normals[_qp];
+    Real  vn = _cfd_data.mom*normal;
+
+    _cfd_data_neighbor.uh[0] = _cfd_data.uh[0];
+    _cfd_data_neighbor.uh[1] = _cfd_data.uh[1] - 2*vn*normal(0);
+    _cfd_data_neighbor.uh[2] = _cfd_data.uh[2] - 2*vn*normal(1);
+    _cfd_data_neighbor.uh[3] = _cfd_data.uh[3] - 2*vn*normal(2);
+    _cfd_data_neighbor.uh[4] = _cfd_data.uh[4];
+}
+
+void EulerBC::farFieldBC()
+{
+}
+
+void EulerBC::symmetricBC()
+{
 }

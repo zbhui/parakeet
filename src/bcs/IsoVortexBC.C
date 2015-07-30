@@ -94,6 +94,16 @@ Real IsoVortexBC::z_momentum(Real t, const Point &p)
 	return 0.0;
 }
 
+void IsoVortexBC::boundaryCondition()
+{
+    Point p = _q_point[_qp];
+    _cfd_data_neighbor.uh[0] = density(_t, p);
+    _cfd_data_neighbor.uh[1] = x_momentum(_t, p);
+    _cfd_data_neighbor.uh[2] = y_momentum(_t, p);
+    _cfd_data_neighbor.uh[3] = z_momentum(_t, p);
+    _cfd_data_neighbor.uh[4] = total_energy(_t, p);
+}
+
 Real IsoVortexBC::total_energy(Real t, const Point &p)
 {
 	Real x = p(0);

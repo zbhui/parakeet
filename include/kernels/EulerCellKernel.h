@@ -2,8 +2,8 @@
 
 #include "MultiKernel.h"
 #include "CFDBase.h"
+#include "CFDDataPack.h"
 
-// 前置声明
 class EulerCellKernel;
 
 template<>
@@ -18,9 +18,11 @@ public:
 	virtual ~EulerCellKernel(){}
 
 protected:
-	RealVectorValue _flux[10];
+	CFDDataPack _cfd_data;
+	RealVectorValue _flux[10], _flux_old[10];
 	RealVectorValue _jacobi_variable[10][10];
 
+	void fluxTerm();
 	virtual void precalculateResidual();
 	virtual Real computeQpResidual(unsigned int p);
 

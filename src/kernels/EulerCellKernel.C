@@ -11,19 +11,19 @@ InputParameters validParams<EulerCellKernel>()
 
 EulerCellKernel::EulerCellKernel(const InputParameters & parameters):
 		MultiKernel(parameters),
-		CFDBase(parameters)
+		CFDBase(parameters),
+		_cfd_data(_mach, _reynolds, _gamma, _prandtl)
 {
 
 }
 
 void EulerCellKernel::precalculateResidual()
 {
-	Real uh[10];
-//	for (_qp = 0; _qp < _qrule->n_points(); _qp++)
-	{
-		valueAtCellPoint(uh);
-		inviscousTerm(_flux, uh);
-	}
+	for (size_t i = 0; i < _uh.size(); ++i)
+		_cfd_data.uh[i] = (*_uh[i])[_qp];
+
+	_cfd_data.reinit();
+	fluxTerm();
 }
 
 Real EulerCellKernel::computeQpResidual(unsigned int p)
@@ -33,24 +33,27 @@ Real EulerCellKernel::computeQpResidual(unsigned int p)
 
 void EulerCellKernel::precalculateJacobian()
 {
-	Real uh[10];
-	RealVectorValue flux_vector_new[10], flux_vector[10];
+	precalculateResidual();
+	for (int q = 0; q < _n_equation; ++q)
+		_flux_old[q] =  _flux[q];
 
-//	for (_qp = 0; _qp < _qrule->n_points(); _qp++)
+	for (int q = 0; q < _n_equation; ++q)
 	{
-		valueAtCellPoint(uh);
-		inviscousTerm(flux_vector, uh);
-		for (int q = 0; q < _n_equation; ++q)
-		{
-			uh[q] += _ds;
-			inviscousTerm(flux_vector_new, uh);
-			for (int p = 0; p < _n_equation; ++p)
-				_jacobi_variable[p][q] = (flux_vector_new[p] - flux_vector[p])/_ds;
+		_cfd_data.uh[q] += _ds;
+		_cfd_data.reinit();
+		fluxTerm();
+		for (int p = 0; p < _n_equation; ++p)
+			_jacobi_variable[p][q] = (_flux[p] - _flux_old[p])/_ds;
 
-
-			uh[q] -= _ds;
-		}
+		_cfd_data.uh[q] -= _ds;
 	}
+//	_cfd_data.reinit();
+}
+
+void EulerCellKernel::fluxTerm()
+{
+	for (int q = 0; q < _n_equation; ++q)
+		_flux[q] =  _cfd_data.invis_flux[q];
 }
 
 Real EulerCellKernel::computeQpJacobian(unsigned int p, unsigned int q)

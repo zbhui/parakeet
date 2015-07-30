@@ -18,6 +18,7 @@ public:
 
 protected:
 	virtual void valueAtRightFace(Real *ur);
+	virtual void boundaryCondition();
 
 private:
 
