@@ -25,9 +25,9 @@ void EulerBC::precalculateResidual()
 	{
 		_cfd_data.uh[i] = (*_uh[i])[_qp];
 	}
-	boundaryCondition();
 
 	_cfd_data.reinit();
+	boundaryCondition();
 	_cfd_data_neighbor.reinit();
 
 	fluxRiemann();
@@ -64,8 +64,8 @@ void EulerBC::precalculateJacobian()
 	for (int q = 0; q < _n_equation; ++q)
 	{
 		_cfd_data.uh[q] += _ds;
-		boundaryCondition();
 		_cfd_data.reinit();
+		boundaryCondition();
 		_cfd_data_neighbor.reinit();
 		fluxRiemann();
 		for (int p = 0; p < _n_equation; ++p)
@@ -121,6 +121,8 @@ void EulerBC::farfield()
 	cfd_data_infity.mom(1) = 0.;
 	cfd_data_infity.mom(2) = 0.;
 	cfd_data_infity.re = 1/_gamma/_mach/_mach + 0.5*cfd_data_infity.mom.size()/1.;
+	cfd_data_infity.vel = cfd_data_infity.mom/rho_inf;
+//	cfd_data_infity.reinit();
 
 	Real vnl = _cfd_data.vel*_normals[_qp];
 	Real vnr = cfd_data_infity.vel*_normals[_qp];
@@ -136,11 +138,29 @@ void EulerBC::farfield()
 		}
 		else	//亚音速
 		{
-		    _cfd_data_neighbor.uh[0] = cfd_data_infity.r;
-		    _cfd_data_neighbor.uh[1] = cfd_data_infity.mom(0);
-		    _cfd_data_neighbor.uh[2] = cfd_data_infity.mom(1);
-		    _cfd_data_neighbor.uh[3] = cfd_data_infity.mom(2);
-		    _cfd_data_neighbor.uh[4] = _cfd_data.p/(_gamma-1) + 0.5 * rho_inf*vel_inf.squaredNorm();
+			Real cl = _cfd_data.c;
+			Real cr = sqrt(_gamma*p_inf/rho_inf);
+			Real s = p_inf / pow(rho_inf, _gamma);
+			Real Rp = -vnr + 2.0 * cr / (_gamma - 1);
+			Real Rm = -vnl - 2.0 * cl / (_gamma - 1);
+			Real vnb = -(Rp + Rm) / 2.0;
+			Real cb = (Rp - Rm) * (_gamma - 1) / 4.0;
+
+			const Point &normal = _normals[_qp];
+			Real rho = pow((cb * cb) / (s * _gamma), 1.0 / (_gamma - 1));
+		    RealVectorValue mom = rho*(Point(1, 0, 0) + (vnb-vnr)*normal);
+		    _cfd_data_neighbor.uh[0] = rho;
+		    _cfd_data_neighbor.uh[1] = mom(0);
+		    _cfd_data_neighbor.uh[2] = mom(1);
+		    _cfd_data_neighbor.uh[3] = mom(2);
+		    _cfd_data_neighbor.uh[4] = cb*cb*rho/_gamma/(_gamma - 1)+ 0.5*mom.size_sq()/rho;
+
+
+//		    _cfd_data_neighbor.uh[0] = cfd_data_infity.r;
+//		    _cfd_data_neighbor.uh[1] = cfd_data_infity.mom(0);
+//		    _cfd_data_neighbor.uh[2] = cfd_data_infity.mom(1);
+//		    _cfd_data_neighbor.uh[3] = cfd_data_infity.mom(2);
+//		    _cfd_data_neighbor.uh[4] = _cfd_data.p/(_gamma-1) + 0.5 * rho_inf*vel_inf.squaredNorm();
 		}
 	}
 	else  //出口
@@ -155,11 +175,34 @@ void EulerBC::farfield()
 		}
 		else	//亚音速
 		{
-		    _cfd_data_neighbor.uh[0] = _cfd_data.uh[0];
-		    _cfd_data_neighbor.uh[1] = _cfd_data.uh[1];
-		    _cfd_data_neighbor.uh[2] = _cfd_data.uh[2];
-		    _cfd_data_neighbor.uh[3] = _cfd_data.uh[3];
-		    _cfd_data_neighbor.uh[4] = p_inf/(_gamma - 1) + 0.5*_cfd_data.r*_cfd_data.vel_size;
+			Real cl = _cfd_data.c;
+			Real cr = sqrt(_gamma*p_inf/rho_inf);
+			Real s =_cfd_data.s;
+			Real Rp = vnl + 2 * cl / (_gamma - 1);
+			Real Rm = vnr - 2 * cr / (_gamma - 1);
+			Real vnb = (Rp + Rm) / 2.0;
+			Real cb = (Rp - Rm) * (_gamma - 1) / 4.0;
+
+			vnb = (Rp + Rm) / 2.0;
+			cb = (Rp - Rm) * (_gamma - 1) / 4.0;
+
+			const Point &normal = _normals[_qp];
+			Real rho = pow((cb * cb) / (s * _gamma), 1.0 / (_gamma - 1));
+		    RealVectorValue mom;
+		    mom(0) = rho*(_cfd_data.vel(0)+normal(0)*(vnb-vnl));
+		    mom(1) = rho*(_cfd_data.vel(1)+normal(1)*(vnb-vnl));
+		    mom(2) = rho*(_cfd_data.vel(2)+normal(2)*(vnb-vnl));
+		    _cfd_data_neighbor.uh[0] = rho;
+		    _cfd_data_neighbor.uh[1] = mom(0);
+		    _cfd_data_neighbor.uh[2] = mom(1);
+		    _cfd_data_neighbor.uh[3] = mom(2);
+		    _cfd_data_neighbor.uh[4] = cb*cb*rho/_gamma/(_gamma - 1)+ 0.5*mom.size_sq()/rho;
+//
+//		    _cfd_data_neighbor.uh[0] = _cfd_data.uh[0];
+//		    _cfd_data_neighbor.uh[1] = _cfd_data.uh[1];
+//		    _cfd_data_neighbor.uh[2] = _cfd_data.uh[2];
+//		    _cfd_data_neighbor.uh[3] = _cfd_data.uh[3];
+//		    _cfd_data_neighbor.uh[4] = p_inf/(_gamma - 1) + 0.5*_cfd_data.r*_cfd_data.vel_size;
 		}
 	}
 }

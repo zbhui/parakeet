@@ -20,7 +20,7 @@ void CFDDataPack::reinit()
 	p = (_gamma-1) * (uh[4] - 0.5*(uh[1]*uh[1] + uh[2]*uh[2] + uh[3]*uh[3])/uh[0]);
 	t = _gamma*_mach*_mach*p/uh[0];
 	h = (uh[4] + p)/uh[0];
-	s = log(p) - _gamma*log(r);
+	s = p/pow(r, _gamma);
 	c = sqrt(_gamma*p/r);
 	m = vel_size/c;
 
