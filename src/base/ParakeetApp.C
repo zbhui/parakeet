@@ -8,6 +8,7 @@
 
 /// 单元积分
 #include "EulerCellKernel.h"
+#include "EmptyTimeDerivative.h"
 #include "NavierStokesCellKernel.h"
 #include "KOmegaCellKernel.h"
 #include "BurgersCellKernel.h"
@@ -105,6 +106,7 @@ ParakeetApp::registerObjects(Factory & factory)
 #define registerObject(name) factory.reg<name>(stringifyName(name))
 	/// 注册单元积分
 		registerKernel(EulerCellKernel);
+		registerKernel(EmptyTimeDerivative);
 //		registerKernel(NavierStokesCellKernel);
 //		registerKernel(KOmegaCellKernel);
 //		registerKernel(BurgersCellKernel);
