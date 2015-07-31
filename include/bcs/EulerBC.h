@@ -19,22 +19,17 @@ protected:
 	Real _ul[10], _ur[10];
 	Real _jacobi_variable[10][10];
 
-	virtual void boundaryCondition();
-
-	void fluxRiemann();
+	virtual void precalculateResidual();
 	virtual Real computeQpResidual(unsigned int p);
+
+	virtual void precalculateJacobian();
 	virtual Real computeQpJacobian(unsigned int p, unsigned int q);
 
-	virtual void precalculateResidual();
-	virtual void precalculateJacobian();
-
-	virtual void wallBC(Real *ur);
-	virtual void farFieldBC(Real *ur);
-	virtual void symmetricBC(Real *ur);
-
-	virtual void wallBC();
-	virtual void farFieldBC();
-	virtual void symmetricBC();
+	void fluxRiemann();
+	virtual void boundaryCondition();
+	virtual void wall();
+	virtual void farfield();
+	virtual void symmetric();
 };
 
 template<>

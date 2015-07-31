@@ -28,11 +28,6 @@ MultiKernel::MultiKernel(const InputParameters & parameters):
 	}
 }
 
-Real MultiKernel::computeQpResidual()
-{
-	mooseError("MultiKernel::computeQpResidual不能调用");
-	return 0;
-}
 void MultiKernel::computeResidual()
 {
 	for (_qp = 0; _qp < _qrule->n_points(); _qp++)
@@ -89,18 +84,14 @@ void MultiKernel::computeOffDiagJacobianScalar(unsigned int jvar)
 	mooseError("MultiKernel::computeOffDiagJacobianScalar");
 }
 
-void MultiKernel::valueAtCellPoint(Real *uh)
+Real MultiKernel::computeQpResidual()
 {
-	for (size_t i = 0; i < _uh.size(); ++i)
-	{
-		uh[i] = (*_uh[i])[_qp];
-	}
+	mooseError("MultiKernel::computeQpResidual不能调用");
+	return 0;
 }
 
-void MultiKernel::valueGradAtCellPoint(RealGradient* duh)
+Real MultiKernel::computeQpJacobian()
 {
-	for (size_t i = 0; i < _uh.size(); ++i)
-	{
-		duh[i] = (*_grad_uh[i])[_qp];
-	}
+	mooseError("MultiKernel::computeQpJacobian不能调用");
+	return 0;
 }

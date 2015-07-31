@@ -22,11 +22,11 @@ protected:
 	RealVectorValue _flux[10], _flux_old[10];
 	RealVectorValue _jacobi_variable[10][10];
 
-	void fluxTerm();
 	virtual void precalculateResidual();
 	virtual Real computeQpResidual(unsigned int p);
 
-	virtual Real computeQpJacobian(unsigned int p, unsigned int q);
 	virtual void precalculateJacobian();
+	virtual Real computeQpJacobian(unsigned int p, unsigned int q);
 
+	void fluxTerm();
 };

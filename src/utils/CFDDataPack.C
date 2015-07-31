@@ -22,6 +22,7 @@ void CFDDataPack::reinit()
 	h = (uh[4] + p)/uh[0];
 	s = log(p) - _gamma*log(r);
 	c = sqrt(_gamma*p/r);
+	m = vel_size/c;
 
 	grad_rho = duh[0];
 	grad_mom = RealTensor(duh[1], duh[2], duh[3]);

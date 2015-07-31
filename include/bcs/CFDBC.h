@@ -13,16 +13,7 @@ public:
 	CFDBC(const InputParameters & params);
 	virtual ~CFDBC(){}
 
-
 protected:
-
-	 virtual void valueAtRightFace(Real *ur);
-
-	 virtual void wallBC(Real *ur) = 0;
-	 virtual void farFieldBC(Real *ur) = 0;
-	 virtual void symmetricBC(Real *ur) = 0;
-
-private:
 	MooseEnum _bc_type;
 
 };

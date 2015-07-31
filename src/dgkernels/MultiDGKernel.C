@@ -105,38 +105,6 @@ void MultiDGKernel::computeOffDiagJacobian(unsigned int jvar)
 	}
 }
 
-void MultiDGKernel::valueAtLeftFace(Real* ul)
-{
-	for (size_t eq = 0; eq < _uh.size(); ++eq)
-	{
-		ul[eq] = (*_uh[eq])[_qp];
-	}
-}
-
-void MultiDGKernel::valueAtRightFace(Real* ur)
-{
-	for (size_t eq = 0; eq < _uh_neighbor.size(); ++eq)
-	{
-		ur[eq] = (*_uh_neighbor[eq])[_qp];
-	}
-}
-
-void MultiDGKernel::valueGradAtLeftFace(RealGradient* dul)
-{
-	for (size_t eq = 0; eq < _grad_uh.size(); ++eq)
-	{
-		dul[eq] = (*_grad_uh[eq])[_qp];
-	}
-}
-
-void MultiDGKernel::valueGradAtRightFace(RealGradient* dur)
-{
-	for (size_t eq = 0; eq < _grad_uh_neighbor.size(); ++eq)
-	{
-		dur[eq] = (*_grad_uh_neighbor[eq])[_qp];
-	}
-}
-
 Real MultiDGKernel::computeQpJacobian(Moose::DGJacobianType type)
 {
 	mooseError("MultiDGKernel::computeQpJacobian");

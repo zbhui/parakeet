@@ -92,26 +92,6 @@ void EulerFaceKernel::precalculateJacobian()
 	_cfd_data_neighbor.reinit();
 }
 
-void EulerFaceKernel::fluxRiemann(Real* flux, Real* ul, Real* ur, Point& normal)
-{
-	RealVectorValue fl[10], fr[10];
-	inviscousTerm(fl, ul);
-	inviscousTerm(fr, ur);
-
-	Real rho, u, v, w, pre;
-	rho = (ul[0] + ur[0])/2.;
-	u = (ul[1] + ur [1])/rho/2;
-	v = (ul[2] + ur [2])/rho/2;
-	w = (ul[3] + ur [3])/rho/2;
-	pre = (pressure(ul) + pressure(ur))/2.;
-	Real lam = fabs(u*normal(0) + v * normal(1) + w * normal(2)) + sqrt(_gamma*pre/rho);
-	for (int eq = 0; eq < _n_equation; ++eq)
-	{
-		flux[eq] = 0.5*(fl[eq] + fr[eq])*normal + lam*(ul[eq] - ur[eq]);
-	}
-
-}
-
 Real EulerFaceKernel::computeQpJacobian(Moose::DGJacobianType type, unsigned int p, unsigned int q)
 {
 	Real r = 0;

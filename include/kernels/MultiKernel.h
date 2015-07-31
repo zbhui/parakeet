@@ -15,19 +15,15 @@ public:
   virtual void precalculateResidual() = 0;
   virtual Real computeQpResidual(unsigned int p) = 0;
 
+  virtual void computeOffDiagJacobian(unsigned int jvar);
   virtual void computeJacobian();
   virtual void precalculateJacobian() = 0;
   virtual Real computeQpJacobian(unsigned int p, unsigned int q) = 0;
 
-
-  virtual Real computeQpResidual();
-  virtual void computeOffDiagJacobian(unsigned int jvar);
-  virtual void computeOffDiagJacobianScalar(unsigned int jvar);
-
 protected:
-
-  virtual void valueAtCellPoint(Real *uh);
-  virtual void valueGradAtCellPoint(RealGradient *duh);
+  virtual Real computeQpResidual();
+  virtual Real computeQpJacobian();
+  virtual void computeOffDiagJacobianScalar(unsigned int jvar);
   unsigned int _n_equation;
   std::vector<NonlinearVariableName> _variables;
   std::vector<VariableValue*> _uh;

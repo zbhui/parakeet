@@ -44,32 +44,6 @@ void MultiIntegratedBC::computeResidual()
 	}
 }
 
-void MultiIntegratedBC::valueAtLeftFace(Real* ul)
-{
-	for (size_t eq = 0; eq < _uh.size(); ++eq)
-	{
-		ul[eq] = (*_uh[eq])[_qp];
-	}
-}
-
-void MultiIntegratedBC::valueAtRightFace(Real* ur)
-{
-	valueAtLeftFace(ur);
-}
-
-void MultiIntegratedBC::valueGradAtLeftFace(RealGradient* dul)
-{
-	for (size_t eq = 0; eq < _grad_uh.size(); ++eq)
-	{
-		dul[eq] = (*_grad_uh[eq])[_qp];
-	}
-}
-
-void MultiIntegratedBC::valueGradAtRightFace(RealGradient* dur)
-{
-	valueGradAtLeftFace(dur);
-}
-
 void MultiIntegratedBC::computeJacobian()
 {
 	for (_qp = 0; _qp < _qrule->n_points(); _qp++)
@@ -106,4 +80,9 @@ void MultiIntegratedBC::computeJacobianBlock(unsigned int jvar)
 Real MultiIntegratedBC::computeQpResidual()
 {
 	mooseError("MultiIntegratedBC::computeQpResidual");
+}
+
+Real MultiIntegratedBC::computeQpJacobian()
+{
+	mooseError("MultiIntegratedBC::computeQpJacobian");
 }

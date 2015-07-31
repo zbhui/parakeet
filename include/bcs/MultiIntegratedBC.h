@@ -19,18 +19,15 @@ public:
 	  virtual Real computeQpResidual(unsigned int p) = 0;
 	  virtual void computeResidual();
 
+	  void computeJacobianBlock(unsigned int jvar);
+	  virtual void computeJacobian();
 	  virtual void precalculateJacobian() = 0;
 	  virtual Real computeQpJacobian(unsigned int p, unsigned int q) = 0;
-	  virtual void computeJacobian();
 
-	  virtual Real computeQpResidual();
-	  void computeJacobianBlock(unsigned int jvar);
 
 protected:
-	  virtual void valueAtLeftFace(Real *ul);
-	  virtual void valueAtRightFace(Real *ur);
-	  virtual void valueGradAtLeftFace(RealGradient *dul);
-	  virtual void valueGradAtRightFace(RealGradient *dur);
+	  virtual Real computeQpResidual();
+	  virtual Real computeQpJacobian();
 
 	  std::vector<NonlinearVariableName> _variables;
 	  unsigned int _n_equation;

@@ -14,18 +14,6 @@ IsoVortexBC::IsoVortexBC(const InputParameters & parameters):
 {
 }
 
-void IsoVortexBC::valueAtRightFace(Real *ur)
-{
-	Real ui[5];
-	valueAtLeftFace(ui);
-    Point p = _q_point[_qp];
-    ur[0] = density(_t, p);
-    ur[1] = x_momentum(_t, p);
-    ur[2] = y_momentum(_t, p);
-    ur[3] = z_momentum(_t, p);
-    ur[4] = total_energy(_t, p);
-}
-
 Real IsoVortexBC::density(Real t, const Point &p)
 {
 	Real x = p(0);

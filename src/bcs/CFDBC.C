@@ -19,23 +19,3 @@ CFDBC::CFDBC(const InputParameters & parameters):
 
 }
 
-void CFDBC::valueAtRightFace(Real* ur)
-{
-	if(_bc_type == "wall")
-	{
-		wallBC(ur);
-		return;
-	}
-	if(_bc_type == "far-field")
-	{
-		farFieldBC(ur);
-		return;
-	}
-	if(_bc_type == "symmetric")
-	{
-		symmetricBC(ur);
-		return;
-	}
-	mooseError("未定义的边界条件类型");
-}
-

@@ -10,7 +10,7 @@ public:
 
 public:
 	Real _mach, _reynolds, _gamma, _prandtl;
-	Real r, p, t, h, s, c, q, re;
+	Real r, p, t, h, s, c, m, q, re;
 	RealVectorValue vel, mom;
 	Real vel_size, vel_div, mom_size;
 
