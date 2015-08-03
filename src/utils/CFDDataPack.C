@@ -1,11 +1,23 @@
 
 #include "CFDDataPack.h"
+#include "CFDProblem.h"
 
 CFDDataPack::CFDDataPack(Real mach, Real reynolds, Real gamma, Real prandtl) :
+	_cfd_problem(NULL),
 	_mach(mach),
 	_reynolds(reynolds),
 	_gamma(gamma),
 	_prandtl(prandtl)
+{
+
+}
+
+CFDDataPack::CFDDataPack(CFDProblem &cfd_problem):
+		_cfd_problem(&cfd_problem),
+		_mach(_cfd_problem->_mach),
+		_reynolds(_cfd_problem->_reynolds),
+		_gamma(_cfd_problem->_gamma),
+		_prandtl(_cfd_problem->_prandtl)
 {
 
 }

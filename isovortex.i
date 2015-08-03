@@ -29,34 +29,43 @@
 
 []
 
+[Problem]
+  type = IsoVortexProblem
+[]
+
 [Variables]
 	[./rho]
 		[./InitialCondition] 
-			type = IsoVortexIC
+			type = CFDInitialCondition
+      component = 0
 		[../]
   [../]
 
  	[./momentum_x]
 		[./InitialCondition] 
-			type = IsoVortexIC
+			type = CFDInitialCondition
+      component = 1
 		[../]
   [../]
   
  	[./momentum_y]
 		[./InitialCondition] 
-			type = IsoVortexIC
+			type = CFDInitialCondition
+      component = 2
 		[../]
   [../]
   	
   [./momentum_z]
 		[./InitialCondition] 
-			type = IsoVortexIC
+			type = CFDInitialCondition
+      component = 3
 		[../]
   [../]
   	
   [./rhoe]
 		[./InitialCondition] 
-			type = IsoVortexIC
+			type = CFDInitialCondition
+      component = 4
 		[../]
   [../]	
 		
@@ -89,21 +98,21 @@
 	[../]
 	
 	[./multi_kernel]
-		type = EulerCellKernel
+		type = CFDCellKernel
 		variable = rhoe
 	[../]		
 []
 
 [DGKernels]
 	[./multi_dg_kernel]
-		type = EulerFaceKernel
+		type = CFDFaceKernel
 		variable = rhoe
 	[../]
 []
 
 [BCs]
 	[./euler_far_field]
-		type = IsoVortexBC
+		type = CFDBC
 		boundary = '0 1 2 3'
 		variable = rhoe
 	[../]

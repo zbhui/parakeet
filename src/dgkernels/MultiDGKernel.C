@@ -10,6 +10,7 @@ InputParameters validParams<MultiDGKernel>()
 
 MultiDGKernel::MultiDGKernel(const InputParameters & parameters):
 		DGKernel(parameters),
+	    _fe_problem(*parameters.get<FEProblem *>("_fe_problem")),
 		_variables(getParam<std::vector<NonlinearVariableName> >("variables"))
 {
 

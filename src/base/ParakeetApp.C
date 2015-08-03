@@ -7,6 +7,7 @@
 #include "Syntax.h"
 
 /// 单元积分
+#include "CFDCellKernel.h"
 #include "EulerCellKernel.h"
 #include "EmptyTimeDerivative.h"
 #include "NavierStokesCellKernel.h"
@@ -14,24 +15,21 @@
 #include "BurgersCellKernel.h"
 
 /// 面积分
+#include "CFDFaceKernel.h"
 #include "EulerFaceKernel.h"
 #include "NavierStokesFaceKernel.h"
 #include "KOmegaFaceKernel.h"
 #include "BurgersFaceKernel.h"
 
 /// 初始条件
+#include "CFDInitialCondition.h"
 #include "IsoVortexIC.h"
-#include "CouetteFlowIC.h"
-#include "SodIC.h"
-#include "CFDPassFlowIC.h"
-#include "SinIC.h"
-#include "KOmegaIC.h"
 
 /// 边界条件
+#include "CFDBC.h"
 #include "ConservationLawBC.h"
 #include "CouetteFlowBC.h"
 #include "IsoVortexBC.h"
-#include "CFDBC.h"
 #include "KOmegaBC.h"
 
 /// 函数
@@ -53,6 +51,9 @@
 
 /// 时间步长增加策略
 #include "RatioTimeStepper.h"
+
+#include "EulerProblem.h"
+#include "IsoVortexProblem.h"
 
 template<>
 InputParameters validParams<ParakeetApp>()
@@ -105,6 +106,7 @@ ParakeetApp::registerObjects(Factory & factory)
 #undef registerObject
 #define registerObject(name) factory.reg<name>(stringifyName(name))
 	/// 注册单元积分
+		registerKernel(CFDCellKernel);
 		registerKernel(EulerCellKernel);
 		registerKernel(EmptyTimeDerivative);
 //		registerKernel(NavierStokesCellKernel);
@@ -113,20 +115,18 @@ ParakeetApp::registerObjects(Factory & factory)
 	//	registerKernel(MultiTimeDerivative);
 
 		/// 注册面积分
+		registerDGKernel(CFDFaceKernel);
 		registerDGKernel(EulerFaceKernel);
 //		registerDGKernel(NavierStokesFaceKernel);
 //		registerDGKernel(KOmegaFaceKernel);
 //		registerDGKernel(BurgersFaceKernel);
 
 		/// 注册初始条件
+		registerInitialCondition(CFDInitialCondition);
 		registerInitialCondition(IsoVortexIC);
-		registerInitialCondition(CouetteFlowIC);
-		registerInitialCondition(SodIC);
-		registerInitialCondition(CFDPassFlowIC);
-		registerInitialCondition(SinIC);
-		registerInitialCondition(KOmegaIC);
 
 		/// 注册边界条件
+		registerBoundaryCondition(CFDBC);
 		registerBoundaryCondition(BurgersBC);
 		registerBoundaryCondition(EulerBC);
 		registerBoundaryCondition(IsoVortexBC);
@@ -148,6 +148,9 @@ ParakeetApp::registerObjects(Factory & factory)
 		registerExecutioner(RatioTimeStepper);
 
 //		registerNamedPreconditioner(FullJacobianPreconditioner, "FJP");
+
+		registerProblem(EulerProblem);
+		registerProblem(IsoVortexProblem);
 
 
 #undef registerObject

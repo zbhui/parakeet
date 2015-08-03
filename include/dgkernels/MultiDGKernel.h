@@ -32,6 +32,7 @@ public:
 	virtual Real computeQpJacobian(Moose::DGJacobianType type, unsigned int p, unsigned int q) = 0;
 
 protected:
+	FEProblem & _fe_problem;
 	virtual Real computeQpResidual(Moose::DGResidualType type);
 	virtual Real computeQpJacobian(Moose::DGJacobianType type);
 

@@ -7,77 +7,20 @@ InputParameters validParams<EulerBC>()
 {
 	InputParameters params = validParams<CFDBC>();
 	params += validParams<CFDBase>();
-
+	MooseEnum bc_types("wall, far-field, symmetric, pressure-out, isovortex, exact", "exact");  // 边界条件的类型，可以增加
+	params.addRequiredParam<MooseEnum>("bc_type", bc_types, "边界条件");
 	return params;
 }
 
 EulerBC::EulerBC(const InputParameters & parameters):
 		CFDBC(parameters),
 		CFDBase(parameters),
-		_cfd_data(_mach, _reynolds, _gamma, _prandtl),
-		_cfd_data_neighbor(_mach, _reynolds, _gamma, _prandtl)
+		_bc_type(getParam<MooseEnum>("bc_type"))
+
 {
 }
 
-void EulerBC::precalculateResidual()
-{
-	for (size_t i = 0; i < _uh.size(); ++i)
-	{
-		_cfd_data.uh[i] = (*_uh[i])[_qp];
-		_cfd_data.duh[i] = (*_grad_uh[i])[_qp];
-		_cfd_data_neighbor.duh[i] = (*_grad_uh[i])[_qp];
-	}
 
-	_cfd_data.reinit();
-	boundaryCondition();
-	_cfd_data_neighbor.reinit();
-
-	fluxRiemann();
-}
-
-Real EulerBC::computeQpResidual(unsigned int p)
-{
-	return _flux[p] * _test[_i][_qp];
-}
-
-Real EulerBC::computeQpJacobian(unsigned int p, unsigned int q)
-{
-	return _jacobi_variable[p][q]*_phi[_j][_qp]*_test[_i][_qp];
-}
-
-void EulerBC::fluxRiemann()
-{
-	Real lam = fabs(_cfd_data.vel*_normals[_qp]) + _cfd_data.c;
-	lam += fabs(_cfd_data_neighbor.vel*_normals[_qp]) + _cfd_data_neighbor.c;
-	lam /= 2.;
-	for (int p = 0; p < _n_equation; ++p)
-	{
-		_flux[p] = 0.5*(_cfd_data.invis_flux[p] + _cfd_data_neighbor.invis_flux[p])*_normals[_qp] +
-				    lam*(_cfd_data.uh[p] - _cfd_data_neighbor.uh[p]);
-	}
-}
-
-void EulerBC::precalculateJacobian()
-{
-	precalculateResidual();
-	for (int q = 0; q < _n_equation; ++q)
-		_flux_old[q] = _flux[q];
-
-	for (int q = 0; q < _n_equation; ++q)
-	{
-		_cfd_data.uh[q] += _ds;
-		_cfd_data.reinit();
-		boundaryCondition();
-		_cfd_data_neighbor.reinit();
-		fluxRiemann();
-		for (int p = 0; p < _n_equation; ++p)
-			_jacobi_variable[p][q] = (_flux[p] - _flux_old[p])/_ds;
-
-		_cfd_data.uh[q] -= _ds;
-	}
-//	_cfd_data.reinit();
-//	_cfd_data_neighbor.reinit();
-}
 
 void EulerBC::boundaryCondition()
 {
@@ -117,7 +60,7 @@ void EulerBC::farfield()
 	Eigen::Vector3d vel_inf(1, 0, 0);
 	Real p_inf = 1/_gamma/_mach/_mach;
 
-	CFDDataPack cfd_data_infity(_mach, _reynolds, _gamma, _prandtl);
+	CFDDataPack cfd_data_infity(_cfd_problem);
 	cfd_data_infity.r = rho_inf;
 	cfd_data_infity.mom(0) = 1.;
 	cfd_data_infity.mom(1) = 0.;

@@ -23,36 +23,43 @@
   velocity = 0
 []
 
-[Variables]
-	active = 'rho momentum_x momentum_y momentum_z rhoe'
+[Problem]
+  type = EulerProblem
+[]
 
+[Variables]
 	[./rho]
 		[./InitialCondition] 
-			type = CFDPassFlowIC
+			type = CFDInitialCondition
+      component = 0
+		[../]
+  [../]
+
+ 	[./momentum_x]
+		[./InitialCondition] 
+			type = CFDInitialCondition
+      component = 1
 		[../]
   [../]
   
- 	[./momentum_x]
-		[./InitialCondition] 
-			type = CFDPassFlowIC
-		[../]
-  [../]
-  	
  	[./momentum_y]
 		[./InitialCondition] 
-			type = CFDPassFlowIC
+			type = CFDInitialCondition
+      component = 2
 		[../]
   [../]
   	
-   [./momentum_z]
+  [./momentum_z]
 		[./InitialCondition] 
-			type = CFDPassFlowIC
+			type = CFDInitialCondition
+      component = 3
 		[../]
   [../]
   	
   [./rhoe]
 		[./InitialCondition] 
-			type = CFDPassFlowIC
+			type = CFDInitialCondition
+      component = 4
 		[../]
   [../]	
 		

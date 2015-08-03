@@ -13,20 +13,10 @@ public:
 
 
 protected:
-	CFDDataPack _cfd_data, _cfd_data_neighbor;
+	MooseEnum _bc_type;
 
-	Real _flux[10], _flux_old[10];
-	Real _ul[10], _ur[10];
-	Real _jacobi_variable[10][10];
-
-	virtual void precalculateResidual();
-	virtual Real computeQpResidual(unsigned int p);
-
-	virtual void precalculateJacobian();
-	virtual Real computeQpJacobian(unsigned int p, unsigned int q);
-
-	void fluxRiemann();
 	virtual void boundaryCondition();
+
 	virtual void wall();
 	virtual void farfield();
 	virtual void symmetric();

@@ -31,26 +31,26 @@ NSAuxVariable::NSAuxVariable(const InputParameters & parameters) :
  */
 Real NSAuxVariable::computeValue()
 {
-	Real uh[10];
-	valueAtCellPoint(uh);
-	std::string var_name = _var.name();
-
-	if(var_name == "pressure")
-		return pressure(uh);
-	if(var_name == "mach")
-		return mach_local(uh);
-	if(var_name == "velocity_x")
-		return uh[1]/uh[0];
-	if(var_name == "velocity_y")
-		return uh[2]/uh[0];
-	if(var_name == "velocity_z")
-		return uh[3]/uh[0];
-	if(var_name == "eddy_viscosity")
-		return _reynolds*uh[5]*std::exp(uh[6]/uh[0]);
-	if(var_name == "test")
-		return 100.;
-
-	mooseError(var_name << "辅助变量名不存在");
+//	Real uh[10];
+//	valueAtCellPoint(uh);
+//	std::string var_name = _var.name();
+//
+//	if(var_name == "pressure")
+//		return pressure(uh);
+//	if(var_name == "mach")
+//		return mach_local(uh);
+//	if(var_name == "velocity_x")
+//		return uh[1]/uh[0];
+//	if(var_name == "velocity_y")
+//		return uh[2]/uh[0];
+//	if(var_name == "velocity_z")
+//		return uh[3]/uh[0];
+//	if(var_name == "eddy_viscosity")
+//		return _reynolds*uh[5]*std::exp(uh[6]/uh[0]);
+//	if(var_name == "test")
+//		return 100.;
+//
+//	mooseError(var_name << "辅助变量名不存在");
 	return 0.;
 
 }

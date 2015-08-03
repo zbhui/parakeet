@@ -132,3 +132,8 @@ Real IsoVortexProblem::initialCondition(const Point& point, int eq)
 {
 	return valueExact(0, point, eq);
 }
+
+Real IsoVortexProblem::boundaryCondition(Real t, const Point & point, int eq)
+{
+	return valueExact(t, point, eq);
+}
