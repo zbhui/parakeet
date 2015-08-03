@@ -23,6 +23,8 @@ void EulerFaceKernel::precalculateResidual()
 	{
 		_cfd_data.uh[i] = (*_uh[i])[_qp];
 		_cfd_data_neighbor.uh[i] = (*_uh_neighbor[i])[_qp];
+		_cfd_data.duh[i] = (*_grad_uh[i])[_qp];
+		_cfd_data_neighbor.duh[i] = (*_grad_uh_neighbor[i])[_qp];
 	}
 
 	_cfd_data.reinit();

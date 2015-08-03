@@ -24,6 +24,8 @@ void EulerBC::precalculateResidual()
 	for (size_t i = 0; i < _uh.size(); ++i)
 	{
 		_cfd_data.uh[i] = (*_uh[i])[_qp];
+		_cfd_data.duh[i] = (*_grad_uh[i])[_qp];
+		_cfd_data_neighbor.duh[i] = (*_grad_uh[i])[_qp];
 	}
 
 	_cfd_data.reinit();

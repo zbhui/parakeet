@@ -123,7 +123,7 @@
   solve_type = newton
   scheme = bdf2
   dt = 0.02
-  num_steps = 10
+  num_steps = 1
   l_tol = 1e-04
   l_max_its = 100
  	
