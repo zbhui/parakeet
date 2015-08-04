@@ -9,22 +9,13 @@
 
 /// 单元积分
 #include "CFDCellKernel.h"
-#include "EulerCellKernel.h"
 #include "EmptyTimeDerivative.h"
-#include "NavierStokesCellKernel.h"
-#include "KOmegaCellKernel.h"
-#include "BurgersCellKernel.h"
 
 /// 面积分
 #include "CFDFaceKernel.h"
-#include "EulerFaceKernel.h"
-#include "NavierStokesFaceKernel.h"
-#include "KOmegaFaceKernel.h"
-#include "BurgersFaceKernel.h"
 
 /// 初始条件
 #include "CFDInitialCondition.h"
-#include "IsoVortexIC.h"
 
 /// 边界条件
 #include "CFDBC.h"
@@ -34,8 +25,6 @@
 #include "FarFieldRiemann.h"
 #include "IsoThermalWall.h"
 #include "EulerBC.h"
-#include "ConservationLawBC.h"
-#include "CouetteFlowBC.h"
 #include "IsoVortexExact.h"
 #include "CouetteFlowExact.h"
 
@@ -45,9 +34,6 @@
 
 /// Action
 #include "CFDAction.h"
-
-/// 材料属性
-#include "FluidMaterial.h"
 
 /// 时间积分
 #include "MultiTimeDerivative.h"
@@ -112,27 +98,16 @@ ParakeetApp::registerObjects(Factory & factory)
 #define registerObject(name) factory.reg<name>(stringifyName(name))
 	/// 注册单元积分
 		registerKernel(CFDCellKernel);
-		registerKernel(EulerCellKernel);
 		registerKernel(EmptyTimeDerivative);
-//		registerKernel(NavierStokesCellKernel);
-//		registerKernel(KOmegaCellKernel);
-//		registerKernel(BurgersCellKernel);
-	//	registerKernel(MultiTimeDerivative);
 
 		/// 注册面积分
 		registerDGKernel(CFDFaceKernel);
-		registerDGKernel(EulerFaceKernel);
-//		registerDGKernel(NavierStokesFaceKernel);
-//		registerDGKernel(KOmegaFaceKernel);
-//		registerDGKernel(BurgersFaceKernel);
 
 		/// 注册初始条件
 		registerInitialCondition(CFDInitialCondition);
-		registerInitialCondition(IsoVortexIC);
 
 		/// 注册边界条件
 		registerBoundaryCondition(CFDBC);
-		registerBoundaryCondition(BurgersBC);
 		registerBoundaryCondition(EulerBC);
 		registerBoundaryCondition(SlipWall);
 		registerBoundaryCondition(FarFieldPressure);
@@ -151,9 +126,6 @@ ParakeetApp::registerObjects(Factory & factory)
 		/// 注册辅助kernel
 		registerAux(NSAuxVariable);
 		registerAux(NearestWallDistance);
-
-		/// 注册材料属性
-		registerMaterial(FluidMaterial);
 
 		registerExecutioner(RatioTimeStepper);
 

@@ -5,8 +5,7 @@
 
 class CFDProblem;
 
-class CFDCellKernel :
-public MultiKernel
+class CFDCellKernel : public MultiKernel
 {
 public:
 	CFDCellKernel(const InputParameters & parameters);
@@ -35,7 +34,6 @@ protected:
 	void reinit();
 };
 
-class EulerCellKernel;
 
 template<>
 InputParameters validParams<CFDCellKernel>();

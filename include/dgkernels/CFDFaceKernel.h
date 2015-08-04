@@ -2,14 +2,11 @@
 #pragma once
 
 #include "MultiDGKernel.h"
-#include "CFDBase.h"
 #include "CFDDataPack.h"
 
 class CFDProblem;
 
-class CFDFaceKernel :
-public MultiDGKernel,
-public CFDBase
+class CFDFaceKernel : public MultiDGKernel
 {
 public:
 	CFDFaceKernel(const InputParameters & parameters);

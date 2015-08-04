@@ -6,14 +6,12 @@ template<>
 InputParameters validParams<CFDFaceKernel>()
 {
 	  InputParameters params = validParams<MultiDGKernel>();
-	  params += validParams<CFDBase>();
 	  params.addParam<Real>("perturbation", 1E-08, "有限差分求Jacobian矩阵的变量增量");
 
 	  return params;
 }
 CFDFaceKernel::CFDFaceKernel(const InputParameters & parameters):
 		MultiDGKernel(parameters),
-		CFDBase(parameters),
 		_cfd_problem(static_cast<CFDProblem&>(_fe_problem)),
 		_cfd_data(_cfd_problem),
 		_cfd_data_neighbor(_cfd_problem),
@@ -121,15 +119,15 @@ void CFDFaceKernel::precalculateJacobian()
 	_cfd_data.reinit();
 	for (int q = 0; q < _n_equation; ++q)
 	{
-		_cfd_data_neighbor.uh[q] += _ds;
+		_cfd_data_neighbor.uh[q] += _perturbation;
 		_cfd_data_neighbor.reinit();
 		fluxRiemann();
 		for (int p = 0; p < _n_equation; ++p)
 		{
-			_flux_jacobi_variable_en[p][q] = (_flux[p] - _flux_old[p])/_ds;
+			_flux_jacobi_variable_en[p][q] = (_flux[p] - _flux_old[p])/_perturbation;
 			_lift_jacobi_variable_en[p][q] = (_lift[p] - _lift_old[p])/_perturbation;
 		}
-		_cfd_data_neighbor.uh[q] -= _ds;
+		_cfd_data_neighbor.uh[q] -= _perturbation;
 	}
 	for (int q = 0; q < _n_equation; ++q)
 	for (int beta = 0; beta < 3; ++beta)

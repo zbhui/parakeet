@@ -1,5 +1,5 @@
 [GlobalParams]
- 	order = FIRST
+ 	order = SECOND
  	family = MONOMIAL
   	
  	mach = 0.38
@@ -19,7 +19,7 @@
   boundary_id = '8 9'
   boundary_name = 'far_field wall'
 	
-	uniform_refine = 0 
+	uniform_refine = 1
   velocity = 0
 []
 
@@ -107,7 +107,6 @@
 [BCs]
 	[./euler_far_field]
 		type = FarFieldPressure
-		bc_type = far-field
 		boundary = far_field 
 		variable = rhoe
 	[../]
@@ -137,17 +136,17 @@
   #l_abs_step_tol = -1e-04
   l_max_its = 30
  	
-  nl_max_its = 4
+  nl_max_its = 10
   nl_rel_tol = 1e-02
 
     petsc_options_iname = '-ksp_type  -pc_type -snes_lag_jacobian -snes_lag_preconditioner'
-    petsc_options_value = 'gmres       bjacobi 10 10'
+    petsc_options_value = 'gmres       bjacobi 20 20'
   [./TimeStepper]
     type = RatioTimeStepper
-    dt = 0.001
+    dt = 10
     ratio = 2
     step = 2
-    max_dt = 20	
+    max_dt = 20000	
   [../]
 []
 
