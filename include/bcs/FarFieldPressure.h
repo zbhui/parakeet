@@ -12,8 +12,6 @@ public:
 protected:
 	virtual void boundaryCondition();
 
-	Real _gamma;
-	Real _mach;
 	Real _rho_inf;
 	Real _vel_inf;
 };

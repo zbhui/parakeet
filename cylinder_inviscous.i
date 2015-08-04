@@ -1,5 +1,5 @@
 [GlobalParams]
- 	order = FIRST
+ 	order = THIRD
  	family = MONOMIAL
   	
  	mach = 0.38
@@ -24,6 +24,7 @@
 []
 
 [Problem]
+  fe_cache = true
   type = EulerProblem
 []
 
@@ -123,13 +124,16 @@
 	[./SMP]
 		type = SMP
 		full = true
+    #off_diag_row ='rhoe '
+    #off_diag_column = 'rhoe '
 	[../]
 []
 
 [Executioner]
+  no_fe_reinit = true
   type = Transient
   solve_type = newton
-  num_steps = 1000
+  num_steps = 10
   l_tol = 1e-02
   #l_abs_step_tol = -1e-04
   l_max_its = 30
@@ -137,11 +141,11 @@
   nl_max_its = 4
   nl_rel_tol = 1e-02
 
-    petsc_options_iname = '-ksp_type  -pc_type'
-    petsc_options_value = 'gmres       bjacobi'
+    petsc_options_iname = '-ksp_type  -pc_type -snes_lag_jacobian -snes_lag_preconditioner'
+    petsc_options_value = 'gmres       bjacobi 10 10'
   [./TimeStepper]
     type = RatioTimeStepper
-    dt = 0.01
+    dt = 0.001
     ratio = 2
     step = 2
     max_dt = 20	

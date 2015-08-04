@@ -32,6 +32,7 @@ protected:
 	virtual Real computeQpJacobian(unsigned int p, unsigned int q);
 
 	void fluxTerm();
+	void reinit();
 };
 
 class EulerCellKernel;

@@ -4,8 +4,7 @@
 #include "CFDDataPack.h"
 
 class EulerBC :
-		public CFDBC,
-		public CFDBase
+		public CFDBC
 {
 public:
 	EulerBC(const InputParameters & params);

@@ -1,6 +1,5 @@
 #include "ParakeetApp.h"
 
-#include "../../include/bcs/IsoThermalWall.h"
 #include "Moose.h"
 #include "AppFactory.h"
 //#include "ModulesApp.h"
@@ -33,6 +32,7 @@
 #include "Symmetric.h"
 #include "FarFieldPressure.h"
 #include "FarFieldRiemann.h"
+#include "IsoThermalWall.h"
 #include "EulerBC.h"
 #include "ConservationLawBC.h"
 #include "CouetteFlowBC.h"
@@ -56,6 +56,8 @@
 #include "RatioTimeStepper.h"
 
 #include "EulerProblem.h"
+#include "CFDProblem.h"
+#include "NavierStokesProblem.h"
 #include "IsoVortexProblem.h"
 
 template<>
@@ -135,6 +137,7 @@ ParakeetApp::registerObjects(Factory & factory)
 		registerBoundaryCondition(SlipWall);
 		registerBoundaryCondition(FarFieldPressure);
 		registerBoundaryCondition(FarFieldRiemann);
+		registerBoundaryCondition(IsoThermalWall);
 		registerBoundaryCondition(Symmetric);
 
 //		registerBoundaryCondition(CouetteFlowBC);
@@ -156,9 +159,10 @@ ParakeetApp::registerObjects(Factory & factory)
 
 //		registerNamedPreconditioner(FullJacobianPreconditioner, "FJP");
 
+		registerProblem(CFDProblem);
 		registerProblem(EulerProblem);
 		registerProblem(IsoVortexProblem);
-
+		registerProblem(NavierStokesProblem);
 
 #undef registerObject
 #define registerObject(name) factory.regLegacy<name>(stringifyName(name))

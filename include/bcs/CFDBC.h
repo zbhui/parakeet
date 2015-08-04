@@ -18,13 +18,17 @@ public:
 protected:
 	CFDProblem &_cfd_problem;
 
-	CFDDataPack _cfd_data, _cfd_data_neighbor;
+	CFDDataPack _cfd_data, _cfd_data_neighbor, _lift_data;
 
 	Real _flux[10], _flux_old[10];
-	Real _ul[10], _ur[10];
-	Real _jacobi_variable[10][10];
+	Real _flux_jacobi_variable[10][10];
+	RealVectorValue _flux_jacobi_grad_variable[10][10];
+	RealVectorValue _lift[10], _lift_old[10];
+	RealVectorValue _lift_jacobi_variable[10][10];
 	Real _perturbation;
-
+	Real _penalty;
+	Real _gamma;
+	Real _mach;
 	virtual void boundaryCondition();
 
 	virtual void precalculateResidual();
@@ -32,7 +36,9 @@ protected:
 
 	virtual void precalculateJacobian();
 	virtual Real computeQpJacobian(unsigned int p, unsigned int q);
+	void reinit();
 	void fluxRiemann();
+	void liftOperator();
 };
 
 template<>

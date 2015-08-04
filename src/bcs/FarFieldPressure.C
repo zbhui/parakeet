@@ -11,8 +11,6 @@ InputParameters validParams<FarFieldPressure>()
 
 FarFieldPressure::FarFieldPressure(const InputParameters & parameters):
 	CFDBC(parameters),
-	_gamma(_cfd_problem._gamma),
-	_mach(_cfd_problem._mach),
 	_rho_inf(1.0),
 	_vel_inf(1.0)
 {

@@ -6,7 +6,6 @@ template<>
 InputParameters validParams<EulerBC>()
 {
 	InputParameters params = validParams<CFDBC>();
-	params += validParams<CFDBase>();
 	MooseEnum bc_types("wall, far-field, symmetric, pressure-out, isovortex, exact", "exact");  // 边界条件的类型，可以增加
 	params.addRequiredParam<MooseEnum>("bc_type", bc_types, "边界条件");
 	return params;
@@ -14,7 +13,6 @@ InputParameters validParams<EulerBC>()
 
 EulerBC::EulerBC(const InputParameters & parameters):
 		CFDBC(parameters),
-		CFDBase(parameters),
 		_bc_type(getParam<MooseEnum>("bc_type"))
 
 {
