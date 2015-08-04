@@ -94,3 +94,8 @@ Real CouetteFlowProblem::initialCondition(const Point& point, int eq)
 {
 	return valueExact(0, point, eq);
 }
+
+Real CouetteFlowProblem::boundaryCondition(Real t, const Point & point, int eq)
+{
+	return valueExact(t, point, eq);
+}

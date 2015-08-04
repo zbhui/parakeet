@@ -9,6 +9,7 @@ public:
 	IsoVortexProblem(const InputParameters &params);
 	virtual Real initialCondition(const Point & point, int eq);
 	virtual Real boundaryCondition(Real t, const Point & point, int eq);
+
 private:
 	Real valueExact(Real t, const Point &p, int eq);
 

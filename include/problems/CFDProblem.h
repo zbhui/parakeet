@@ -14,7 +14,7 @@ public:
 	~CFDProblem(){}
 
 	virtual Real initialCondition(const Point & point, int eq);
-	virtual Real boundaryCondition(Real t, const Point & point, int eq){ return 0;};
+	virtual Real boundaryCondition(Real t, const Point & point, int eq){ return 0;}
 private:
 	virtual Real density(const Point &p);
 	virtual Real momentumX(const Point &p);

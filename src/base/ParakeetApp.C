@@ -1,5 +1,6 @@
 #include "ParakeetApp.h"
 
+#include "../../include/bcs/IsoThermalWall.h"
 #include "Moose.h"
 #include "AppFactory.h"
 //#include "ModulesApp.h"
@@ -35,9 +36,6 @@
 #include "EulerBC.h"
 #include "ConservationLawBC.h"
 #include "CouetteFlowBC.h"
-#include "KOmegaBC.h"
-
-/// 函数
 #include "IsoVortexExact.h"
 #include "CouetteFlowExact.h"
 
