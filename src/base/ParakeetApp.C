@@ -1,4 +1,5 @@
 #include "ParakeetApp.h"
+
 #include "Moose.h"
 #include "AppFactory.h"
 //#include "ModulesApp.h"
@@ -27,9 +28,13 @@
 
 /// 边界条件
 #include "CFDBC.h"
+#include "SlipWall.h"
+#include "Symmetric.h"
+#include "FarFieldPressure.h"
+#include "FarFieldRiemann.h"
+#include "EulerBC.h"
 #include "ConservationLawBC.h"
 #include "CouetteFlowBC.h"
-#include "IsoVortexBC.h"
 #include "KOmegaBC.h"
 
 /// 函数
@@ -129,7 +134,11 @@ ParakeetApp::registerObjects(Factory & factory)
 		registerBoundaryCondition(CFDBC);
 		registerBoundaryCondition(BurgersBC);
 		registerBoundaryCondition(EulerBC);
-		registerBoundaryCondition(IsoVortexBC);
+		registerBoundaryCondition(SlipWall);
+		registerBoundaryCondition(FarFieldPressure);
+		registerBoundaryCondition(FarFieldRiemann);
+		registerBoundaryCondition(Symmetric);
+
 //		registerBoundaryCondition(CouetteFlowBC);
 //		registerBoundaryCondition(NavierStokesBC);
 //		registerBoundaryCondition(KOmegaBC);

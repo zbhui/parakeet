@@ -92,29 +92,28 @@
 	[../]
 	
 	[./multi_kernel]
-		type = EulerCellKernel
+		type = CFDCellKernel
 		variable = rhoe
 	[../]		
 []
 
 [DGKernels]
 	[./multi_dg_kernel]
-		type = EulerFaceKernel
+		type = CFDFaceKernel
 		variable = rhoe
 	[../]
 []
 
 [BCs]
 	[./euler_far_field]
-		type = EulerBC
+		type = FarFieldPressure
 		bc_type = far-field
 		boundary = far_field 
 		variable = rhoe
 	[../]
 
 	[./euler_wall]
-		type = EulerBC
-		bc_type = wall
+		type = SlipWall
 		boundary = wall 
 		variable = rhoe
 	[../]

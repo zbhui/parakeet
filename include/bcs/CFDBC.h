@@ -9,8 +9,7 @@
 
 class CFDProblem;
 
-class CFDBC :
-public MultiIntegratedBC
+class CFDBC : public MultiIntegratedBC
 {
 public:
 	CFDBC(const InputParameters & params);
