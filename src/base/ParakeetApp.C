@@ -2,10 +2,16 @@
 
 #include "Moose.h"
 #include "AppFactory.h"
-//#include "ModulesApp.h"
 
-#include "ActionFactory.h" 	 // <- Actions are special (they have their own factory)
+#include "ActionFactory.h"
 #include "Syntax.h"
+
+/// Action
+#include "CLawAuxVariablesAction.h"
+#include "CLawICAction.h"
+#include "CommonPostProcessorAction.h"
+#include "AddMultiVariableAction.h"
+#include "AddMultiAuxVariableAction.h"
 
 /// 单元积分
 #include "CFDCellKernel.h"
@@ -45,6 +51,14 @@
 #include "CFDProblem.h"
 #include "NavierStokesProblem.h"
 #include "IsoVortexProblem.h"
+
+/// PostProcessor
+#include "CFDResidual.h"
+#include "ElementExtremeTimeDerivative.h"
+#include "NumTimeStep.h"
+#include "VariableResidual.h"
+#include "IsoVortexElementL2Error.h"
+#include "CouetteFlowElementL2Error.h"
 
 template<>
 InputParameters validParams<ParakeetApp>()
@@ -129,12 +143,17 @@ ParakeetApp::registerObjects(Factory & factory)
 
 		registerExecutioner(RatioTimeStepper);
 
-//		registerNamedPreconditioner(FullJacobianPreconditioner, "FJP");
-
 		registerProblem(CFDProblem);
 		registerProblem(EulerProblem);
 		registerProblem(IsoVortexProblem);
 		registerProblem(NavierStokesProblem);
+
+		registerPostprocessor(CFDResidual);
+		registerPostprocessor(ElementExtremeTimeDerivative);
+		registerPostprocessor(NumTimeStep);
+		registerPostprocessor(VariableResidual);
+		registerPostprocessor(IsoVortexElementL2Error);
+		registerPostprocessor(CouetteFlowElementL2Error);
 
 #undef registerObject
 #define registerObject(name) factory.regLegacy<name>(stringifyName(name))
@@ -152,6 +171,25 @@ ParakeetApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 
 	syntax.registerActionSyntax("CFDAction", "CFDAction");
 
+	syntax.registerActionSyntax("CLawICAction", "ICs", "add_ic");
+	registerAction(CLawICAction, "add_ic");
+
+	syntax.registerActionSyntax("CLawAuxVariablesAction", "AuxVariables");
+	registerAction(CLawAuxVariablesAction, "add_aux_variable");
+	registerAction(CLawAuxVariablesAction, "add_aux_kernel");
+
+	syntax.registerActionSyntax("CommonPostProcessorAction", "Postprocessors", "add_postprocessor");
+	registerAction(CommonPostProcessorAction, "add_postprocessor");
+
+	syntax.registerActionSyntax("AddMultiVariableAction", "Problem/Variables");
+	registerAction(AddMultiVariableAction, "add_variable");
+	registerAction(AddMultiVariableAction, "add_kernel");
+	registerAction(AddMultiVariableAction, "add_dg_kernel");
+	registerAction(AddMultiVariableAction, "add_bc");
+
+	syntax.registerActionSyntax("AddMultiAuxVariableAction", "Problem/AuxVariables/*");
+	registerAction(AddMultiAuxVariableAction, "add_aux_variable");
+	registerAction(AddMultiAuxVariableAction, "add_aux_kernel");
 #undef registerAction
 #define registerAction(tplt, action) action_factory.regLegacy<tplt>(stringifyName(tplt), action)
 }

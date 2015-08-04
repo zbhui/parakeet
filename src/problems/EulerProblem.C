@@ -7,7 +7,7 @@ template<>
 InputParameters validParams<EulerProblem>()
 {
   InputParameters params = validParams<CFDProblem>();
-
+  params.set<MooseEnum>("vis_type") = "INVISCOUS";
   return params;
 }
 

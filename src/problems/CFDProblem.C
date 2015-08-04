@@ -8,6 +8,8 @@ template<>
 InputParameters validParams<CFDProblem>()
 {
   InputParameters params = validParams<FEProblem>();
+  MooseEnum vis_type(CFDProblem::getViscousType());
+  params.addParam<MooseEnum>("vis_type", vis_type, "粘性计算方法");
   params.addParam<Real>("mach",  0.1, "马赫数");
   params.addParam<Real>("gamma", 1.4, "比热比");
   params.addParam<Real>("reynolds", 1, "雷诺数");
@@ -23,6 +25,7 @@ InputParameters validParams<CFDProblem>()
 
 CFDProblem::CFDProblem(const InputParameters &params) :
 	FEProblem(params),
+	_vis_type(getParam<MooseEnum>("vis_type")),
 	_mach(getParam<Real>("mach")),
 	_gamma(getParam<Real>("gamma")),
 	_reynolds(getParam<Real>("reynolds")),
@@ -39,7 +42,10 @@ CFDProblem::CFDProblem(const InputParameters &params) :
 {
 }
 
-
+MooseEnum CFDProblem::getViscousType()
+{
+  return MooseEnum("CONSTANT INVISCOUS SUTHERLAND", "CONSTANT");
+}
 Real CFDProblem::initialCondition(const Point& p, int eq)
 {
 	switch (eq) {

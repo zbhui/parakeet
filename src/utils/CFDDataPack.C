@@ -2,22 +2,22 @@
 #include "CFDDataPack.h"
 #include "CFDProblem.h"
 
-CFDDataPack::CFDDataPack(Real mach, Real reynolds, Real gamma, Real prandtl) :
-	_cfd_problem(NULL),
-	_mach(mach),
-	_reynolds(reynolds),
-	_gamma(gamma),
-	_prandtl(prandtl)
-{
-
-}
+//CFDDataPack::CFDDataPack(Real mach, Real reynolds, Real gamma, Real prandtl) :
+//	_cfd_problem(NULL),
+//	_mach(mach),
+//	_reynolds(reynolds),
+//	_gamma(gamma),
+//	_prandtl(prandtl)
+//{
+//
+//}
 
 CFDDataPack::CFDDataPack(CFDProblem &cfd_problem):
-		_cfd_problem(&cfd_problem),
-		_mach(_cfd_problem->_mach),
-		_reynolds(_cfd_problem->_reynolds),
-		_gamma(_cfd_problem->_gamma),
-		_prandtl(_cfd_problem->_prandtl)
+		_cfd_problem(cfd_problem),
+		_mach(_cfd_problem._mach),
+		_reynolds(_cfd_problem._reynolds),
+		_gamma(_cfd_problem._gamma),
+		_prandtl(_cfd_problem._prandtl)
 {
 
 }
@@ -46,7 +46,12 @@ void CFDDataPack::reinit()
 	tau = grad_vel + grad_vel.transpose();
 	vel_div =  grad_vel.tr();
 	tau(0, 0) -= 2./3*vel_div; tau(1, 1) -= 2./3*vel_div; tau(2, 2) -= 2./3*vel_div;
-	vis = 1.0;
+
+	if(_cfd_problem._vis_type == "INVISCOUS") vis = 0.0;
+	else if(_cfd_problem._vis_type == "CONSTANT") vis = 1;
+	else if(_cfd_problem._vis_type == "SUTHRELAND") vis = 1;
+	else mooseError("不可知的粘性模型");
+
 	tau *= vis/_reynolds;
 
 	grad_enthalpy = (duh[4]-uh[4]/uh[0] * duh[0])/r - grad_vel.transpose() * vel;

@@ -138,6 +138,9 @@
  	
   nl_max_its = 100
   nl_rel_tol = 1e-04
+
+  petsc_options_iname = '-ksp_type  -pc_type -snes_lag_jacobian -snes_lag_preconditioner'
+  petsc_options_value = 'gmres       bjacobi 20 20'
 []
 
 [Functions]

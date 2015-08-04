@@ -8,10 +8,10 @@ class CFDProblem;
 class CFDDataPack
 {
 public:
-	CFDDataPack(Real mach, Real reynolds, Real gamma = 1.4, Real prandtl = 0.72);
+//	CFDDataPack(Real mach, Real reynolds, Real gamma = 1.4, Real prandtl = 0.72);
 	CFDDataPack(CFDProblem &cfd_problem);
 public:
-	CFDProblem *_cfd_problem;
+	CFDProblem &_cfd_problem;
 	Real _mach, _reynolds, _gamma, _prandtl;
 	Real r, p, t, h, s, c, m, q, re;
 	RealVectorValue vel, mom;

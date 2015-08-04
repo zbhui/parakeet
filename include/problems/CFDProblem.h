@@ -1,7 +1,6 @@
 
 #pragma once
 
-//#include "CLawProblem.h"
 #include "FEProblem.h"
 #include "Attitude.h"
 #include "Eigen/Geometry"
@@ -15,6 +14,7 @@ public:
 
 	virtual Real initialCondition(const Point & point, int eq);
 	virtual Real boundaryCondition(Real t, const Point & point, int eq){ return 0;}
+	static MooseEnum getViscousType();
 private:
 	virtual Real density(const Point &p);
 	virtual Real momentumX(const Point &p);
@@ -23,6 +23,7 @@ private:
 	virtual Real energyTotal(const Point &p);
 
 public:
+	MooseEnum _vis_type;
 	Real _mach;
 	Real _gamma;
 	Real _reynolds;

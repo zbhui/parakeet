@@ -19,12 +19,13 @@
   boundary_id = '8 9'
   boundary_name = 'far_field wall'
 	
-	uniform_refine = 1
+	uniform_refine = 0
   velocity = 0
 []
 
 [Problem]
   type = CFDProblem
+  vis_type = INVISCOUS
 []
 
 [Variables]
