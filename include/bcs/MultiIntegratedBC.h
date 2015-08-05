@@ -33,5 +33,6 @@ protected:
 	  unsigned int _n_equation;
 	  std::vector<VariableValue*> _uh;
 	  std::vector<VariableGradient*> _grad_uh;
+	  int _var_order;
 };
 

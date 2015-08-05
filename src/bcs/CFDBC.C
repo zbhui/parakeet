@@ -27,7 +27,7 @@ CFDBC::CFDBC(const InputParameters & parameters):
 void CFDBC::reinit()
 {
 	_penalty = (_current_elem_volume+_current_elem_volume)/_current_side_volume /2.;
-	_penalty = 6/_penalty;
+	_penalty = (_var_order*_var_order+1)/_penalty;
 
 	_cfd_data.reinit();
 	boundaryCondition();
@@ -75,7 +75,7 @@ void CFDBC::fluxRiemann()
 	}
 
 	for (int p = 0; p < _n_equation; ++p)
-		_flux[p] -= 0.5*((_cfd_data.vis_flux[p] + _cfd_data_neighbor.vis_flux[p])-_lift[p])*_normals[_qp];
+		_flux[p] -= 0.5*((_cfd_data.vis_flux[p] + _cfd_data_neighbor.vis_flux[p])-_penalty*_lift[p])*_normals[_qp];
 }
 
 void CFDBC::liftOperator()
@@ -83,10 +83,12 @@ void CFDBC::liftOperator()
 	for (size_t i = 0; i < _uh.size(); ++i)
 	{
 		_lift_data.uh[i] = (_cfd_data.uh[i] + _cfd_data_neighbor.uh[i])/2.;
-		_lift_data.duh[i] = (_cfd_data.uh[i] + _cfd_data_neighbor.uh[i])*_normals[_qp];
+		_lift_data.duh[i] = (_cfd_data.uh[i] - _cfd_data_neighbor.uh[i])*_normals[_qp];
 	}
 
 	_lift_data.reinit();
+	for (int p = 0; p < _n_equation; ++p)
+		_lift[p] = _lift_data.vis_flux[p];
 }
 
 void CFDBC::precalculateJacobian()

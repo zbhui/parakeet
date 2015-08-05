@@ -143,7 +143,7 @@
     petsc_options_value = 'gmres       bjacobi 1 1'
   [./TimeStepper]
     type = RatioTimeStepper
-    dt = 1
+    dt = 10
     ratio = 2
     step = 2
     max_dt = 20000	

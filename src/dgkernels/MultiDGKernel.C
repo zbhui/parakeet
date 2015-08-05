@@ -11,7 +11,8 @@ InputParameters validParams<MultiDGKernel>()
 MultiDGKernel::MultiDGKernel(const InputParameters & parameters):
 		DGKernel(parameters),
 	    _fe_problem(*parameters.get<FEProblem *>("_fe_problem")),
-		_variables(getParam<std::vector<NonlinearVariableName> >("variables"))
+		_variables(getParam<std::vector<NonlinearVariableName> >("variables")),
+		_var_order(_fe_problem.getVariable(_tid, _variables[0]).order())
 {
 
 	MooseVariable &val0 = _sys.getVariable(_tid, _variables[0]);

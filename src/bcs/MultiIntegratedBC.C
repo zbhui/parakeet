@@ -11,7 +11,8 @@ InputParameters validParams<MultiIntegratedBC>()
 }
 MultiIntegratedBC::MultiIntegratedBC(const InputParameters & parameters):
 		IntegratedBC(parameters),
-		_variables(getParam<std::vector<NonlinearVariableName> >("variables"))
+		_variables(getParam<std::vector<NonlinearVariableName> >("variables")),
+		_var_order(_fe_problem.getVariable(_tid, _variables[0]).order())
 {
 	MooseVariable &val0 = _sys.getVariable(_tid, _variables[0]);
 	_n_equation = _variables.size();

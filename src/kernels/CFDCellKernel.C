@@ -67,7 +67,6 @@ void CFDCellKernel::precalculateJacobian()
 
 		_cfd_data.duh[q](beta) -= _perturbation;
 	}
-//	_cfd_data.reinit();
 }
 
 void CFDCellKernel::fluxTerm()

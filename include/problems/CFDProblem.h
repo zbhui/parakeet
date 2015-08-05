@@ -23,6 +23,7 @@ private:
 	virtual Real energyTotal(const Point &p);
 
 public:
+	int _var_order;
 	MooseEnum _vis_type;
 	Real _mach;
 	Real _gamma;
