@@ -17,10 +17,11 @@ CFDBC::CFDBC(const InputParameters & parameters):
 		_cfd_data_neighbor(_cfd_problem),
 		_lift_data(_cfd_problem),
 		_perturbation(getParam<Real>("perturbation")),
+		_penalty(0),
 		_gamma(_cfd_problem._gamma),
-		_mach(_cfd_problem._mach)
+		_mach(_cfd_problem._mach),
+		_attitude(_cfd_problem._attitude)
 {
-
 }
 
 void CFDBC::reinit()

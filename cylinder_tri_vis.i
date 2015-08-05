@@ -25,7 +25,6 @@
 
 [Problem]
   type = CFDProblem
-  vis_type = INVISCOUS
 []
 
 [Variables]

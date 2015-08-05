@@ -8,6 +8,7 @@
 #include "CFDBase.h"
 
 class CFDProblem;
+class Attitude;
 
 class CFDBC : public MultiIntegratedBC
 {
@@ -17,7 +18,6 @@ public:
 
 protected:
 	CFDProblem &_cfd_problem;
-
 	CFDDataPack _cfd_data, _cfd_data_neighbor, _lift_data;
 
 	Real _flux[10], _flux_old[10];
@@ -29,6 +29,8 @@ protected:
 	Real _penalty;
 	Real _gamma;
 	Real _mach;
+	Attitude &_attitude;
+
 	virtual void boundaryCondition();
 
 	virtual void precalculateResidual();
