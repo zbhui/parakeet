@@ -2,8 +2,8 @@
  	order = SECOND
  	family = MONOMIAL
   	
- 	mach = 0.38
- 	reynolds = 10.0
+ 	mach = 0.2
+ 	reynolds = 40.0
  	
  	variables = 'rho momentum_x momentum_y momentum_z rhoe'
 []
@@ -24,7 +24,7 @@
 []
 
 [Problem]
-  type = CFDProblem
+  type = NavierStokesProblem
 []
 
 [Variables]
@@ -106,13 +106,13 @@
 
 [BCs]
 	[./euler_far_field]
-		type = FarFieldPressure
+		type = FarFieldRiemann
 		boundary = far_field 
 		variable = rhoe
 	[../]
 
 	[./euler_wall]
-		type = IsoThermalWall
+		type = AdiabaticWall
 		boundary = wall 
 		variable = rhoe
 	[../]
@@ -140,10 +140,10 @@
   nl_rel_tol = 1e-02
 
     petsc_options_iname = '-ksp_type  -pc_type -snes_lag_jacobian -snes_lag_preconditioner'
-    petsc_options_value = 'gmres       bjacobi 20 20'
+    petsc_options_value = 'gmres       bjacobi 1 1'
   [./TimeStepper]
     type = RatioTimeStepper
-    dt = 10
+    dt = 1
     ratio = 2
     step = 2
     max_dt = 20000	

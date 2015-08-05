@@ -90,7 +90,10 @@ void CFDFaceKernel::precalculateJacobian()
 {
 	precalculateResidual();
 	for (int q = 0; q < _n_equation; ++q)
+	{
 		_flux_old[q] = _flux[q];
+		_lift_old[q] = _lift[q];
+	}
 
 	for (int q = 0; q < _n_equation; ++q)
 	{
@@ -103,7 +106,6 @@ void CFDFaceKernel::precalculateJacobian()
 		}
 		_cfd_data.uh[q] -= _perturbation;
 	}
-
 	for (int q = 0; q < _n_equation; ++q)
 	for (int beta = 0; beta < 3; ++beta)
 	{
@@ -120,8 +122,7 @@ void CFDFaceKernel::precalculateJacobian()
 	for (int q = 0; q < _n_equation; ++q)
 	{
 		_cfd_data_neighbor.uh[q] += _perturbation;
-		_cfd_data_neighbor.reinit();
-		fluxRiemann();
+		reinit();
 		for (int p = 0; p < _n_equation; ++p)
 		{
 			_flux_jacobi_variable_en[p][q] = (_flux[p] - _flux_old[p])/_perturbation;
@@ -140,7 +141,6 @@ void CFDFaceKernel::precalculateJacobian()
 		}
 		_cfd_data.duh[q](beta) -= _perturbation;
 	}
-	_cfd_data_neighbor.reinit();
 }
 
 Real CFDFaceKernel::computeQpJacobian(Moose::DGJacobianType type, unsigned int p, unsigned int q)

@@ -48,7 +48,7 @@ void CFDDataPack::reinit()
 	tau(0, 0) -= 2./3*vel_div; tau(1, 1) -= 2./3*vel_div; tau(2, 2) -= 2./3*vel_div;
 
 	if(_cfd_problem._vis_type == "INVISCOUS") vis = 0.0;
-	else if(_cfd_problem._vis_type == "CONSTANT") vis = 1;
+	else if(_cfd_problem._vis_type == "CONSTANT") vis = 1.0;
 	else if(_cfd_problem._vis_type == "SUTHRELAND") vis = 1;
 	else mooseError("不可知的粘性模型");
 

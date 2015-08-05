@@ -1,5 +1,5 @@
 [GlobalParams]
- 	order = FIRST
+ 	order = SECOND
  	family = MONOMIAL
   	
  	mach = 0.38
@@ -25,6 +25,7 @@
 
 [Problem]
   type = EulerProblem
+  attack = 10
 []
 
 [Variables]
@@ -106,8 +107,7 @@
 
 [BCs]
 	[./euler_far_field]
-		type = FarFieldPressure
-		bc_type = far-field
+		type = FarFieldRiemann
 		boundary = far_field 
 		variable = rhoe
 	[../]
@@ -136,11 +136,11 @@
   #l_abs_step_tol = -1e-04
   l_max_its = 30
  	
-  nl_max_its = 4
+  nl_max_its = 10
   nl_rel_tol = 1e-02
 
     petsc_options_iname = '-ksp_type  -pc_type -snes_lag_jacobian -snes_lag_preconditioner'
-    petsc_options_value = 'gmres       bjacobi 10 10'
+    petsc_options_value = 'gmres       bjacobi 2 2'
   [./TimeStepper]
     type = RatioTimeStepper
     dt = 0.01

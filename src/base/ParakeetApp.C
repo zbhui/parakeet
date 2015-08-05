@@ -1,5 +1,6 @@
 #include "ParakeetApp.h"
 
+#include "../../include/bcs/AdiabaticWall.h"
 #include "Moose.h"
 #include "AppFactory.h"
 
@@ -26,11 +27,11 @@
 /// 边界条件
 #include "CFDBC.h"
 #include "SlipWall.h"
+#include "AdiabaticWall.h"
+#include "IsoThermalWall.h"
 #include "Symmetric.h"
 #include "FarFieldPressure.h"
 #include "FarFieldRiemann.h"
-#include "IsoThermalWall.h"
-#include "EulerBC.h"
 #include "IsoVortexExact.h"
 #include "CouetteFlowExact.h"
 
@@ -122,7 +123,7 @@ ParakeetApp::registerObjects(Factory & factory)
 
 		/// 注册边界条件
 		registerBoundaryCondition(CFDBC);
-		registerBoundaryCondition(EulerBC);
+		registerBoundaryCondition(AdiabaticWall);
 		registerBoundaryCondition(SlipWall);
 		registerBoundaryCondition(FarFieldPressure);
 		registerBoundaryCondition(FarFieldRiemann);
