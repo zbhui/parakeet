@@ -2,11 +2,12 @@
 #pragma once
 
 #include "Action.h"
+#include "MooseObjectAction.h"
 
-class CLawICAction : public Action
+class CLawICAction : public MooseObjectAction
 {
 public:
-  CLawICAction(const InputParameters &params);
+  CLawICAction(InputParameters params);
   virtual void act();
 
 protected:

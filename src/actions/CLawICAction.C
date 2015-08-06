@@ -7,27 +7,24 @@
 template<>
 InputParameters validParams<CLawICAction>()
 {
-  InputParameters params = validParams<Action>();
-  params.addRequiredParam<std::string>("type", "InitialCondition类型");
+  InputParameters params = validParams<MooseObjectAction>();
   return params;
 }
 
-CLawICAction::CLawICAction(const InputParameters &params) :
-    Action(params)
+CLawICAction::CLawICAction(InputParameters params) :
+	MooseObjectAction(params)
 {
 }
 
 void CLawICAction::act()
 {
 	std::vector<VariableName> var = _problem->getNonlinearSystem().getVariableNames();
-	std::string init_cond_name = getParam<std::string>("type");
-    InputParameters params = _factory.getValidParams(init_cond_name);
-    _app.parser().extractParams(_name, params);
+    _app.parser().extractParams(_name, _moose_object_pars);
 	for (int i = 0; i < var.size(); ++i)
 	{
-	    params.set<VariableName>("variable") = var[i];
-	    params.set<int>("component") = i;
-	    _problem->addInitialCondition(init_cond_name, var[i]+"_ic", params);
+	    _moose_object_pars.set<VariableName>("variable") = var[i];
+	    _moose_object_pars.set<unsigned int>("component") = i;
+	    _problem->addInitialCondition(_type, var[i]+"_ic", _moose_object_pars);
 	}
 }
 

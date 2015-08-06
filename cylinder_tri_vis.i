@@ -1,122 +1,50 @@
-[GlobalParams]
- 	order = SECOND
- 	family = MONOMIAL
-  	
- 	mach = 0.2
- 	reynolds = 40.0
- 	
- 	variables = 'rho momentum_x momentum_y momentum_z rhoe'
-[]
-
 [Mesh]
-  type = FileMesh
   file = grids/cylinder2.msh
-  dim = 2
   
   block_id = 10
   block_name = 'fluid'
   
   boundary_id = '8 9'
   boundary_name = 'far_field wall'
-	
-	uniform_refine = 0
-  velocity = 0
 []
 
 [Problem]
   type = NavierStokesProblem
-[]
-
-[Variables]
-	[./rho]
-		[./InitialCondition] 
-			type = CFDInitialCondition
-      component = 0
-		[../]
+ 	mach = 0.2
+ 	reynolds = 40.0
+  [./Variables]
+    order = FIRST
+    family = MONOMIAL
+    variables = 'rho momentum_x momentum_y momentum_z rhoe'
   [../]
 
- 	[./momentum_x]
-		[./InitialCondition] 
-			type = CFDInitialCondition
-      component = 1
-		[../]
+  [./Kernels]
+    type = CFDCellKernel
   [../]
-  
- 	[./momentum_y]
-		[./InitialCondition] 
-			type = CFDInitialCondition
-      component = 2
-		[../]
+
+  [./DGKernels]
+    type = CFDFaceKernel
   [../]
-  	
-  [./momentum_z]
-		[./InitialCondition] 
-			type = CFDInitialCondition
-      component = 3
-		[../]
+
+
+  [./BCs]
+	  [./euler_far_field]
+		  type = FarFieldRiemann
+		  boundary = far_field 
+	  [../]
+
+	  [./euler_wall]
+		  type = AdiabaticWall
+		  boundary = wall 
+	  [../]
   [../]
-  	
-  [./rhoe]
-		[./InitialCondition] 
-			type = CFDInitialCondition
-      component = 4
-		[../]
-  [../]	
-		
 []
 
-[Kernels]
-	[./mass_time]
-		type =TimeDerivative
-		variable = rho
-	[../]	
-	
-	[./x-momentum_time]
-		type = TimeDerivative
-		variable = momentum_x
-	[../]
-		
-	[./y-momentum_time]
-		type = TimeDerivative
-		variable = momentum_y
-	[../]
-	
-	[./z-momentum_time]
-		type = TimeDerivative
-		variable = momentum_z
-	[../]	
-		
-	[./total-energy_time]
-		type = TimeDerivative
-		variable = rhoe
-	[../]
-	
-	[./multi_kernel]
-		type = CFDCellKernel
-		variable = rhoe
-	[../]		
+[ICs]
+  type = CFDInitialCondition
 []
 
-[DGKernels]
-	[./multi_dg_kernel]
-		type = CFDFaceKernel
-		variable = rhoe
-	[../]
-[]
 
-[BCs]
-	[./euler_far_field]
-		type = FarFieldRiemann
-		boundary = far_field 
-		variable = rhoe
-	[../]
-
-	[./euler_wall]
-		type = AdiabaticWall
-		boundary = wall 
-		variable = rhoe
-	[../]
-[]
 
 [Preconditioning]
 	[./SMP]
@@ -151,10 +79,6 @@
 []
 
 [Postprocessors]
-  [./runtime]
-	  type = RunTime
-	  time_type = alive
-  [../]
   [./residuals]
     type = Residual
   [../]
@@ -165,13 +89,11 @@
 	[./console]
 		type = Console	
 		perf_log = true
-		linear_residuals = true
-	  nonlinear_residuals =  true	
+		output_on = 'linear nonlinear'
 	[../]
 
 	[./exodus]
 		type = Exodus
-		output_initial = true
 	[../]
 	
 []

@@ -31,6 +31,13 @@
 
 [Problem]
   type = IsoVortexProblem
+  [./BCs]
+	[./euler_far_field]
+		type = CFDBC
+		boundary = '0 1 2 3'
+		#variable = rhoe
+	[../]
+  [../]
 []
 
 [Variables]
@@ -110,13 +117,7 @@
 	[../]
 []
 
-[BCs]
-	[./euler_far_field]
-		type = CFDBC
-		boundary = '0 1 2 3'
-		variable = rhoe
-	[../]
-[]
+
 
 [Preconditioning]
   [./SMP]

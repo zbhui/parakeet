@@ -59,11 +59,11 @@ void AddMultiVariableAction::addKernel(std::string var_name, int i)
 	params.set<NonlinearVariableName>("variable") = var_name;
 	_problem->addKernel(time_kernel_name, var_name + "_time", params);
 
-	std::string cell_kernel_name = "CLawCellKernel";
-	params = _factory.getValidParams(cell_kernel_name);
-	params.set<NonlinearVariableName>("variable") = var_name;
-	params.set<int>("component") = i;
-	_problem->addKernel(cell_kernel_name, var_name + "_space", params);
+//	std::string cell_kernel_name = "CLawCellKernel";
+//	params = _factory.getValidParams(cell_kernel_name);
+//	params.set<NonlinearVariableName>("variable") = var_name;
+//	params.set<int>("component") = i;
+//	_problem->addKernel(cell_kernel_name, var_name + "_space", params);
 }
 
 void AddMultiVariableAction::addDGKernel(std::string var_name, int i)

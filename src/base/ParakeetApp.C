@@ -8,6 +8,9 @@
 #include "Syntax.h"
 
 /// Action
+#include "AddMultiDGKernel.h"
+#include "AddMultiKernel.h"
+#include "AddMultiBC.h"
 #include "CLawAuxVariablesAction.h"
 #include "CLawICAction.h"
 #include "CommonPostProcessorAction.h"
@@ -172,7 +175,7 @@ ParakeetApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 
 	syntax.registerActionSyntax("CFDAction", "CFDAction");
 
-	syntax.registerActionSyntax("CLawICAction", "ICs", "add_ic");
+	syntax.registerActionSyntax("CLawICAction", "ICs");
 	registerAction(CLawICAction, "add_ic");
 
 	syntax.registerActionSyntax("CLawAuxVariablesAction", "AuxVariables");
@@ -184,9 +187,18 @@ ParakeetApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 
 	syntax.registerActionSyntax("AddMultiVariableAction", "Problem/Variables");
 	registerAction(AddMultiVariableAction, "add_variable");
-	registerAction(AddMultiVariableAction, "add_kernel");
-	registerAction(AddMultiVariableAction, "add_dg_kernel");
-	registerAction(AddMultiVariableAction, "add_bc");
+//	registerAction(AddMultiVariableAction, "add_kernel");
+//	registerAction(AddMultiVariableAction, "add_dg_kernel");
+//	registerAction(AddMultiVariableAction, "add_bc");
+
+	syntax.registerActionSyntax("AddMultiKernel", "Problem/Kernels/");
+	registerAction(AddMultiKernel, "add_kernel");
+
+	syntax.registerActionSyntax("AddMultiDGKernel", "Problem/DGKernels");
+	registerAction(AddMultiDGKernel, "add_dg_kernel");
+
+	syntax.registerActionSyntax("AddMultiBC", "Problem/BCs/*");
+	registerAction(AddMultiBC, "add_bc");
 
 	syntax.registerActionSyntax("AddMultiAuxVariableAction", "Problem/AuxVariables/*");
 	registerAction(AddMultiAuxVariableAction, "add_aux_variable");
