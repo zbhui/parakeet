@@ -1,6 +1,5 @@
 #include "ParakeetApp.h"
 
-#include "../../include/bcs/AdiabaticWall.h"
 #include "Moose.h"
 #include "AppFactory.h"
 
@@ -11,10 +10,11 @@
 #include "AddMultiDGKernel.h"
 #include "AddMultiKernel.h"
 #include "AddMultiBC.h"
+#include "AddMultiIC.h"
+#include "AddMultiVariable.h"
+
 #include "CLawAuxVariablesAction.h"
-#include "CLawICAction.h"
 #include "CommonPostProcessorAction.h"
-#include "AddMultiVariableAction.h"
 #include "AddMultiAuxVariableAction.h"
 
 /// 单元积分
@@ -41,9 +41,6 @@
 /// 辅助kernel
 #include "NSAuxVariable.h"
 #include "NearestWallDistance.h"
-
-/// Action
-#include "CFDAction.h"
 
 /// 时间积分
 #include "MultiTimeDerivative.h"
@@ -171,13 +168,6 @@ ParakeetApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 #undef registerAction
 #define registerAction(tplt, action) action_factory.reg<tplt>(stringifyName(tplt), action)
 
-	registerAction(CFDAction, "add_kernel");
-
-	syntax.registerActionSyntax("CFDAction", "CFDAction");
-
-	syntax.registerActionSyntax("CLawICAction", "ICs");
-	registerAction(CLawICAction, "add_ic");
-
 	syntax.registerActionSyntax("CLawAuxVariablesAction", "AuxVariables");
 	registerAction(CLawAuxVariablesAction, "add_aux_variable");
 	registerAction(CLawAuxVariablesAction, "add_aux_kernel");
@@ -185,11 +175,8 @@ ParakeetApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 	syntax.registerActionSyntax("CommonPostProcessorAction", "Postprocessors", "add_postprocessor");
 	registerAction(CommonPostProcessorAction, "add_postprocessor");
 
-	syntax.registerActionSyntax("AddMultiVariableAction", "Problem/Variables");
-	registerAction(AddMultiVariableAction, "add_variable");
-//	registerAction(AddMultiVariableAction, "add_kernel");
-//	registerAction(AddMultiVariableAction, "add_dg_kernel");
-//	registerAction(AddMultiVariableAction, "add_bc");
+	syntax.registerActionSyntax("AddMultiVariable", "Problem/Variables");
+	registerAction(AddMultiVariable, "add_variable");
 
 	syntax.registerActionSyntax("AddMultiKernel", "Problem/Kernels/");
 	registerAction(AddMultiKernel, "add_kernel");
@@ -200,9 +187,13 @@ ParakeetApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 	syntax.registerActionSyntax("AddMultiBC", "Problem/BCs/*");
 	registerAction(AddMultiBC, "add_bc");
 
+	syntax.registerActionSyntax("AddMultiIC", "ICs");
+	registerAction(AddMultiIC, "add_ic");
+
 	syntax.registerActionSyntax("AddMultiAuxVariableAction", "Problem/AuxVariables/*");
 	registerAction(AddMultiAuxVariableAction, "add_aux_variable");
 	registerAction(AddMultiAuxVariableAction, "add_aux_kernel");
+
 #undef registerAction
 #define registerAction(tplt, action) action_factory.regLegacy<tplt>(stringifyName(tplt), action)
 }

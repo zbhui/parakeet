@@ -1,22 +1,20 @@
 
-#include "CLawICAction.h"
-
-#include "MooseApp.h"
+#include "AddMultiIC.h"
 #include "FEProblem.h"
 
 template<>
-InputParameters validParams<CLawICAction>()
+InputParameters validParams<AddMultiIC>()
 {
   InputParameters params = validParams<MooseObjectAction>();
   return params;
 }
 
-CLawICAction::CLawICAction(InputParameters params) :
+AddMultiIC::AddMultiIC(InputParameters params) :
 	MooseObjectAction(params)
 {
 }
 
-void CLawICAction::act()
+void AddMultiIC::act()
 {
 	std::vector<VariableName> var = _problem->getNonlinearSystem().getVariableNames();
     _app.parser().extractParams(_name, _moose_object_pars);

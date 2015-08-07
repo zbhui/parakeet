@@ -10,6 +10,5 @@ public:
 	virtual void act();
 };
 
-
 template<>
 InputParameters validParams<AddMultiKernel>();
