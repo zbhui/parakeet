@@ -35,7 +35,12 @@ Real NSAuxVariable::computeValue()
 	_cfd_data.reinit();
 
 	if(_ivar == 0) return _cfd_data.p;
-	else return _cfd_data.m;
+	if(_ivar == 1) return _cfd_data.m;
+	if(_ivar == 2) return _cfd_data.vel(0);
+	if(_ivar == 3) return _cfd_data.vel(1);
+	if(_ivar == 4) return _cfd_data.vel(2);
 
+	mooseError("未知的NS后处理变量");
+	return 0;
 }
 

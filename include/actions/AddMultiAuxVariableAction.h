@@ -13,7 +13,7 @@ protected:
 	void addAuxKernel(std::string var_name);
 
 	std::string _type;
-	std::vector<AuxVariableName> _variables;
+	std::vector<AuxVariableName> _aux_variables;
 };
 
 template<>

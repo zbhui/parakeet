@@ -13,10 +13,11 @@
  	mach = 0.2
  	reynolds = 40.0
   [./Variables]
-    order = SECOND
+    order = FIRST
     family = MONOMIAL
     variables = 'density momx momy momz rhoe'
   [../]
+
 
   [./Kernels]
     type = CFDCellKernel
@@ -44,34 +45,6 @@
   type = CFDInitialCondition
 []
 
-[AuxVariables]
-  [./test]
-    order = FIRST
-    family = MONOMIAL
-  [../]
-  [./test2]
-    order = FIRST
-    family = MONOMIAL
-  [../]
-  [./test3]
-    order = FIRST
-    family = MONOMIAL
-  [../]
-  [./test4]
-    order = FIRST
-    family = MONOMIAL
-  [../]
-[]
-
-[AuxKernels]
-  [./aux_kernel]
-    type = NSAuxVariable
-    variable = test
-    aux_variables = 'test test4'
-    variables = 'density momx momy momz rhoe'
-    execute_on = 'timestep_end'
-  [../]
-[]
 
 [Preconditioning]
 	[./SMP]
@@ -95,7 +68,7 @@
   nl_rel_tol = 1e-02
 
     petsc_options_iname = '-ksp_type  -pc_type -snes_lag_jacobian -snes_lag_preconditioner'
-    petsc_options_value = 'gmres       bjacobi 3 3'
+    petsc_options_value = 'gmres       bjacobi 1 1'
   [./TimeStepper]
     type = RatioTimeStepper
     dt = 10
