@@ -13,9 +13,9 @@
  	mach = 0.2
  	reynolds = 40.0
   [./Variables]
-    order = FIRST
+    order = SECOND
     family = MONOMIAL
-    variables = 'rho momentum_x momentum_y momentum_z rhoe'
+    variables = 'density momx momy momz rhoe'
   [../]
 
   [./Kernels]
@@ -44,7 +44,34 @@
   type = CFDInitialCondition
 []
 
+[AuxVariables]
+  [./test]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./test2]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./test3]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+  [./test4]
+    order = FIRST
+    family = MONOMIAL
+  [../]
+[]
 
+[AuxKernels]
+  [./aux_kernel]
+    type = NSAuxVariable
+    variable = test
+    aux_variables = 'test test4'
+    variables = 'density momx momy momz rhoe'
+    execute_on = 'timestep_end'
+  [../]
+[]
 
 [Preconditioning]
 	[./SMP]
@@ -59,7 +86,7 @@
   no_fe_reinit = true
   type = Transient
   solve_type = newton
-  num_steps = 100
+  num_steps = 1
   l_tol = 1e-02
   #l_abs_step_tol = -1e-04
   l_max_its = 30
@@ -68,7 +95,7 @@
   nl_rel_tol = 1e-02
 
     petsc_options_iname = '-ksp_type  -pc_type -snes_lag_jacobian -snes_lag_preconditioner'
-    petsc_options_value = 'gmres       bjacobi 1 1'
+    petsc_options_value = 'gmres       bjacobi 3 3'
   [./TimeStepper]
     type = RatioTimeStepper
     dt = 10
@@ -94,6 +121,7 @@
 
 	[./exodus]
 		type = Exodus
+    output_on = 'initial timestep_end'
 	[../]
 	
 []

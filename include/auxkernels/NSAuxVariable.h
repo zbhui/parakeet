@@ -1,35 +1,25 @@
 
 #pragma once
 
-#include "AuxKernel.h"
-#include "CFDBase.h"
+#include "MultiAuxKernel.h"
+#include "CFDDataPack.h"
 
-class NSAuxVariable;
+class CFDProblem;
 
-template<>
-InputParameters validParams<NSAuxVariable>();
-
-/**
- * Coupled auxiliary value
- */
-class NSAuxVariable :
-public AuxKernel,
-public CFDBase
+class NSAuxVariable : public MultiAuxKernel
 {
 public:
-
-  /**
-   * Factory constructor, takes parameters so that all derived classes can be built using the same
-   * constructor.
-   */
   NSAuxVariable(const InputParameters & parameters);
 
 protected:
     virtual Real computeValue();
-	void valueAtCellPoint(Real *uh);
 
 protected:
+	FEProblem & _fe_problem;
+	CFDProblem &_cfd_problem;
+	CFDDataPack _cfd_data;
 	std::vector<VariableValue*> _uh;
-private:
 };
 
+template<>
+InputParameters validParams<NSAuxVariable>();

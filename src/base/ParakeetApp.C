@@ -168,9 +168,9 @@ ParakeetApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 #undef registerAction
 #define registerAction(tplt, action) action_factory.reg<tplt>(stringifyName(tplt), action)
 
-	syntax.registerActionSyntax("CLawAuxVariablesAction", "AuxVariables");
-	registerAction(CLawAuxVariablesAction, "add_aux_variable");
-	registerAction(CLawAuxVariablesAction, "add_aux_kernel");
+//	syntax.registerActionSyntax("CLawAuxVariablesAction", "AuxVariables");
+//	registerAction(CLawAuxVariablesAction, "add_aux_variable");
+//	registerAction(CLawAuxVariablesAction, "add_aux_kernel");
 
 	syntax.registerActionSyntax("CommonPostProcessorAction", "Postprocessors", "add_postprocessor");
 	registerAction(CommonPostProcessorAction, "add_postprocessor");
