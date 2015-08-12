@@ -25,6 +25,13 @@ void CFDCellKernel::reinit()
 	fluxTerm();
 }
 
+void CFDCellKernel::reinitViscous()
+{
+	_cfd_data.reinitViscous();
+	for (int q = 0; q < _n_equation; ++q)
+		_viscous[q] =  -_cfd_data.vis_flux[q];
+}
+
 void CFDCellKernel::precalculateResidual()
 {
 	for (size_t i = 0; i < _uh.size(); ++i)
@@ -44,7 +51,10 @@ void CFDCellKernel::precalculateJacobian()
 {
 	precalculateResidual();
 	for (int q = 0; q < _n_equation; ++q)
+	{
 		_flux_old[q] =  _flux[q];
+		_viscous_old[q] =  _viscous[q];
+	}
 
 	for (int q = 0; q < _n_equation; ++q)
 	{
@@ -56,14 +66,16 @@ void CFDCellKernel::precalculateJacobian()
 		_cfd_data.uh[q] -= _perturbation;
 	}
 
+	_cfd_data.reinitInviscous();
 	for (int q = 0; q < _n_equation; ++q)
 	for (int beta = 0; beta < 3; ++beta)
 	{
 		_cfd_data.duh[q](beta) += _perturbation;
-		reinit();
+		reinitViscous();
 		for (int p = 0; p < _n_equation; ++p)
 		for (int alpha = 0; alpha< 3; ++alpha)
-			_flux_jacobi_grad_variable[p][q](alpha, beta) = (_flux[p](alpha) - _flux_old[p](alpha))/_perturbation;
+//			_flux_jacobi_grad_variable[p][q](alpha, beta) = (_flux[p](alpha) - _flux_old[p](alpha))/_perturbation;
+			_flux_jacobi_grad_variable[p][q](alpha, beta) = (_viscous[p](alpha) - _viscous_old[p](alpha))/_perturbation;
 
 		_cfd_data.duh[q](beta) -= _perturbation;
 	}
@@ -72,7 +84,10 @@ void CFDCellKernel::precalculateJacobian()
 void CFDCellKernel::fluxTerm()
 {
 	for (int q = 0; q < _n_equation; ++q)
+	{
 		_flux[q] =  _cfd_data.invis_flux[q] - _cfd_data.vis_flux[q];
+		_viscous[q] =  -_cfd_data.vis_flux[q];
+	}
 }
 
 Real CFDCellKernel::computeQpJacobian(unsigned int p, unsigned int q)

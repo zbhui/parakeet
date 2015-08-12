@@ -26,6 +26,8 @@ public:
 	RealGradient duh[10];
 
 	void reinit();
+	void reinitInviscous();
+	void reinitViscous();
 //	void reinit(CFDProblem &cfd_problem);
 
 //	virtual void InvisFlux(RealVectorValue* inviscous_term){};

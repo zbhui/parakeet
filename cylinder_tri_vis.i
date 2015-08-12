@@ -13,7 +13,7 @@
  	mach = 0.2
  	reynolds = 40.0
   [./Variables]
-    order = FIRST
+    order = THIRD
     family = MONOMIAL
     variables = 'density momx momy momz rhoe'
   [../]
@@ -30,7 +30,7 @@
 
   [./BCs]
 	  [./euler_far_field]
-		  type = FarFieldRiemann
+		  type = FarFieldPressure
 		  boundary = far_field 
 	  [../]
 
@@ -68,10 +68,10 @@
   nl_rel_tol = 1e-02
 
     petsc_options_iname = '-ksp_type  -pc_type -snes_lag_jacobian -snes_lag_preconditioner'
-    petsc_options_value = 'gmres       bjacobi 3 3'
+    petsc_options_value = 'gmres       bjacobi 1 1'
   [./TimeStepper]
     type = RatioTimeStepper
-    dt = 10
+    dt = 0.0010
     ratio = 2
     step = 2
     max_dt = 20000	

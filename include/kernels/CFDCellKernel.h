@@ -15,6 +15,7 @@ protected:
 	CFDProblem &_cfd_problem;
 	CFDDataPack _cfd_data;
 	RealVectorValue _flux[10], _flux_old[10];
+	RealVectorValue _viscous[10], _viscous_old[10];
 	RealVectorValue _flux_jacobi_variable[10][10];
 	RealTensorValue _flux_jacobi_grad_variable[10][10];
 
@@ -32,6 +33,8 @@ protected:
 
 	void fluxTerm();
 	void reinit();
+	void reinitViscous();
+
 };
 
 

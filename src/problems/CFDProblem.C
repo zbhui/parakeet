@@ -44,7 +44,7 @@ CFDProblem::CFDProblem(const InputParameters &params) :
 
 MooseEnum CFDProblem::getViscousType()
 {
-  return MooseEnum("CONSTANT INVISCOUS SUTHERLAND", "CONSTANT");
+  return MooseEnum("INVISCOUS CONSTANT  SUTHERLAND", "CONSTANT");
 }
 Real CFDProblem::initialCondition(const Point& p, int eq)
 {
