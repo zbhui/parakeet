@@ -68,7 +68,7 @@
   nl_rel_tol = 1e-02
 
     petsc_options_iname = '-ksp_type  -pc_type -snes_lag_jacobian -snes_lag_preconditioner'
-    petsc_options_value = 'gmres       bjacobi 1 1'
+    petsc_options_value = 'gmres       bjacobi 3 3'
   [./TimeStepper]
     type = RatioTimeStepper
     dt = 10

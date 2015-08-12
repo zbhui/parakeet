@@ -142,7 +142,7 @@ void CFDFaceKernel::precalculateJacobian()
 		{
 			_flux_jacobi_grad_variable_en[p][q](beta) = (_flux[p] - _flux_old[p])/_perturbation;
 		}
-		_cfd_data.duh[q](beta) -= _perturbation;
+		_cfd_data_neighbor.duh[q](beta) -= _perturbation;
 	}
 }
 
