@@ -21,6 +21,7 @@ private:
 	virtual Real momentumY(const Point &p);
 	virtual Real momentumZ(const Point &p);
 	virtual Real energyTotal(const Point &p);
+	virtual void computeJacobian(NonlinearImplicitSystem & sys, const NumericVector<Number> & soln, SparseMatrix<Number> &  jacobian);
 
 public:
 	int _var_order;

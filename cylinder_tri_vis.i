@@ -6,6 +6,7 @@
   
   boundary_id = '8 9'
   boundary_name = 'far_field wall'
+  uniform_refine = 1
 []
 
 [Problem]
@@ -13,7 +14,7 @@
  	mach = 0.2
  	reynolds = 40.0
   [./Variables]
-    order = THIRD
+    order = FIRST
     family = MONOMIAL
     variables = 'density momx momy momz rhoe'
   [../]
@@ -59,19 +60,19 @@
   no_fe_reinit = true
   type = Transient
   solve_type = newton
-  num_steps = 1
-  l_tol = 1e-02
+  num_steps = 100
+  l_tol = 1e-01
   #l_abs_step_tol = -1e-04
   l_max_its = 30
  	
   nl_max_its = 10
-  nl_rel_tol = 1e-02
+  nl_rel_tol = 1e-01
 
     petsc_options_iname = '-ksp_type  -pc_type -snes_lag_jacobian -snes_lag_preconditioner'
     petsc_options_value = 'gmres       bjacobi 1 1'
   [./TimeStepper]
     type = RatioTimeStepper
-    dt = 0.0010
+    dt = 0.010
     ratio = 2
     step = 2
     max_dt = 20000	
@@ -95,6 +96,7 @@
 	[./exodus]
 		type = Exodus
     output_on = 'initial timestep_end'
+    interval = 10
 	[../]
 	
 []
