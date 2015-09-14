@@ -112,23 +112,24 @@ MooseEnum CFDProblem::getViscousType()
 {
   return MooseEnum("INVISCOUS CONSTANT  SUTHERLAND", "CONSTANT");
 }
-Real CFDProblem::initialCondition(const Point& p, int eq)
+
+Real CFDProblem::valueExact(Real t, const Point &p, int eq)
 {
 	switch (eq) {
 		case 0:
-			return density(p);
+			return density(t, p);
 			break;
 		case 1:
-			return momentumX(p);
+			return momentumX(t, p);
 			break;
 		case 2:
-			return momentumY(p);
+			return momentumY(t, p);
 			break;
 		case 3:
-			return momentumZ(p);
+			return momentumZ(t, p);
 			break;
 		case 4:
-			return energyTotal(p);
+			return energyTotal(t, p);
 			break;
 		default:
 			return 0.0;
@@ -136,30 +137,40 @@ Real CFDProblem::initialCondition(const Point& p, int eq)
 	}
 }
 
-Real CFDProblem::density(const Point &p)
+Real CFDProblem::initialCondition(const Point& p, int eq)
+{
+	return valueExact(0, p, eq);
+}
+
+Real CFDProblem::boundaryCondition(Real t, const Point& p, int eq)
+{
+	return valueExact(t, p, eq);
+}
+
+Real CFDProblem::density(Real t, const Point &p)
 {
 	return 1.0;
 }
 
-Real CFDProblem::momentumX(const Point &p)
+Real CFDProblem::momentumX(Real t, const Point &p)
 {
 	Vector3d vel = _velocity*(_attitude.earthFromWind()*Vector3d::UnitX());
-	return density(p)*vel(0);
+	return density(t, p)*vel(0);
 }
 
-Real CFDProblem::momentumY(const Point &p)
+Real CFDProblem::momentumY(Real t, const Point &p)
 {
 	Vector3d vel = _velocity*(_attitude.earthFromWind()*Vector3d::UnitX());
-	return density(p)*vel(1);
+	return density(t, p)*vel(1);
 }
 
-Real CFDProblem::momentumZ(const Point &p)
+Real CFDProblem::momentumZ(Real t, const Point &p)
 {
 	Vector3d vel = _velocity*(_attitude.earthFromWind()*Vector3d::UnitX());
 	if(_mesh.dimension() == 2)
 		return 0.;
 	else if(_mesh.dimension() == 3)
-		return density(p)*vel(2);
+		return density(t, p)*vel(2);
 	else
 	{
 		mooseError("一维问题此处需要调试");
@@ -167,8 +178,8 @@ Real CFDProblem::momentumZ(const Point &p)
 	}
 }
 
-Real CFDProblem::energyTotal(const Point &p)
+Real CFDProblem::energyTotal(Real t, const Point &p)
 {
 	Real pre = 1./_gamma/_mach/_mach;
-	return pre/(_gamma-1) + 0.5*density(p)*(_velocity*_velocity);
+	return pre/(_gamma-1) + 0.5*density(t, p)*(_velocity*_velocity);
 }

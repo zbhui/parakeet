@@ -13,15 +13,17 @@ public:
 	~CFDProblem(){}
 
 	virtual Real initialCondition(const Point & point, int eq);
-	virtual Real boundaryCondition(Real t, const Point & point, int eq){ return 0;}
+	virtual Real boundaryCondition(Real t, const Point & point, int eq);
+	virtual Real valueExact(Real t, const Point &p, int eq);
 	static MooseEnum getViscousType();
+
 private:
 	typedef FEProblem Parent;
-	virtual Real density(const Point &p);
-	virtual Real momentumX(const Point &p);
-	virtual Real momentumY(const Point &p);
-	virtual Real momentumZ(const Point &p);
-	virtual Real energyTotal(const Point &p);
+	virtual Real density(Real t, const Point &p);
+	virtual Real momentumX(Real t, const Point &p);
+	virtual Real momentumY(Real t, const Point &p);
+	virtual Real momentumZ(Real t, const Point &p);
+	virtual Real energyTotal(Real t, const Point &p);
 	virtual void computeJacobian(NonlinearImplicitSystem & sys, const NumericVector<Number> & soln, SparseMatrix<Number> &  jacobian);
 
 public:

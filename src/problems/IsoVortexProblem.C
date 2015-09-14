@@ -81,30 +81,6 @@ Real IsoVortexProblem::momentumZ(Real t, const Point &p)
 	return 0.0;
 }
 
-Real IsoVortexProblem::valueExact(Real t, const Point& p, int eq)
-{
-	switch (eq) {
-	case 0:
-		return density(t, p);
-		break;
-	case 1:
-		return momentumX(t, p);
-		break;
-	case 2:
-		return momentumY(t, p);
-		break;
-	case 3:
-		return momentumZ(t, p);
-	case 4:
-		return energyTotal(t, p);
-		break;
-	default:
-		return 0.0;
-		mooseError("不可用的分量" << eq);
-		break;
-	}
-}
-
 Real IsoVortexProblem::energyTotal(Real t, const Point &p)
 {
 	Real x = p(0)-t;
@@ -126,14 +102,4 @@ Real IsoVortexProblem::energyTotal(Real t, const Point &p)
 	pre=pow( rho, gam );
 
 	return pre/gamm1+0.5*rho * ( u*u+v*v );
-}
-
-Real IsoVortexProblem::initialCondition(const Point& point, int eq)
-{
-	return valueExact(0, point, eq);
-}
-
-Real IsoVortexProblem::boundaryCondition(Real t, const Point & point, int eq)
-{
-	return valueExact(t, point, eq);
 }
