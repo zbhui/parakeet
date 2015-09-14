@@ -53,6 +53,7 @@
 #include "CFDProblem.h"
 #include "NavierStokesProblem.h"
 #include "IsoVortexProblem.h"
+#include "CouetteFlowProblem.h"
 
 /// PostProcessor
 #include "CFDResidual.h"
@@ -148,6 +149,7 @@ ParakeetApp::registerObjects(Factory & factory)
 		registerProblem(EulerProblem);
 		registerProblem(IsoVortexProblem);
 		registerProblem(NavierStokesProblem);
+		registerProblem(CouetteFlowProblem);
 
 		registerPostprocessor(CFDResidual);
 		registerPostprocessor(ElementExtremeTimeDerivative);

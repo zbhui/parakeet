@@ -65,37 +65,3 @@ Real CouetteFlowProblem::temperature(Real t, const Point& p)
 	return T1 + ( T2 - T1 ) * y / 2 + 0.5 * _prandtl * (_gamma - 1) * _mach * _mach * y / 2 * ( 1 - y / 2 );
 }
 
-
-Real CouetteFlowProblem::valueExact(Real t, const Point& p, int eq)
-{
-	switch (eq) {
-	case 0:
-		return density(t, p);
-		break;
-	case 1:
-		return momentumX(t, p);
-		break;
-	case 2:
-		return momentumY(t, p);
-		break;
-	case 3:
-		return momentumZ(t, p);
-	case 4:
-		return energyTotal(t, p);
-		break;
-	default:
-		return 0.0;
-		mooseError("不可用的分量" << eq);
-		break;
-	}
-}
-
-Real CouetteFlowProblem::initialCondition(const Point& point, int eq)
-{
-	return valueExact(0, point, eq);
-}
-
-Real CouetteFlowProblem::boundaryCondition(Real t, const Point & point, int eq)
-{
-	return valueExact(t, point, eq);
-}

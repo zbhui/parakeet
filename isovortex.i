@@ -1,13 +1,3 @@
-[GlobalParams]
- 	order = SECOND
- 	family = MONOMIAL
-  	
- 	mach = 0.1
- 	reynolds = 10.0
-  	
- 	variables = 'rho momentum_x momentum_y momentum_z rhoe'
-[]
-
 [Mesh]
   type = GeneratedMesh
   dim = 2
@@ -31,7 +21,6 @@
 
 [Problem]
   type = IsoVortexProblem
-
   [./Variables]
     order = FIRST
     family = MONOMIAL
@@ -92,8 +81,6 @@
 [Postprocessors]
   [./l2_err]
     type = ProblemElementalL2Error
-    variable = rho
-    function = exact_rho
   [../]
 []
 
@@ -102,18 +89,13 @@
 	gnuplot = true	
 	[./exodus]
 		type = Exodus
-		output_initial = true
+		output_on = 'initial timestep_end'
 	[../]
 	
 	[./console]
 		type = Console	
 		perf_log = true
-		linear_residuals = true
-	  	nonlinear_residuals =  true	
-		#verbose = true
-    	#setup_log_early = true
-    	#time_precision = 6
-    	#fit_mode = 100
+		output_on = 'linear nonlinear'
 	[../]
 []
 
