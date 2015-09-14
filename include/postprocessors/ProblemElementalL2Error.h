@@ -11,7 +11,6 @@ class ProblemElementalL2Error : public ElementIntegralPostprocessor
 {
 public:
 	ProblemElementalL2Error(const InputParameters &parameters);
-
 	virtual Real getValue();
 
 protected:
@@ -22,7 +21,7 @@ private:
 	NonlinearSystem &_nl;
 	THREAD_ID _tid;
 	vector<VariableName> _variables;
-    int _n_equations;
+	int _n_equations;
 
 	std::vector<VariableValue*> _uh;
 };
