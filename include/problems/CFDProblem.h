@@ -16,6 +16,7 @@ public:
 	virtual Real boundaryCondition(Real t, const Point & point, int eq){ return 0;}
 	static MooseEnum getViscousType();
 private:
+	typedef FEProblem Parent;
 	virtual Real density(const Point &p);
 	virtual Real momentumX(const Point &p);
 	virtual Real momentumY(const Point &p);
@@ -39,6 +40,8 @@ public:
 
 	Attitude _attitude;
 	Real _velocity;
+
+	unsigned int _jacobian_delay;
 };
 
 template<>

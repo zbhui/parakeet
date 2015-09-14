@@ -1,69 +1,6 @@
 
 #include "CFDProblem.h"
 
-#include "FEProblem.h"
-#include "Factory.h"
-#include "MooseUtils.h"
-#include "DisplacedProblem.h"
-#include "MaterialData.h"
-#include "ComputeUserObjectsThread.h"
-#include "ComputeNodalUserObjectsThread.h"
-#include "ComputeMaterialsObjectThread.h"
-#include "ProjectMaterialProperties.h"
-#include "ComputeIndicatorThread.h"
-#include "ComputeMarkerThread.h"
-#include "ComputeInitialConditionThread.h"
-#include "ComputeBoundaryInitialConditionThread.h"
-#include "MaxQpsThread.h"
-#include "ActionWarehouse.h"
-#include "Conversion.h"
-#include "Material.h"
-#include "ConstantIC.h"
-#include "Parser.h"
-#include "ElementH1Error.h"
-#include "Function.h"
-#include "Material.h"
-#include "PetscSupport.h"
-#include "RandomInterface.h"
-#include "RandomData.h"
-#include "EigenSystem.h"
-#include "MooseParsedFunction.h"
-#include "MeshChangedInterface.h"
-#include "ComputeJacobianBlocksThread.h"
-
-#include "ScalarInitialCondition.h"
-#include "ElementPostprocessor.h"
-#include "NodalPostprocessor.h"
-#include "SidePostprocessor.h"
-#include "InternalSidePostprocessor.h"
-#include "GeneralPostprocessor.h"
-#include "ElementVectorPostprocessor.h"
-#include "NodalVectorPostprocessor.h"
-#include "SideVectorPostprocessor.h"
-#include "InternalSideVectorPostprocessor.h"
-#include "GeneralVectorPostprocessor.h"
-#include "Indicator.h"
-#include "Marker.h"
-
-#include "MultiApp.h"
-#include "TransientMultiApp.h"
-
-#include "ElementUserObject.h"
-#include "NodalUserObject.h"
-#include "SideUserObject.h"
-#include "InternalSideUserObject.h"
-#include "GeneralUserObject.h"
-
-#include "InternalSideIndicator.h"
-
-#include "Transfer.h"
-#include "MultiAppTransfer.h"
-#include "MultiMooseEnum.h"
-
-//libmesh Includes
-#include "libmesh/exodusII_io.h"
-
-#include "MooseApp.h"
 using namespace Eigen;
 
 template<>
@@ -82,11 +19,13 @@ InputParameters validParams<CFDProblem>()
   params.addParam<Real>("yaw", 180., "偏航角");
   params.addParam<Real>("roll", -90., "滚转角");
   params.addParam<Real>("init_vel", 1.0, "初始流体速度");
+  params.addParam<unsigned int>("jacobian_delay", 1, "jacobian矩阵更新频率");
   return params;
 }
 
 CFDProblem::CFDProblem(const InputParameters &params) :
 	FEProblem(params),
+	_var_order(1),
 	_vis_type(getParam<MooseEnum>("vis_type")),
 	_mach(getParam<Real>("mach")),
 	_gamma(getParam<Real>("gamma")),
@@ -100,69 +39,72 @@ CFDProblem::CFDProblem(const InputParameters &params) :
 	_roll(getParam<Real>("roll")*libMesh::pi/180),
 
 	_attitude(_attack, _sideslip, _pitch, _yaw, _roll),
-    _velocity(getParam<Real>("init_vel"))
+    _velocity(getParam<Real>("init_vel")),
+	_jacobian_delay(getParam<unsigned int>("jacobian_delay"))
 {
 }
 
 void CFDProblem::computeJacobian(NonlinearImplicitSystem & sys, const NumericVector<Number> & soln, SparseMatrix<Number> &  jacobian)
 {
-	 if (!_has_jacobian || !_const_jacobian)
-	  {
-	    _nl.setSolution(soln);
-
-	    _nl.zeroVariablesForJacobian();
-	    _aux.zeroVariablesForJacobian();
-
-	    unsigned int n_threads = libMesh::n_threads();
-
-	    // Random interface objects
-//	    for (std::map<std::string, RandomData *>::iterator it = _random_data_objects.begin();
-//	         it != _random_data_objects.end();
-//	         ++it)
-//	      it->second->updateSeeds(EXEC_NONLINEAR);
-
-	    execTransfers(EXEC_NONLINEAR);
-	    execMultiApps(EXEC_NONLINEAR);
-
-	    computeUserObjects(EXEC_NONLINEAR, UserObjectWarehouse::PRE_AUX);
-
-	    if (_displaced_problem != NULL)
-	      _displaced_problem->updateMesh(soln, *_aux.currentSolution());
-
-	    for (unsigned int i=0; i<n_threads; i++)
-	    {
-	      _materials[i].jacobianSetup();
-
-	      for (std::map<std::string, MooseSharedPointer<Function> >::iterator vit = _functions[i].begin();
-	          vit != _functions[i].end();
-	          ++vit)
-	        vit->second->jacobianSetup();
-	    }
-
-	    _aux.jacobianSetup();
-
-	    _aux.compute(EXEC_NONLINEAR);
-
-	    computeUserObjects(EXEC_NONLINEAR, UserObjectWarehouse::POST_AUX);
-
-//	    _app.getOutputWarehouse().jacobianSetup();
-
-//	    if(_t_step % 1 == 1)
-	    {
-	    std::cout << _t_step <<std::endl;
-	    _nl.computeJacobian(jacobian);
-
-	    _has_jacobian = true;
-	    }
-	  }
-
-	  if (_solver_params._type == Moose::ST_JFNK || _solver_params._type == Moose::ST_PJFNK)
-	  {
-	    // This call is here to make sure the residual vector is up to date with any decisions that have been made in
-	    // the Jacobian evaluation.  That is important in JFNK because that residual is used for finite differencing
-	    computeResidual(sys, soln, *sys.rhs);
-	    sys.rhs->close();
-	  }
+	if((_t_step-1) % _jacobian_delay == 0 || _app.isRecovering() || _app.isRestarting())
+		Parent::computeJacobian(sys, soln, jacobian);
+//	 if (!_has_jacobian || !_const_jacobian)
+//	  {
+//	    _nl.setSolution(soln);
+//
+//	    _nl.zeroVariablesForJacobian();
+//	    _aux.zeroVariablesForJacobian();
+//
+//	    unsigned int n_threads = libMesh::n_threads();
+//
+//	    // Random interface objects
+////	    for (std::map<std::string, RandomData *>::iterator it = _random_data_objects.begin();
+////	         it != _random_data_objects.end();
+////	         ++it)
+////	      it->second->updateSeeds(EXEC_NONLINEAR);
+//
+//	    execTransfers(EXEC_NONLINEAR);
+//	    execMultiApps(EXEC_NONLINEAR);
+//
+//	    computeUserObjects(EXEC_NONLINEAR, UserObjectWarehouse::PRE_AUX);
+//
+//	    if (_displaced_problem != NULL)
+//	      _displaced_problem->updateMesh(soln, *_aux.currentSolution());
+//
+//	    for (unsigned int i=0; i<n_threads; i++)
+//	    {
+//	      _materials[i].jacobianSetup();
+//
+//	      for (std::map<std::string, MooseSharedPointer<Function> >::iterator vit = _functions[i].begin();
+//	          vit != _functions[i].end();
+//	          ++vit)
+//	        vit->second->jacobianSetup();
+//	    }
+//
+//	    _aux.jacobianSetup();
+//
+//	    _aux.compute(EXEC_NONLINEAR);
+//
+//	    computeUserObjects(EXEC_NONLINEAR, UserObjectWarehouse::POST_AUX);
+//
+////	    _app.getOutputWarehouse().jacobianSetup();
+//
+////	    if(_t_step % 1 == 1)
+//	    {
+//	    std::cout << _t_step <<std::endl;
+//	    _nl.computeJacobian(jacobian);
+//
+//	    _has_jacobian = true;
+//	    }
+//	  }
+//
+//	  if (_solver_params._type == Moose::ST_JFNK || _solver_params._type == Moose::ST_PJFNK)
+//	  {
+//	    // This call is here to make sure the residual vector is up to date with any decisions that have been made in
+//	    // the Jacobian evaluation.  That is important in JFNK because that residual is used for finite differencing
+//	    computeResidual(sys, soln, *sys.rhs);
+//	    sys.rhs->close();
+//	  }
 }
 
 

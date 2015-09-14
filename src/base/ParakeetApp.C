@@ -178,7 +178,7 @@ ParakeetApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 	syntax.registerActionSyntax("AddMultiVariable", "Problem/Variables");
 	registerAction(AddMultiVariable, "add_variable");
 
-	syntax.registerActionSyntax("AddMultiKernel", "Problem/Kernels/");
+	syntax.registerActionSyntax("AddMultiKernel", "Problem/Kernels");
 	registerAction(AddMultiKernel, "add_kernel");
 
 	syntax.registerActionSyntax("AddMultiDGKernel", "Problem/DGKernels");

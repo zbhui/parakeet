@@ -31,100 +31,39 @@
 
 [Problem]
   type = IsoVortexProblem
+
+  [./Variables]
+    order = FIRST
+    family = MONOMIAL
+    variables = 'rho momx momy momz rhoe'
+  [../]
+
   [./BCs]
-	[./euler_far_field]
+	  [./euler_far_field]
 		type = CFDBC
 		boundary = '0 1 2 3'
-		#variable = rhoe
-	[../]
+	  [../]
+  [../]
+
+
+  [./Kernels]
+    type = CFDCellKernel
+  [../]
+
+  [./DGKernels]
+    type = CFDFaceKernel
   [../]
 []
 
-[Variables]
-	[./rho]
-		[./InitialCondition] 
-			type = CFDInitialCondition
-      component = 0
-		[../]
-  [../]
-
- 	[./momentum_x]
-		[./InitialCondition] 
-			type = CFDInitialCondition
-      component = 1
-		[../]
-  [../]
-  
- 	[./momentum_y]
-		[./InitialCondition] 
-			type = CFDInitialCondition
-      component = 2
-		[../]
-  [../]
-  	
-  [./momentum_z]
-		[./InitialCondition] 
-			type = CFDInitialCondition
-      component = 3
-		[../]
-  [../]
-  	
-  [./rhoe]
-		[./InitialCondition] 
-			type = CFDInitialCondition
-      component = 4
-		[../]
-  [../]	
-		
+[ICs]
+  type = CFDInitialCondition
 []
-
-[Kernels]
-	[./mass_time]
-		type =TimeDerivative
-		variable = rho
-	[../]	
-	
-	[./x-momentum_time]
-		type = TimeDerivative
-		variable = momentum_x
-	[../]
-		
-	[./y-momentum_time]
-		type = TimeDerivative
-		variable = momentum_y
-	[../]
-	
-	[./z-momentum_time]
-		type = TimeDerivative
-		variable = momentum_z
-	[../]	
-		
-	[./total-energy_time]
-		type = TimeDerivative
-		variable = rhoe
-	[../]
-	
-	[./multi_kernel]
-		type = CFDCellKernel
-		variable = rhoe
-	[../]		
-[]
-
-[DGKernels]
-	[./multi_dg_kernel]
-		type = CFDFaceKernel
-		variable = rhoe
-	[../]
-[]
-
 
 
 [Preconditioning]
   [./SMP]
     type = SMP
     full = true
-    #off_diag_row ='rhoe '
-    #off_diag_column = 'rhoe '
   [../]
 []
 
@@ -133,7 +72,7 @@
   solve_type = newton
   scheme = bdf2
   dt = 0.02
-  num_steps = 1
+  num_steps = 10
   l_tol = 1e-04
   l_max_its = 100
  	

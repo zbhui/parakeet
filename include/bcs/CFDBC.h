@@ -5,7 +5,6 @@
 
 #include "MultiIntegratedBC.h"
 #include "CFDDataPack.h"
-#include "CFDBase.h"
 
 class CFDProblem;
 class Attitude;
