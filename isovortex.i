@@ -91,7 +91,7 @@
 
 [Postprocessors]
   [./l2_err]
-    type = ElementL2Error
+    type = ProblemElementalL2Error
     variable = rho
     function = exact_rho
   [../]

@@ -1,5 +1,6 @@
 #include "ParakeetApp.h"
 
+#include "ProblemElementalL2Error.h"
 #include "Moose.h"
 #include "AppFactory.h"
 
@@ -58,7 +59,6 @@
 #include "ElementExtremeTimeDerivative.h"
 #include "NumTimeStep.h"
 #include "VariableResidual.h"
-#include "IsoVortexElementL2Error.h"
 #include "CouetteFlowElementL2Error.h"
 
 template<>
@@ -153,7 +153,7 @@ ParakeetApp::registerObjects(Factory & factory)
 		registerPostprocessor(ElementExtremeTimeDerivative);
 		registerPostprocessor(NumTimeStep);
 		registerPostprocessor(VariableResidual);
-		registerPostprocessor(IsoVortexElementL2Error);
+		registerPostprocessor(ProblemElementalL2Error);
 		registerPostprocessor(CouetteFlowElementL2Error);
 
 #undef registerObject

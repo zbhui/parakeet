@@ -9,7 +9,7 @@ public:
 	IsoVortexProblem(const InputParameters &params);
 
 private:
-	Real density(Real t, const Point &p);
+ 	Real density(Real t, const Point &p);
 	Real momentumX(Real t, const Point &p);
 	Real momentumY(Real t, const Point &p);
 	Real momentumZ(Real t, const Point &p);

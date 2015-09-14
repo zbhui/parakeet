@@ -3,14 +3,14 @@
 
 #include "ElementIntegralPostprocessor.h"
 
-class IsoVortexProblem;
+class CFDProblem;
 
 using std::vector;
 
-class IsoVortexElementL2Error : public ElementIntegralPostprocessor
+class ProblemElementalL2Error : public ElementIntegralPostprocessor
 {
 public:
-	IsoVortexElementL2Error(const InputParameters &parameters);
+	ProblemElementalL2Error(const InputParameters &parameters);
 
 	virtual Real getValue();
 
@@ -18,16 +18,14 @@ protected:
 	virtual Real computeQpIntegral();
 
 private:
-	IsoVortexProblem & _isovortex_problem;
+	CFDProblem & _cfd_problem;
 	NonlinearSystem &_nl;
 	THREAD_ID _tid;
 	vector<VariableName> _variables;
     int _n_equations;
 
 	std::vector<VariableValue*> _uh;
-
-
 };
 
 template<>
-InputParameters validParams<IsoVortexElementL2Error>();
+InputParameters validParams<ProblemElementalL2Error>();
