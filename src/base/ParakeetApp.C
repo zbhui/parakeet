@@ -136,7 +136,7 @@ ParakeetApp::registerObjects(Factory & factory)
 
 		/// 注册函数
 		registerFunction(IsoVortexExact);
-		registerFunction(CouetteFlowExact);
+//		registerFunction(CouetteFlowExact);
 
 		/// 注册辅助kernel
 		registerAux(NSAuxVariable);
