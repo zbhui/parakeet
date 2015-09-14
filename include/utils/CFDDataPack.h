@@ -8,8 +8,8 @@ class CFDProblem;
 class CFDDataPack
 {
 public:
-//	CFDDataPack(Real mach, Real reynolds, Real gamma = 1.4, Real prandtl = 0.72);
 	CFDDataPack(CFDProblem &cfd_problem);
+
 public:
 	CFDProblem &_cfd_problem;
 	Real _mach, _reynolds, _gamma, _prandtl;
@@ -28,7 +28,4 @@ public:
 	void reinit();
 	void reinitInviscous();
 	void reinitViscous();
-//	void reinit(CFDProblem &cfd_problem);
-
-//	virtual void InvisFlux(RealVectorValue* inviscous_term){};
 };
