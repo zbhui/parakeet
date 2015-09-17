@@ -16,6 +16,7 @@ protected:
 	CFDDataPack _cfd_data;
 	RealVectorValue _flux[10], _flux_old[10];
 	RealVectorValue _viscous[10], _viscous_old[10];
+	RealVectorValue _artificial_viscous[10], _artificial_viscous_old[10];
 	RealVectorValue _flux_jacobi_variable[10][10];
 	RealTensorValue _flux_jacobi_grad_variable[10][10];
 
@@ -32,6 +33,7 @@ protected:
 	virtual Real computeQpJacobian(unsigned int p, unsigned int q);
 
 	void fluxTerm();
+	void reinitArtificialViscous();
 	void reinit();
 	void reinitViscous();
 

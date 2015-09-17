@@ -11,10 +11,10 @@ InputParameters validParams<CFDCellKernel>()
 }
 
 CFDCellKernel::CFDCellKernel(const InputParameters & parameters):
-		MultiKernel(parameters),
-		_cfd_problem(static_cast<CFDProblem&>(_fe_problem)),
-		_cfd_data(_cfd_problem),
-		_perturbation(getParam<Real>("perturbation"))
+	MultiKernel(parameters),
+	_cfd_problem(static_cast<CFDProblem&>(_fe_problem)),
+	_cfd_data(_cfd_problem),
+	_perturbation(getParam<Real>("perturbation"))
 {
 
 }
@@ -22,14 +22,31 @@ CFDCellKernel::CFDCellKernel(const InputParameters & parameters):
 void CFDCellKernel::reinit()
 {
 	_cfd_data.reinit();
+	reinitArtificialViscous();
 	fluxTerm();
+}
+
+void CFDCellKernel::reinitArtificialViscous()
+{
+	for (int q = 0; q < _n_equation; ++q)
+		_artificial_viscous[q] = 0.05*_cfd_data.duh[q];
 }
 
 void CFDCellKernel::reinitViscous()
 {
 	_cfd_data.reinitViscous();
+	reinitArtificialViscous();
 	for (int q = 0; q < _n_equation; ++q)
-		_viscous[q] =  -_cfd_data.vis_flux[q];
+		_viscous[q] =  -_cfd_data.vis_flux[q] - _artificial_viscous[q];
+}
+
+void CFDCellKernel::fluxTerm()
+{
+	for (int q = 0; q < _n_equation; ++q)
+	{
+		_viscous[q] =  -_cfd_data.vis_flux[q] - _artificial_viscous[q];
+		_flux[q] =  _cfd_data.invis_flux[q] + _viscous[q];
+	}
 }
 
 void CFDCellKernel::precalculateResidual()
@@ -78,15 +95,6 @@ void CFDCellKernel::precalculateJacobian()
 			_flux_jacobi_grad_variable[p][q](alpha, beta) = (_viscous[p](alpha) - _viscous_old[p](alpha))/_perturbation;
 
 		_cfd_data.duh[q](beta) -= _perturbation;
-	}
-}
-
-void CFDCellKernel::fluxTerm()
-{
-	for (int q = 0; q < _n_equation; ++q)
-	{
-		_flux[q] =  _cfd_data.invis_flux[q] - _cfd_data.vis_flux[q];
-		_viscous[q] =  -_cfd_data.vis_flux[q];
 	}
 }
 

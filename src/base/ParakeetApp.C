@@ -50,6 +50,7 @@
 #include "RatioTimeStepper.h"
 
 #include "EulerProblem.h"
+#include "SodProblem.h"
 #include "CFDProblem.h"
 #include "NavierStokesProblem.h"
 #include "IsoVortexProblem.h"
@@ -61,6 +62,8 @@
 #include "NumTimeStep.h"
 #include "VariableResidual.h"
 #include "CouetteFlowElementL2Error.h"
+
+#include "VariableJumpIndicator.h"
 
 template<>
 InputParameters validParams<ParakeetApp>()
@@ -147,6 +150,7 @@ ParakeetApp::registerObjects(Factory & factory)
 
 		registerProblem(CFDProblem);
 		registerProblem(EulerProblem);
+		registerProblem(SodProblem);
 		registerProblem(IsoVortexProblem);
 		registerProblem(NavierStokesProblem);
 		registerProblem(CouetteFlowProblem);
@@ -157,6 +161,8 @@ ParakeetApp::registerObjects(Factory & factory)
 		registerPostprocessor(VariableResidual);
 		registerPostprocessor(ProblemElementalL2Error);
 		registerPostprocessor(CouetteFlowElementL2Error);
+
+		registerIndicator(VariableJumpIndicator);
 
 #undef registerObject
 #define registerObject(name) factory.regLegacy<name>(stringifyName(name))

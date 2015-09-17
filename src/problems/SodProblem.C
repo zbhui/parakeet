@@ -64,31 +64,7 @@ Real SodProblem::pressure(Real t, const Point &p)
     	return 0.1;
 }
 
-Real SodProblem::initialCondition(const Point& point, int eq)
-{
-	return valueExact(0, point, eq);
-}
-
 Real SodProblem::valueExact(Real t, const Point& p, int eq)
 {
-	switch (eq) {
-	case 0:
-		return density(t, p);
-		break;
-	case 1:
-		return momentumX(t, p);
-		break;
-	case 2:
-		return momentumY(t, p);
-		break;
-	case 3:
-		return momentumZ(t, p);
-	case 4:
-		return energyTotal(t, p);
-		break;
-	default:
-		return 0.0;
-		mooseError("不可用的分量" << eq);
-		break;
-	}
+	mooseError("Sod问题的精确解是什么？？" << eq);
 }

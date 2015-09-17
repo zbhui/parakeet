@@ -8,8 +8,7 @@ class SodProblem : public EulerProblem
 public:
 	SodProblem(const InputParameters &params);
 
-	Real valueExact(Real t, const Point &p, int eq);
-	virtual Real initialCondition(const Point & point, int eq);
+	Real valueExact(Real t, const Point& p, int eq);
 private:
 	Real density(Real t, const Point &p);
 	Real momentumX(Real t, const Point &p);

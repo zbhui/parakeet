@@ -3,11 +3,11 @@
 #include "CFDProblem.h"
 
 CFDDataPack::CFDDataPack(CFDProblem &cfd_problem):
-		_cfd_problem(cfd_problem),
-		_mach(_cfd_problem._mach),
-		_reynolds(_cfd_problem._reynolds),
-		_gamma(_cfd_problem._gamma),
-		_prandtl(_cfd_problem._prandtl)
+	_cfd_problem(cfd_problem),
+	_mach(_cfd_problem._mach),
+	_reynolds(_cfd_problem._reynolds),
+	_gamma(_cfd_problem._gamma),
+	_prandtl(_cfd_problem._prandtl)
 {
 
 }

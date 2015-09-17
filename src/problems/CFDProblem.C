@@ -139,12 +139,51 @@ Real CFDProblem::valueExact(Real t, const Point &p, int eq)
 
 Real CFDProblem::initialCondition(const Point& p, int eq)
 {
-	return valueExact(0, p, eq);
+	Real t = 0;
+	switch (eq) {
+			case 0:
+				return density(t, p);
+				break;
+			case 1:
+				return momentumX(t, p);
+				break;
+			case 2:
+				return momentumY(t, p);
+				break;
+			case 3:
+				return momentumZ(t, p);
+				break;
+			case 4:
+				return energyTotal(t, p);
+				break;
+			default:
+				return 0.0;
+				break;
+		}
 }
 
 Real CFDProblem::boundaryCondition(Real t, const Point& p, int eq)
 {
-	return valueExact(t, p, eq);
+	switch (eq) {
+			case 0:
+				return density(t, p);
+				break;
+			case 1:
+				return momentumX(t, p);
+				break;
+			case 2:
+				return momentumY(t, p);
+				break;
+			case 3:
+				return momentumZ(t, p);
+				break;
+			case 4:
+				return energyTotal(t, p);
+				break;
+			default:
+				return 0.0;
+				break;
+		}
 }
 
 Real CFDProblem::density(Real t, const Point &p)
