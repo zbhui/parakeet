@@ -37,6 +37,8 @@ protected:
 	void reinit();
 	void reinitViscous();
 
+	ErrorVector & getErrorVector(std::string indicator);
+	ErrorVector & _error_vector;
 };
 
 

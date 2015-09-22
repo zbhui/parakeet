@@ -51,6 +51,7 @@
 
 #include "EulerProblem.h"
 #include "SodProblem.h"
+#include "Riemann1DProblem.h"
 #include "CFDProblem.h"
 #include "NavierStokesProblem.h"
 #include "IsoVortexProblem.h"
@@ -72,6 +73,8 @@ InputParameters validParams<ParakeetApp>()
 
   params.set<bool>("use_legacy_uo_initialization") = false;
   params.set<bool>("use_legacy_uo_aux_computation") = false;
+  params.set<bool>("use_legacy_output_syntax") = false;
+
   return params;
 }
 
@@ -151,6 +154,7 @@ ParakeetApp::registerObjects(Factory & factory)
 		registerProblem(CFDProblem);
 		registerProblem(EulerProblem);
 		registerProblem(SodProblem);
+		registerProblem(Riemann1DProblem);
 		registerProblem(IsoVortexProblem);
 		registerProblem(NavierStokesProblem);
 		registerProblem(CouetteFlowProblem);

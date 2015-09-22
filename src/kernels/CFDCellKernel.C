@@ -6,7 +6,7 @@ InputParameters validParams<CFDCellKernel>()
 {
   InputParameters params = validParams<MultiKernel>();
   params.addParam<Real>("perturbation", 1E-08, "有限差分求Jacobian矩阵的变量增量");
-
+  params.addParam<IndicatorName>("indicator", "error", "The name of the Indicator that this Marker uses.");
   return params;
 }
 
@@ -14,7 +14,8 @@ CFDCellKernel::CFDCellKernel(const InputParameters & parameters):
 	MultiKernel(parameters),
 	_cfd_problem(static_cast<CFDProblem&>(_fe_problem)),
 	_cfd_data(_cfd_problem),
-	_perturbation(getParam<Real>("perturbation"))
+	_perturbation(getParam<Real>("perturbation")),
+	_error_vector(getErrorVector(parameters.get<IndicatorName>("indicator")))
 {
 
 }
@@ -28,8 +29,11 @@ void CFDCellKernel::reinit()
 
 void CFDCellKernel::reinitArtificialViscous()
 {
+	Real vel = _cfd_data.vel_size;
+	Real length = _current_elem->hmax();
 	for (int q = 0; q < _n_equation; ++q)
-		_artificial_viscous[q] = 0.05*_cfd_data.duh[q];
+		_artificial_viscous[q] = 10*vel*length*_error_vector[_current_elem->id()]*_cfd_data.duh[q];
+
 }
 
 void CFDCellKernel::reinitViscous()
@@ -104,6 +108,9 @@ Real CFDCellKernel::computeQpJacobian(unsigned int p, unsigned int q)
 	return -r ;
 }
 
-
+ErrorVector & CFDCellKernel::getErrorVector(std::string indicator)
+{
+  return _fe_problem.adaptivity().getErrorVector(indicator);
+}
 
 

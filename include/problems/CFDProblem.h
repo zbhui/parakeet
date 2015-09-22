@@ -25,7 +25,7 @@ private:
 	virtual Real momentumZ(Real t, const Point &p);
 	virtual Real energyTotal(Real t, const Point &p);
 	virtual void computeJacobian(NonlinearImplicitSystem & sys, const NumericVector<Number> & soln, SparseMatrix<Number> &  jacobian);
-
+	virtual void initialSetup();
 public:
 	int _var_order;
 	MooseEnum _vis_type;

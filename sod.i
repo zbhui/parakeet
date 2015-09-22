@@ -5,11 +5,12 @@
 []
 
 [Problem]
-  type = SodProblem
-   mach = 0.85
-   reynolds = 40.0
+  type = Riemann1DProblem
+  sub_type = sod
+  mach = 0.85
+  reynolds = 40.0
   [./Variables]
-    order = FIRST
+    order = FOURTH
     family = MONOMIAL
     variables = 'density momx momy momz rhoe'
   [../]
@@ -40,6 +41,7 @@
     [./error]
       type = VariableJumpIndicator
       variable = density
+      execute_on = initial
     [../]
   [../]
   [./Markers]
@@ -68,14 +70,15 @@
 [Executioner]
   type = Transient
   solve_type = newton
-  dt = 0.002
-  num_steps = 1000
+  dt = 0.001
+  num_steps = 2000
   scheme = bdf2
   l_tol = 1e-01
-  l_max_its = 100
+  l_max_its = 10
  	
-  nl_max_its = 100
+  nl_max_its = 10
   nl_rel_tol = 1e-03
+  end_time = 0.2
 []
 
 [Outputs]
@@ -87,7 +90,7 @@
   [./console]
     type = Console	
     perf_log = true
-    output_on = 'linear nonlinear'
+    execute_on = 'linear nonlinear'
   [../]
 []
 

@@ -5,6 +5,7 @@ template<>
 InputParameters validParams<VariableJumpIndicator>()
 {
   InputParameters params = validParams<InternalSideIndicator>();
+  params += validParams<SetupInterface>();
   return params;
 }
 
@@ -46,7 +47,7 @@ void VariableJumpIndicator::computeIndicator()
 Real VariableJumpIndicator::computeQpIntegral()
 {
     Real jump = (_u[_qp] - _u_neighbor[_qp])/(_u[_qp] + _u_neighbor[_qp])*2.0;
-	return jump;
+	return fabs(jump);
 }
 
 void VariableJumpIndicator::finalize()

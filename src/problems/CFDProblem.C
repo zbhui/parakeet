@@ -44,6 +44,12 @@ CFDProblem::CFDProblem(const InputParameters &params) :
 {
 }
 
+void CFDProblem::initialSetup()
+{
+	FEProblem::initialSetup();
+	computeIndicatorsAndMarkers();
+}
+
 void CFDProblem::computeJacobian(NonlinearImplicitSystem & sys, const NumericVector<Number> & soln, SparseMatrix<Number> &  jacobian)
 {
 	if((_t_step-1) % _jacobian_delay == 0 || _app.isRecovering() || _app.isRestarting())

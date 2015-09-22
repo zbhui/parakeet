@@ -6,15 +6,15 @@
   
   boundary_id = '8 9'
   boundary_name = 'far_field wall'
-  uniform_refine = 2
+  uniform_refine = 1
 []
 
 [Problem]
   type = EulerProblem
- 	mach = 3
- 	reynolds = 40.0
+  mach = 2
+  reynolds = 40.0
   [./Variables]
-    order = SECOND
+    order = THIRD
     family = MONOMIAL
     variables = 'density momx momy momz rhoe'
   [../]
@@ -29,16 +29,16 @@
 
 
   [./BCs]
-	  [./euler_far_field]
-		  type = FarFieldPressure
-		  boundary = far_field 
-	  [../]
-
-	  [./euler_wall]
-		  type = SlipWall
-		  boundary = wall 
-	  [../]
+    [./euler_far_field]
+    type = FarFieldPressure
+    boundary = far_field 
   [../]
+
+  [./euler_wall]
+	  type = SlipWall
+	  boundary = wall 
+  [../]
+
 []
 
 [ICs]
@@ -50,8 +50,6 @@
   [./SMP]
     type = SMP
     full = true
-    #off_diag_row ='rhoe '
-    #off_diag_column = 'rhoe '
   [../]
 []
 
@@ -60,6 +58,7 @@
     [./error]
       type = VariableJumpIndicator
       variable = density
+      execute_on = 'initial linear'
     [../]
   [../]
   [./Markers]
@@ -84,11 +83,11 @@
   nl_max_its = 10
   nl_rel_tol = 1e-01
 
-    petsc_options_iname = '-ksp_type  -pc_type -snes_lag_jacobian -snes_lag_preconditioner'
-    petsc_options_value = 'gmres       bjacobi 1 1'
+  petsc_options_iname = '-ksp_type  -pc_type -snes_lag_jacobian -snes_lag_preconditioner'
+  petsc_options_value = 'gmres       bjacobi 1 1'
   [./TimeStepper]
     type = RatioTimeStepper
-    dt = 0.010
+    dt = 0.00010
     ratio = 2
     step = 2
     max_dt = 20000	
@@ -104,15 +103,15 @@
 [Outputs]
 	csv = true
 	[./console]
-		type = Console	
-		perf_log = true
-		output_on = 'linear nonlinear'
+      type = Console	
+      perf_log = true
+      execute_on = 'linear nonlinear'
 	[../]
 
 	[./exodus]
-		type = Exodus
-    output_on = 'initial timestep_end'
-    interval = 1
+      type = Exodus
+      execute_on = 'initial timestep_end'
+      interval = 1
 	[../]
 	
 []
