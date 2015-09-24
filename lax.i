@@ -1,14 +1,15 @@
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 200
+  nx = 100
 []
 
 [Problem]
   type = Riemann1DProblem
-  sub_type = sod
+  sub_type = lax
+  jacobian_delay = 2
   [./Variables]
-    order = SECOND
+    order = THIRD
     family = MONOMIAL
     variables = 'density momx momy momz rhoe'
   [../]
@@ -40,7 +41,7 @@
       type = FluxJumpIndicator
       variables = 'density momx momy momz rhoe'
       variable = density
-      scale = 1
+      scale = 0.2
     [../]
   [../]
   [./Markers]
@@ -77,7 +78,7 @@
  	
   nl_max_its = 10
   nl_rel_tol = 1e-03
-  end_time = 0.2
+  end_time = 0.12
 []
 
 [Outputs]

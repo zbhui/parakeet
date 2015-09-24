@@ -29,11 +29,12 @@ void CFDCellKernel::reinit()
 
 void CFDCellKernel::reinitArtificialViscous()
 {
-	Real vel = _cfd_data.vel_size;
-	Real length = _current_elem->hmax();
+	Real h = _current_elem->hmax();
 	for (int q = 0; q < _n_equation; ++q)
-		_artificial_viscous[q] = 10*vel*length*_error_vector[_current_elem->id()]*_cfd_data.duh[q];
-
+	{
+		_artificial_viscous[q] = _error_vector[_current_elem->id()]*_cfd_data.duh[q];
+//		_artificial_viscous[q] *= _cfd_data.duh[0].size()/h/_cfd_data.uh[0];
+	}
 }
 
 void CFDCellKernel::reinitViscous()

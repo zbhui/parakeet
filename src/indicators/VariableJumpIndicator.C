@@ -5,7 +5,6 @@ template<>
 InputParameters validParams<VariableJumpIndicator>()
 {
   InputParameters params = validParams<InternalSideIndicator>();
-  params += validParams<SetupInterface>();
   return params;
 }
 

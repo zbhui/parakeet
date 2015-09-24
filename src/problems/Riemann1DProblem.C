@@ -48,7 +48,7 @@ Riemann1DProblem::Riemann1DProblem(const InputParameters &params) :
 		points += Point(0), Point(0.1), Point(0.9), Point(1);
 		_initial[MeshTools::BoundingBox(points[0], points[1])] = _initial_condition[0];
 		_initial[MeshTools::BoundingBox(points[1], points[2])] = _initial_condition[1] ;
-		_initial[MeshTools::BoundingBox(points[2], points[3])] = _initial_condition[1] ;
+		_initial[MeshTools::BoundingBox(points[2], points[3])] = _initial_condition[2] ;
 	}
 	if(_sub_type == "shu")
 	{

@@ -65,6 +65,7 @@
 #include "CouetteFlowElementL2Error.h"
 
 #include "VariableJumpIndicator.h"
+#include "FluxJumpIndicator.h"
 
 template<>
 InputParameters validParams<ParakeetApp>()
@@ -167,6 +168,7 @@ ParakeetApp::registerObjects(Factory & factory)
 		registerPostprocessor(CouetteFlowElementL2Error);
 
 		registerIndicator(VariableJumpIndicator);
+		registerIndicator(FluxJumpIndicator);
 
 #undef registerObject
 #define registerObject(name) factory.regLegacy<name>(stringifyName(name))
