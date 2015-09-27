@@ -6,6 +6,7 @@ template<>
 InputParameters validParams<FluxJumpIndicator>()
 {
   InputParameters params = validParams<InternalSideIndicator>();
+  params += validParams<TransientInterface>();
   params.addCoupledVar("variables", "多个求解变量");
   params.addParam<Real>("scale", 1, "人工粘性放大尺度");
   return params;
@@ -14,6 +15,7 @@ InputParameters validParams<FluxJumpIndicator>()
 
 FluxJumpIndicator::FluxJumpIndicator(const InputParameters &parameters) :
 	InternalSideIndicator(parameters),
+    TransientInterface(parameters, "indicators"),
 	_cfd_problem(static_cast<CFDProblem&>(_fe_problem)),
 	_cfd_data(_cfd_problem),
 	_cfd_data_neighbor(_cfd_problem),
@@ -23,8 +25,7 @@ FluxJumpIndicator::FluxJumpIndicator(const InputParameters &parameters) :
 //	_variables(_nl.getVariableNames()),
 //	_var_order(_fe_problem.getVariable(_tid, _variables[0]).order()),
     _current_elem_volume(_assembly.elemVolume()),
-    _neighbor_elem_volume(_assembly.neighborVolume()),
-	_is_implicit(true)
+    _neighbor_elem_volume(_assembly.neighborVolume())
 {
 //	_n_variables = _variables.size();
 	std::cout << _n_variables;
@@ -87,11 +88,15 @@ Real FluxJumpIndicator::computeQpIntegral()
 	for (int eq = 0; eq < 5; ++eq)
 	{
 		Real flux_jump= (_cfd_data.invis_flux[eq] - _cfd_data_neighbor.invis_flux[eq]) * _normals[_qp];
-		indicator += (flux_jump)*(dp_du[eq]);
+		indicator += (flux_jump)*fabs(dp_du[eq]);
 	}
 
 	Real p = (_cfd_data.p + _cfd_data_neighbor.p)/_cfd_problem._gamma;
-	return (indicator)/p;
+	if(_t < 0.005)
+		return (indicator)/p*1;
+
+	else
+		return (indicator)/p;
 }
 
 void FluxJumpIndicator::finalize()

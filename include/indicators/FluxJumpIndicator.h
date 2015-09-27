@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "TransientInterface.h"
 #include "InternalSideIndicator.h"
 #include "CFDDataPack.h"
 #include <vector>
@@ -8,7 +9,9 @@ using std::vector;
 
 class CFDProblem;
 
-class FluxJumpIndicator : public InternalSideIndicator
+class FluxJumpIndicator :
+public InternalSideIndicator,
+public TransientInterface
 {
 public:
 	FluxJumpIndicator(const InputParameters &parameters);
@@ -32,7 +35,6 @@ protected:
 	vector<VariableGradient*> _grad_uh;
 	vector<VariableGradient*> _grad_uh_neighbor;
 
-	bool _is_implicit;
 	virtual Real computeQpIntegral();
 	void computeIndicator();
 	void finalize();

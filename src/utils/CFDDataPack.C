@@ -29,7 +29,7 @@ void CFDDataPack::reinitInviscous()
 	t = _gamma*_mach*_mach*p/uh[0];
 	h = (uh[4] + p)/uh[0];
 	s = p/pow(r, _gamma);
-	c = sqrt(_gamma*p/r);
+	c = sqrt(fabs(_gamma*p/r));
 	m = vel_size/c;
 
 	invis_flux[0] = r*vel;

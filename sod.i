@@ -1,7 +1,7 @@
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 200
+  nx = 101
 []
 
 [Problem]
@@ -12,7 +12,16 @@
     family = MONOMIAL
     variables = 'density momx momy momz rhoe'
   [../]
-
+  [./AuxVariables]
+    [./axu]
+      order = THIRD
+      family = MONOMIAL
+      type = NSAuxVariable
+      variables = 'density momx momy momz rhoe'
+      aux_variables = 'p mach '
+      execute_on = 'initial timestep_end'
+    [../]
+  [../]
   [./Kernels]
     type = CFDCellKernel
   [../]
@@ -70,14 +79,15 @@
   type = Transient
   solve_type = newton
   dt = 0.001
-  num_steps = 2000
   scheme = bdf2
+  num_steps = 2000
   l_tol = 1e-01
   l_max_its = 10
  	
   nl_max_its = 10
   nl_rel_tol = 1e-03
   end_time = 0.2
+  
 []
 
 [Outputs]

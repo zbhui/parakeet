@@ -34,6 +34,7 @@ protected:
 
 	void reinit();
 	void fluxRiemann();
+	void fluxHLLC();
 	void liftOperator();
 
 };

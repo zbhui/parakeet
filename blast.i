@@ -9,7 +9,7 @@
   sub_type = blast
   jacobian_delay = 1
   [./Variables]
-    order = FIRST
+    order = THIRD
     family = MONOMIAL
     variables = 'density momx momy momz rhoe'
   [../]
@@ -53,7 +53,7 @@
       type = FluxJumpIndicator
       variables = 'density momx momy momz rhoe'
       variable = density
-      scale = 1000
+      scale = 0.5
     [../]
   [../]
   [./Markers]
@@ -88,7 +88,7 @@
   l_tol = 1e-01
   l_max_its = 10
  	
-  nl_max_its = 10
+  nl_max_its = 5
   nl_rel_tol = 1e-05
   end_time = 0.038
 []
