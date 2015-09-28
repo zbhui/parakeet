@@ -30,7 +30,8 @@ void CFDFaceKernel::reinit()
 	_cfd_data_neighbor.reinit();
 
 	liftOperator();
-	fluxRiemann();
+//	fluxRiemann();
+	fluxHLLC();
 }
 
 void CFDFaceKernel::precalculateResidual()
@@ -64,18 +65,6 @@ void CFDFaceKernel::fluxRiemann()
 void CFDFaceKernel::fluxHLLC()
 {
 	Real gamma = 1.4;
-//	Real r_rho = sqrt(fabs(_cfd_data_neighbor.r/_cfd_data.r));
-//	Real vel_left = _cfd_data.vel*_normals[_qp];
-//	Real vel_right = _cfd_data_neighbor.vel*_normals[_qp];
-//	Real ql = _cfd_data.vel*_normals[_qp];
-//	Real qr = _cfd_data_neighbor.vel*_normals[_qp];
-//
-//	Real q = (vel_left+vel_right*r_rho)/(1+r_rho);
-//	Real h = (_cfd_data.h + _cfd_data_neighbor.h*r_rho)/(1+r_rho);
-//	Real c = sqrt((_gamma-1)*(h-0.5*(1)));
-//
-//	Real sl = std::min(ql-_cfd_data.c, q-c);
-//	Real sr = std::max(qr+_cfd_data_neighbor.c, q+c);
 
 	Real ql = _cfd_data.vel*_normals[_qp];
 	Real qr = _cfd_data_neighbor.vel*_normals[_qp];
@@ -86,9 +75,9 @@ void CFDFaceKernel::fluxHLLC()
 	Real rl = _cfd_data.r;
 	Real rr = _cfd_data_neighbor.r;
 
-	Real rho_bar = (_cfd_data.r + _cfd_data_neighbor.r)/2.;
-	Real c_bar =   (_cfd_data.c + _cfd_data_neighbor.c)/2.;
-	Real p_bar =   (_cfd_data.p + _cfd_data_neighbor.p)/2.;
+	Real rho_bar = (rl + rr)/2.;
+	Real c_bar =   (cl + cr)/2.;
+	Real p_bar =   (pl + pr)/2.;
 	Real q_bar =   (ql + qr)/2.;
 
 	Real p_star = p_bar - 0.5*(qr-ql)*rho_bar*c_bar;
@@ -96,16 +85,16 @@ void CFDFaceKernel::fluxHLLC()
 	if(p_star <= pl)
 		gl = 1;
 	else
-		gl = sqrt(1+(gamma+1)/2./gamma*(p_star/pl -1 ));
+		gl = sqrt(1+(gamma+1)/2./gamma*fabs(p_star/pl -1 ));
 
 	Real gr;
 	if(p_star <= pr)
 		gr = 1;
 	else
-		gr = sqrt(1+(gamma+1)/2./gamma*(p_star/pr -1 ));
+		gr = sqrt(1+(gamma+1)/2./gamma*fabs(p_star/pr -1 ));
 
 	Real sl = ql-gl*cl;
-	Real sr = qr-gr*cr;
+	Real sr = qr+gr*cr;
 	Real sm = rr*qr*(sr-qr)-rl*ql*(sl-ql)+pl-pr; sm /= rr*(sr-qr)-rl*(sl-ql);
 	std::vector<Real> ul_star, ur_star;
 	ul_star.push_back(rl*(sl-ql)/(sl-sm));
@@ -123,6 +112,10 @@ void CFDFaceKernel::fluxHLLC()
 
 	ul_star.push_back((_cfd_data.uh[4]*         (sl-ql)-pl*ql+p_star*sm)/(sl-sm));
 	ur_star.push_back((_cfd_data_neighbor.uh[4]*(sr-qr)-pr*qr+p_star*sm)/(sr-sm));
+
+//	std::cout << sl <<std::endl;
+//	std::cout << gr <<std::endl;
+//	std::cout << sr <<std::endl;
 
 	if(sl > 0)
 	{
@@ -143,7 +136,7 @@ void CFDFaceKernel::fluxHLLC()
 	{
 		for (int p = 0; p < _n_equation; ++p)
 		{
-			_flux[p] = _cfd_data_neighbor.invis_flux[p]*_normals[_qp] + sl*(ur_star[p]-_cfd_data_neighbor.uh[p]);
+			_flux[p] = _cfd_data_neighbor.invis_flux[p]*_normals[_qp] + sr*(ur_star[p]-_cfd_data_neighbor.uh[p]);
 		}
 	}
 

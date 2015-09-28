@@ -76,7 +76,7 @@
 [Executioner]
   type = Transient
   solve_type = newton
-  scheme = dirk
+  scheme = bdf2
   dt = 0.02
   num_steps = 1
   l_tol = 1e-04

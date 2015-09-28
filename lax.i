@@ -7,9 +7,9 @@
 [Problem]
   type = Riemann1DProblem
   sub_type = lax
-  jacobian_delay = 2
+  jacobian_delay = 1
   [./Variables]
-    order = THIRD
+    order = FIRST
     family = MONOMIAL
     variables = 'density momx momy momz rhoe'
   [../]
@@ -41,7 +41,7 @@
       type = FluxJumpIndicator
       variables = 'density momx momy momz rhoe'
       variable = density
-      scale = 0.2
+      scale = 0.5
     [../]
   [../]
   [./Markers]

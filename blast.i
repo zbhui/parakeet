@@ -9,7 +9,7 @@
   sub_type = blast
   jacobian_delay = 1
   [./Variables]
-    order = THIRD
+    order = SECOND
     family = MONOMIAL
     variables = 'density momx momy momz rhoe'
   [../]
@@ -53,7 +53,7 @@
       type = FluxJumpIndicator
       variables = 'density momx momy momz rhoe'
       variable = density
-      scale = 0.5
+      scale = 0.1
     [../]
   [../]
   [./Markers]
@@ -84,7 +84,7 @@
   solve_type = newton
   dt = 0.0001
   num_steps = 2000
-  scheme = bdf2
+  scheme = crank-nicolson
   l_tol = 1e-01
   l_max_its = 10
  	
