@@ -61,7 +61,11 @@ void CFDDataPack::reinitViscous()
 
 	if(_cfd_problem._vis_type == 0) vis = 0.0;
 	else if(_cfd_problem._vis_type == 1) vis = 1.0;
-	else if(_cfd_problem._vis_type == 2) vis = 1;
+	else if(_cfd_problem._vis_type == 2)
+	{
+		Real t_ref(288), t_s(110.4);
+		vis = pow(t/t_ref, 1.5)*(t_ref+t_s)/(t+t_s);
+	}
 	else mooseError("不可知的粘性模型");
 	tau *= vis/_reynolds;
 

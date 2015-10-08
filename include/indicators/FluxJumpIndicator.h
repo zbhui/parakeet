@@ -29,6 +29,7 @@ protected:
 	int _var_order;
 	const Real &_current_elem_volume;
 	const Real &_neighbor_elem_volume;
+	const Real &_current_side_volume;
 
 	vector<VariableValue*> _uh;
 	vector<VariableValue*> _uh_neighbor;

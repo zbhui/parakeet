@@ -25,7 +25,8 @@ FluxJumpIndicator::FluxJumpIndicator(const InputParameters &parameters) :
 //	_variables(_nl.getVariableNames()),
 //	_var_order(_fe_problem.getVariable(_tid, _variables[0]).order()),
     _current_elem_volume(_assembly.elemVolume()),
-    _neighbor_elem_volume(_assembly.neighborVolume())
+    _neighbor_elem_volume(_assembly.neighborVolume()),
+	_current_side_volume(_assembly.sideElemVolume())
 {
 //	_n_variables = _variables.size();
 	std::cout << _n_variables;
@@ -88,7 +89,7 @@ Real FluxJumpIndicator::computeQpIntegral()
 	for (int eq = 0; eq < 5; ++eq)
 	{
 		Real flux_jump= (_cfd_data.invis_flux[eq] - _cfd_data_neighbor.invis_flux[eq]) * _normals[_qp];
-		indicator += (flux_jump)*fabs(dp_du[eq]);
+		indicator += (flux_jump)*(dp_du[eq]);
 	}
 
 	Real p = (_cfd_data.p + _cfd_data_neighbor.p)/_cfd_problem._gamma;
