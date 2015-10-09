@@ -45,26 +45,19 @@ FluxJumpIndicator::FluxJumpIndicator(const InputParameters &parameters) :
 
 void FluxJumpIndicator::computeIndicator()
 {
-  Real sum = 0;
-  for (_qp=0; _qp<_qrule->n_points(); _qp++)
-    sum += _JxW[_qp]*_coord[_qp]*computeQpIntegral();
+	Real sum = 0;
+	for (_qp=0; _qp<_qrule->n_points(); _qp++)
+		sum += _JxW[_qp]*_coord[_qp]*computeQpIntegral();
 
-  Real scale = getParam<Real>("scale");
+	sum /= _current_side_volume;
+	Real scale = getParam<Real>("scale");
+	sum *= scale;
 
-  {
-    Threads::spin_mutex::scoped_lock lock(Threads::spin_mtx);
-
-    Real hmax, hmax_neighbor, ind, ind_neighbor;
-    hmax = _current_elem->hmax();
-    hmax_neighbor = _neighbor_elem->hmax();
-
-    ind = scale*fabs(sum)/_current_elem_volume*hmax*hmax;
-    ind_neighbor = scale*fabs(sum)/_neighbor_elem_volume*hmax_neighbor*hmax_neighbor;
-
-    _solution.add(_field_var.nodalDofIndex(), ind);
-    _solution.add(_field_var.nodalDofIndexNeighbor(), ind_neighbor);
-
-  }
+	{
+		Threads::spin_mutex::scoped_lock lock(Threads::spin_mtx);
+		_solution.add(_field_var.nodalDofIndex(), fabs(sum));
+		_solution.add(_field_var.nodalDofIndexNeighbor(), fabs(sum));
+	}
 }
 
 Real FluxJumpIndicator::computeQpIntegral()
@@ -93,11 +86,8 @@ Real FluxJumpIndicator::computeQpIntegral()
 	}
 
 	Real p = (_cfd_data.p + _cfd_data_neighbor.p)/_cfd_problem._gamma;
-	if(_t < 0.005)
-		return (indicator)/p*1;
 
-	else
-		return (indicator)/p;
+	return (indicator)/p;
 }
 
 void FluxJumpIndicator::finalize()

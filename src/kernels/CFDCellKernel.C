@@ -32,8 +32,7 @@ void CFDCellKernel::reinitArtificialViscous()
 	Real h = _current_elem->hmax();
 	for (int q = 0; q < _n_equation; ++q)
 	{
-		_artificial_viscous[q] = _cfd_data.vel_size*_error_vector[_current_elem->id()]*_cfd_data.duh[q];
-//		_artificial_viscous[q] *= _cfd_data.duh[0].size()/h/_cfd_data.uh[0];
+		_artificial_viscous[q] = h*_error_vector[_current_elem->id()]*_cfd_data.duh[q];
 	}
 }
 

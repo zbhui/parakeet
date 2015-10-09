@@ -21,22 +21,13 @@ void VariableJumpIndicator::computeIndicator()
 		sum += _JxW[_qp]*_coord[_qp]*computeQpIntegral();
 
 	sum /= _current_side_volume;
-
 	Real scale = getParam<Real>("scale");
+	sum *= scale;
 
 	{
 		Threads::spin_mutex::scoped_lock lock(Threads::spin_mtx);
-
-		Real hmax, hmax_neighbor, ind, ind_neighbor;
-		hmax = _current_elem->hmax();
-		hmax_neighbor = _neighbor_elem->hmax();
-
-		ind = scale*fabs(sum)*hmax;
-		ind_neighbor = scale*fabs(sum)*hmax_neighbor;
-
-		_solution.add(_field_var.nodalDofIndex(), ind);
-		_solution.add(_field_var.nodalDofIndexNeighbor(), ind_neighbor);
-
+		_solution.add(_field_var.nodalDofIndex(), fabs(sum));
+		_solution.add(_field_var.nodalDofIndexNeighbor(), fabs(sum));
 	}
 }
 
@@ -59,14 +50,15 @@ Real VariableJumpIndicator::computeQpIntegral()
 	};
 
 	Real indicator(0);
-	for (int eq = 0; eq < 1	; ++eq)
+	for (int eq = 0; eq < 5	; ++eq)
 	{
-		Real flux_jump= (_cfd_data.uh[eq] - _cfd_data_neighbor.uh[eq])/(_cfd_data.uh[eq] + _cfd_data_neighbor.uh[eq]);
-//		flux_jump *= (_cfd_data.vel+_cfd_data_neighbor.vel)*_normals[_qp] + _cfd_data.c+_cfd_data_neighbor.c;
-		indicator += (flux_jump);//*(dp_du[eq]);
+		Real flux_jump= (_cfd_data.uh[eq] - _cfd_data_neighbor.uh[eq]);
+		flux_jump *= (_cfd_data.vel+_cfd_data_neighbor.vel)*_normals[_qp] + _cfd_data.c+_cfd_data_neighbor.c;
+		flux_jump /= 2.;
+		indicator += (flux_jump)*(dp_du[eq]);
 	}
 
-	Real p = 1;//(_cfd_data.p + _cfd_data_neighbor.p)/_cfd_problem._gamma;
+	Real p = (_cfd_data.p + _cfd_data_neighbor.p)/_cfd_problem._gamma;
 
 	return (indicator)/p;
 }

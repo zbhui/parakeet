@@ -1,20 +1,21 @@
 [Mesh]
-  file = grids/cylinder2.msh
+  file = grids/N0012-coarse-quad.msh
   
-  block_id = 10
+  block_id = 0
   block_name = 'fluid'
   
-  boundary_id = '8 9'
-  boundary_name = 'far_field wall'
-  uniform_refine = 1
+  boundary_id = '1 4 2 3'
+  boundary_name = 'far_top far_bottom wall_top wall_bottom'
 []
 
 [Problem]
   type = EulerProblem
-  mach = 10
+  mach = 0.85
+  attack = 1.0
   reynolds = 40.0
+  jacobian_delay = 1
   [./Variables]
-    order = FIRST
+    order = THIRD
     family = MONOMIAL
     variables = 'density momx momy momz rhoe'
   [../]
@@ -30,12 +31,12 @@
   [./BCs]
     [./euler_far_field]
     type = FarFieldPressure
-    boundary = far_field 
+    boundary = '1 4'
   [../]
 
   [./euler_wall]
     type = SlipWall
-    boundary = wall 
+    boundary = '2 3' 
   [../]
 
 []
