@@ -30,8 +30,8 @@ void CFDFaceKernel::reinit()
 	_cfd_data_neighbor.reinit();
 
 	liftOperator();
-	fluxRiemann();
-//	fluxHLLC();
+//	fluxRiemann();
+	fluxHLLC();
 }
 
 void CFDFaceKernel::precalculateResidual()

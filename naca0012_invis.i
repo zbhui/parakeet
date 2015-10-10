@@ -15,7 +15,7 @@
   reynolds = 40.0
   jacobian_delay = 1
   [./Variables]
-    order = THIRD
+    order = FIRST
     family = MONOMIAL
     variables = 'density momx momy momz rhoe'
   [../]
@@ -59,7 +59,7 @@
       type = VariableJumpIndicator
       variables = 'density momx momy momz rhoe'
       variable = density
-      scale = 2
+      scale = 1
     [../]
   [../]
   [./Markers]

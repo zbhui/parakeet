@@ -1,7 +1,7 @@
 [Mesh]
   type = GeneratedMesh
   dim = 1
-  nx = 101
+  nx = 100
 []
 
 [Problem]
@@ -49,7 +49,7 @@
       type = FluxJumpIndicator
       variables = 'density momx momy momz rhoe'
       variable = density
-      scale = 1
+      scale = 0.2
     [../]
   [../]
   [./Markers]

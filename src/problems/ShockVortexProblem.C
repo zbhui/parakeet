@@ -1,31 +1,35 @@
 
-#include "Riemann2DProblem.h"
+#include "ShockVortexProblem.h"
 #include "boost/assign.hpp"
 using namespace boost::assign;
 
 template<>
-InputParameters validParams<Riemann2DProblem>()
+InputParameters validParams<ShockVortexProblem>()
 {
   InputParameters params = validParams<EulerProblem>();
 
   return params;
 }
 
-Riemann2DProblem::Riemann2DProblem(const InputParameters &params) :
+ShockVortexProblem::ShockVortexProblem(const InputParameters &params) :
 	EulerProblem(params)
 {
-	_initial_condition[0] += 0.5313,0,0,0,0.4;
-	_initial_condition[1] += 1,0.7276,0,0,1;
-	_initial_condition[2] += 0.8,0,0,0,1;
-	_initial_condition[3] += 1,0,0.7276,0,1;
+	_mach = 1.1;
+	_initial_condition[0] += 1,1.1*sqrt(_gamma), 0, 1;
+	Real mach2 = _mach*_mach;
+	Real rho = (_gamma+1)*mach2/((_gamma-1)*mach2+2);
+	Real p = 2*_gamma/(_gamma+1)*mach2 - (_gamma-1)/(_gamma+1);
+	_initial_condition[1] += rho, 1.1*sqrt(_gamma)/rho, 0, 0,p;
 }
 
-Real Riemann2DProblem::density(Real t, const Point &p)
+Real ShockVortexProblem::density(Real t, const Point &p)
 {
+	Point center(0.25, 0.5);
+
 	return _initial_condition[pointLocator(p)][0];
 }
 
-Real Riemann2DProblem::momentumX(Real t, const Point &p)
+Real ShockVortexProblem::momentumX(Real t, const Point &p)
 {
 	Real u = _initial_condition[pointLocator(p)][1];
 	Real rho = density(t, p);
@@ -33,7 +37,7 @@ Real Riemann2DProblem::momentumX(Real t, const Point &p)
 	return rho*u;
 }
 
-Real Riemann2DProblem::momentumY(Real t, const Point &p)
+Real ShockVortexProblem::momentumY(Real t, const Point &p)
 {
 	Real u = _initial_condition[pointLocator(p)][2];
 	Real rho = density(t, p);
@@ -41,7 +45,7 @@ Real Riemann2DProblem::momentumY(Real t, const Point &p)
 	return rho*u;
 }
 
-Real Riemann2DProblem::momentumZ(Real t, const Point &p)
+Real ShockVortexProblem::momentumZ(Real t, const Point &p)
 {
 	Real u = _initial_condition[pointLocator(p)][3];
 	Real rho = density(t, p);
@@ -49,7 +53,7 @@ Real Riemann2DProblem::momentumZ(Real t, const Point &p)
 	return rho*u;
 }
 
-Real Riemann2DProblem::energyTotal(Real t, const Point &p)
+Real ShockVortexProblem::energyTotal(Real t, const Point &p)
 {
 	RealVectorValue momentum(momentumX(t, p), momentumY(t, p), momentumZ(t, p));
 	Real rho = density(t, p);
@@ -58,12 +62,12 @@ Real Riemann2DProblem::energyTotal(Real t, const Point &p)
 	return pre/(_gamma-1) +0.5*momentum.size_sq()/rho;
 }
 
-Real Riemann2DProblem::pressure(Real t, const Point &p)
+Real ShockVortexProblem::pressure(Real t, const Point &p)
 {
 	return _initial_condition[pointLocator(p)][4];
 }
 
-int Riemann2DProblem::pointLocator(const Point& p)
+int ShockVortexProblem::pointLocator(const Point& p)
 {
 	Real x = p(0);
 	Real y = p(1);

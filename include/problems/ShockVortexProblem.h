@@ -3,10 +3,10 @@
 
 #include "EulerProblem.h"
 
-class Riemann2DProblem : public EulerProblem
+class ShockVortexProblem : public EulerProblem
 {
 public:
-	Riemann2DProblem(const InputParameters &params);
+	ShockVortexProblem(const InputParameters &params);
 private:
 	Real density(Real t, const Point &p);
 	Real momentumX(Real t, const Point &p);
@@ -20,4 +20,4 @@ private:
 };
 
 template<>
-InputParameters validParams<Riemann2DProblem>();
+InputParameters validParams<ShockVortexProblem>();

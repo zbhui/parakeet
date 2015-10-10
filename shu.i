@@ -2,18 +2,18 @@
   type = GeneratedMesh
   dim = 1
   nx = 400
+  xmin = -5
+  xmax = 5
 []
 
 [Problem]
   type = Riemann1DProblem
-  sub_type = blast
-  jacobian_delay = 1
+  sub_type = shu
   [./Variables]
     order = SECOND
     family = MONOMIAL
     variables = 'density momx momy momz rhoe'
   [../]
-
   [./AuxVariables]
     [./axu]
       order = SECOND
@@ -24,8 +24,6 @@
       execute_on = 'initial timestep_end'
     [../]
   [../]
-
-
   [./Kernels]
     type = CFDCellKernel
   [../]
@@ -37,7 +35,7 @@
 
   [./BCs]
     [./exact_bc]
-      type = SlipWall
+      type = CFDBC
       boundary = '0 1'
     [../]
   [../]
@@ -82,21 +80,23 @@
 [Executioner]
   type = Transient
   solve_type = newton
-  dt = 0.0001
+  dt = 0.002
+  scheme = bdf2
   num_steps = 2000
-  scheme = crank-nicolson
   l_tol = 1e-01
   l_max_its = 10
  	
-  nl_max_its = 5
-  nl_rel_tol = 1e-05
-  end_time = 0.038
+  nl_max_its = 10
+  nl_rel_tol = 1e-03
+  end_time = 1.8
+  
 []
 
 [Outputs]
   [./exodus]
     type = Exodus
-    interval = 1 					
+    interval = 1 	
+    refinements = 0				
   [../]
 	
   [./console]
