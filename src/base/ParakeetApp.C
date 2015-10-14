@@ -54,6 +54,7 @@
 #include "Riemann1DProblem.h"
 #include "ShockVortexProblem.h"
 #include "DoubleMachProblem.h"
+#include "ForwardStepProblem.h"
 
 #include "CFDProblem.h"
 #include "NavierStokesProblem.h"
@@ -161,6 +162,8 @@ ParakeetApp::registerObjects(Factory & factory)
 		registerProblem(Riemann1DProblem);
 		registerProblem(ShockVortexProblem);
 		registerProblem(DoubleMachProblem);
+		registerProblem(ForwardStepProblem);
+
 		registerProblem(IsoVortexProblem);
 		registerProblem(NavierStokesProblem);
 		registerProblem(CouetteFlowProblem);

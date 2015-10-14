@@ -56,22 +56,22 @@
   [../]
 []
 
-[Adaptivity]
-  [./Indicators]
-    [./error]
-      type = GradientJumpIndicator
-      variable = rho
-    [../]
-  [../]
-  [./Markers]
-    [./marker]
-      type = ErrorFractionMarker
-      indicator = error
-      coarsen = 0.7
-      refine = 0.9
-    [../]
-  [../]
-[]
+# [Adaptivity]
+#   [./Indicators]
+#     [./error]
+#       type = GradientJumpIndicator
+#       variable = rho
+#     [../]
+#   [../]
+#   [./Markers]
+#     [./marker]
+#       type = ErrorFractionMarker
+#       indicator = error
+#       coarsen = 0.7
+#       refine = 0.9
+#     [../]
+#   [../]
+# []
 
 [Executioner]
   type = Transient
@@ -106,13 +106,13 @@
 	gnuplot = true	
 	[./exodus]
 		type = Exodus
-		output_on = 'initial timestep_end'
+		execute_on = 'initial timestep_end'
 	[../]
 	
 	[./console]
 		type = Console	
 		perf_log = true
-		output_on = 'linear nonlinear'
+		execute_on = 'linear nonlinear'
 	[../]
 []
 

@@ -1,16 +1,12 @@
 [Mesh]
-  type = GeneratedMesh
-  dim = 2
-  xmax  = 2
-  nx = 160
-  ny = 80
+  file = ./grids/forward_step.e
 []
 
 [Problem]
-  type = ShockVortexProblem
+  type = ForwardStepProblem
   jacobian_delay = 1
   [./Variables]
-	order = FIRST
+	order = SECOND
 	family = MONOMIAL
 	variables = 'density momx momy momz rhoe'
   [../]
@@ -25,15 +21,24 @@
 
 
   [./BCs]
-	[./exact_bc]
+	[./inner]
 	  type = CFDBC
-	  boundary = '0 1 2 3'
+	  boundary = 'inner '
 	[../]
+      [./wall]
+         type = Symmetric
+         boundary = 'wall'
+      [../]
+      [./out]
+          type = FarFieldRiemann
+          boundary = 'out'
+      [../]
   [../]
 []
 
 [ICs]
   type = CFDInitialCondition 
+  # constant_ic = true
 []
 
 [Adaptivity]
@@ -42,7 +47,7 @@
 	  type = FluxJumpIndicator
 	  variables = 'density momx momy momz rhoe'
 	  variable = density
-	  scale = 0.01
+	  scale = 0.5
 	[../]
   [../]
   [./Markers]
@@ -71,16 +76,22 @@
 [Executioner]
     type = Transient
     solve_type = newton
-    dt = 0.01
     scheme = bdf2
     num_steps = 2000
     l_tol = 1e-01
     l_max_its = 10
   	
-    nl_max_its = 10
+    nl_max_its = 5
     nl_rel_tol = 1e-02
-    end_time = 0.2
-  
+    end_time = 4
+
+    [./TimeStepper]
+      type = RatioTimeStepper
+      dt = 0.0010
+      ratio = 2
+      step = 2
+      max_dt = 0.01  
+  [../]
 []
 
 [Outputs]
