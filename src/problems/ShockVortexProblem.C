@@ -15,11 +15,12 @@ ShockVortexProblem::ShockVortexProblem(const InputParameters &params) :
 	EulerProblem(params)
 {
 	_mach = 1.1;
-	_initial_condition[0] += 1,1.1*sqrt(_gamma), 0, 1;
+	_initial_condition[0] += 1,1.1*sqrt(_gamma), 0, 0, 1;
 	Real mach2 = _mach*_mach;
 	Real rho = (_gamma+1)*mach2/((_gamma-1)*mach2+2);
 	Real p = 2*_gamma/(_gamma+1)*mach2 - (_gamma-1)/(_gamma+1);
-	_initial_condition[1] += rho, 1.1*sqrt(_gamma)/rho, 0, 0,p;
+	Real u = 1.1*sqrt(_gamma)/rho;
+	_initial_condition[1] += rho, u, 0, 0, p;
 }
 
 Real ShockVortexProblem::density(Real t, const Point &p)
@@ -71,12 +72,8 @@ int ShockVortexProblem::pointLocator(const Point& p)
 {
 	Real x = p(0);
 	Real y = p(1);
-    if (x > 0.5 && y > 0.5)
+    if (x > 0.5 )
 		return 0;
-    else if (x < 0.5 && y > 0.5)
-    	return 1;
-    else if (x < 0.5 && y < 0.5)
-    	return 2;
     else
-    	return 3;
+    	return 1;
 }
