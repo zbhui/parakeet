@@ -3,15 +3,15 @@
 template<>
 InputParameters validParams<MultiAuxKernel>()
 {
-	  InputParameters params = validParams<AuxKernel>();
-
-	  params.addRequiredParam<std::vector<AuxVariableName> >("aux_variables", "多个求解变量");
-	  return params;
+	InputParameters params = validParams<AuxKernel>();
+	params.addRequiredParam<std::vector<AuxVariableName> >("aux_variables", "多个求解变量");
+	return params;
 }
 
 MultiAuxKernel::MultiAuxKernel(const InputParameters & parameters):
-		AuxKernel(parameters),
-		_aux_variables(parameters.get<std::vector<AuxVariableName> >("aux_variables"))
+	AuxKernel(parameters),
+	_aux_variables(parameters.get<std::vector<AuxVariableName> >("aux_variables")),
+	_ivar(0)
 {
 }
 

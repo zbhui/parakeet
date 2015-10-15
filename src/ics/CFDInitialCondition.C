@@ -41,7 +41,8 @@ void CFDInitialCondition::compute()
 
 Real CFDInitialCondition::value(const Point & p)
 {
-	  return value(_component, p);
+	return _cfd_problem.initialCondition(p, _component);
+//	  return value(_component, p);
 }
 
 Real CFDInitialCondition::value(int component, const Point & p)

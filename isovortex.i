@@ -1,19 +1,19 @@
 [Mesh]
   type = GeneratedMesh
   dim = 2
-  
+
   nx = 20
-  ny = 20  
-  
+  ny = 20
+
   xmin = -10
   xmax = 0
 
   ymin = -10
   ymax = 0
-  
+
   uniform_refine = 0
   second_order = false
-  
+
   block_id = '0'
   block_name = 'fluid'
 
@@ -56,22 +56,22 @@
   [../]
 []
 
-# [Adaptivity]
-#   [./Indicators]
-#     [./error]
-#       type = GradientJumpIndicator
-#       variable = rho
-#     [../]
-#   [../]
-#   [./Markers]
-#     [./marker]
-#       type = ErrorFractionMarker
-#       indicator = error
-#       coarsen = 0.7
-#       refine = 0.9
-#     [../]
-#   [../]
-# []
+ [Adaptivity]
+   [./Indicators]
+     [./error]
+       type = GradientJumpIndicator
+       variable = rho
+     [../]
+   [../]
+   [./Markers]
+     [./marker]
+       type = ErrorFractionMarker
+       indicator = error
+       coarsen = 0.7
+       refine = 0.9
+     [../]
+   [../]
+ []
 
 [Executioner]
   type = Transient
@@ -81,7 +81,7 @@
   num_steps = 1
   l_tol = 1e-04
   l_max_its = 100
- 	
+
   nl_max_its = 100
   nl_rel_tol = 1e-04
 
@@ -103,18 +103,15 @@
 
 [Outputs]
  	csv = true
-	gnuplot = true	
+	gnuplot = true
 	[./exodus]
 		type = Exodus
 		execute_on = 'initial timestep_end'
 	[../]
-	
+
 	[./console]
-		type = Console	
+		type = Console
 		perf_log = true
 		execute_on = 'linear nonlinear'
 	[../]
 []
-
-
-

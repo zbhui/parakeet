@@ -2,13 +2,13 @@
   type = GeneratedMesh
   dim = 2
   xmax  = 2
-  nx = 160
-  ny = 80
+  nx = 80
+  ny = 40
 []
 
 [Problem]
   type = ShockVortexProblem
-  jacobian_delay = 1
+  jacobian_delay = 3
   [./Variables]
 	order = FIRST
 	family = MONOMIAL
@@ -78,8 +78,8 @@
     l_max_its = 10
   	
     nl_max_its = 10
-    nl_rel_tol = 1e-02
-    end_time = 0.2
+    nl_rel_tol = 1e-01
+    end_time = 1
   
 []
 

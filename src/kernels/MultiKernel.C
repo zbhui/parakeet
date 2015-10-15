@@ -6,26 +6,28 @@ InputParameters validParams<MultiKernel>()
 	  InputParameters params = validParams<Kernel>();
 //	  params += validParams<Kernel>();
 
-	  params.addRequiredParam<std::vector<NonlinearVariableName> >("variables", "多个求解变量");
+//	  params.addRequiredParam<std::vector<NonlinearVariableName> >("variables", "多个求解变量");
+	  params += validParams<MultiVariableInterface>();
 	  return params;
 }
 
 MultiKernel::MultiKernel(const InputParameters & parameters):
 		Kernel(parameters),
-		_variables(parameters.get<std::vector<NonlinearVariableName> >("variables"))
+		MultiVariableInterface(parameters)
+//		_variables(parameters.get<std::vector<NonlinearVariableName> >("variables"))
 {
-	MooseVariable &val0 = _sys.getVariable(_tid, _variables[0]);
-	_n_equation = _variables.size();
-	for (size_t i = 0; i < _n_equation; ++i)
-	{
-		MooseVariable &val = _sys.getVariable(_tid, _variables[i]);
-		if(val.feType() != val0.feType()) mooseError("multiKernel中变量的类型不一致");
-
-		_uh.push_back(_is_implicit ? &val.sln() : &val.slnOld());
-		_grad_uh.push_back(_is_implicit ? &val.gradSln() : &val.gradSlnOld());
-		_uh_dot.push_back(&val.uDot());
-		_duh_dot_du.push_back(&val.duDotDu());
-	}
+//	MooseVariable &val0 = _sys.getVariable(_tid, _variables[0]);
+//	_n_equation = _variables.size();
+//	for (size_t i = 0; i < _n_equation; ++i)
+//	{
+//		MooseVariable &val = _sys.getVariable(_tid, _variables[i]);
+//		if(val.feType() != val0.feType()) mooseError("multiKernel中变量的类型不一致");
+//
+//		_uh.push_back(_is_implicit ? &val.sln() : &val.slnOld());
+//		_grad_uh.push_back(_is_implicit ? &val.gradSln() : &val.gradSlnOld());
+//		_uh_dot.push_back(&val.uDot());
+//		_duh_dot_du.push_back(&val.duDotDu());
+//	}
 }
 
 void MultiKernel::computeResidual()

@@ -2,9 +2,11 @@
 #pragma once
 
 #include "Kernel.h"
+#include "MultiVariableInterface.h"
 
 class MultiKernel :
-  public Kernel
+  public Kernel,
+  public MultiVariableInterface
 {
 public:
 	MultiKernel(const InputParameters & parameters);
@@ -24,12 +26,12 @@ protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
   virtual void computeOffDiagJacobianScalar(unsigned int jvar);
-  unsigned int _n_equation;
-  std::vector<NonlinearVariableName> _variables;
-  std::vector<VariableValue*> _uh;
-  std::vector<VariableGradient*> _grad_uh;
-  std::vector<VariableValue *> _uh_dot;
-  std::vector<VariableValue *> _duh_dot_du;
+//  unsigned int _n_equation;
+//  std::vector<NonlinearVariableName> _variables;
+//  std::vector<VariableValue*> _uh;
+//  std::vector<VariableGradient*> _grad_uh;
+//  std::vector<VariableValue *> _uh_dot;
+//  std::vector<VariableValue *> _duh_dot_du;
 };
 
 

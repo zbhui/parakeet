@@ -32,9 +32,9 @@ Real ShockVortexProblem::density(Real t, const Point &p)
 	Point normal(p - _p0);
 	Real r = (p-_p0).size();
 	Real tau = r/_rc;
-	Real du = _e/_rc*exp(_a*(1-tau*tau))*normal(1);
-	Real dv = _e/_rc*exp(_a*(1-tau*tau))*normal(0);
-	Real dT = -(_gamma-1)/4./_a/_gamma*exp(2*_a*(1-tau*tau));
+	Real du =  _e/_rc*exp(_a*(1-tau*tau))*normal(1);
+	Real dv = -_e/_rc*exp(_a*(1-tau*tau))*normal(0);
+	Real dT = -(_gamma-1)/4./_a/_gamma*_e*_e*exp(2*_a*(1-tau*tau));
 
 	Real u = _shock_depart[pointLocator(p)][1]+du;
 	Real T = pressure(t, p )/_shock_depart[pointLocator(p)][0] + dT;
@@ -49,8 +49,8 @@ Real ShockVortexProblem::momentumX(Real t, const Point &p)
 	Real r = (p-_p0).size();
 	Real tau = r/_rc;
 	Real du = _e/_rc*exp(_a*(1-tau*tau))*normal(1);
-	Real dv = _e/_rc*exp(_a*(1-tau*tau))*normal(0);
-	Real dT = -(_gamma-1)/4./_a/_gamma*exp(2*_a*(1-tau*tau));
+	Real dv = -_e/_rc*exp(_a*(1-tau*tau))*normal(0);
+	Real dT = -(_gamma-1)/4./_a/_gamma*_e*_e*exp(2*_a*(1-tau*tau));
 
 	Real u = _shock_depart[pointLocator(p)][1]+du;
 	Real T = pressure(t, p )/_shock_depart[pointLocator(p)][0] + dT;
@@ -64,9 +64,9 @@ Real ShockVortexProblem::momentumY(Real t, const Point &p)
 	Point normal(p - _p0);
 	Real r = (p-_p0).size();
 	Real tau = r/_rc;
-	Real du = _e/_rc*exp(_a*(1-tau*tau))*normal(1);
-	Real dv = _e/_rc*exp(_a*(1-tau*tau))*normal(0);
-	Real dT = -(_gamma-1)/4./_a/_gamma*exp(2*_a*(1-tau*tau));
+	Real du =  _e/_rc*exp(_a*(1-tau*tau))*normal(1);
+	Real dv = -_e/_rc*exp(_a*(1-tau*tau))*normal(0);
+	Real dT = -(_gamma-1)/4./_a/_gamma*_e*_e*exp(2*_a*(1-tau*tau));
 
 	Real u = _shock_depart[pointLocator(p)][2]+dv;
 	Real T = pressure(t, p )/_shock_depart[pointLocator(p)][0] + dT;
@@ -80,9 +80,9 @@ Real ShockVortexProblem::momentumZ(Real t, const Point &p)
 	Point normal(p - _p0);
 	Real r = (p-_p0).size();
 	Real tau = r/_rc;
-	Real du = _e/_rc*exp(_a*(1-tau*tau))*normal(1);
-	Real dv = _e/_rc*exp(_a*(1-tau*tau))*normal(0);
-	Real dT = -(_gamma-1)/4./_a/_gamma*exp(2*_a*(1-tau*tau));
+	Real du =  _e/_rc*exp(_a*(1-tau*tau))*normal(1);
+	Real dv = -_e/_rc*exp(_a*(1-tau*tau))*normal(0);
+	Real dT = -(_gamma-1)/4./_a/_gamma*_e*_e*exp(2*_a*(1-tau*tau));
 
 	Real u = _shock_depart[pointLocator(p)][3];
 	Real T = pressure(t, p )/_shock_depart[pointLocator(p)][0] + dT;
@@ -94,10 +94,19 @@ Real ShockVortexProblem::momentumZ(Real t, const Point &p)
 Real ShockVortexProblem::energyTotal(Real t, const Point &p)
 {
 	RealVectorValue momentum(momentumX(t, p), momentumY(t, p), momentumZ(t, p));
-	Real rho = density(t, p);
-	Real pre = pressure(t, p);
 
-	return pre/(_gamma-1) +0.5*momentum.size_sq()/rho;
+	Point normal(p - _p0);
+	Real r = (p-_p0).size();
+	Real tau = r/_rc;
+	Real du =  _e/_rc*exp(_a*(1-tau*tau))*normal(1);
+	Real dv = -_e/_rc*exp(_a*(1-tau*tau))*normal(0);
+	Real dT = -(_gamma-1)/4./_a/_gamma*_e*_e*exp(2*_a*(1-tau*tau));
+
+	Real u = _shock_depart[pointLocator(p)][3];
+	Real T = pressure(t, p )/_shock_depart[pointLocator(p)][0] + dT;
+	Real rho = pow( T, 1/(_gamma-1));
+
+	return rho*T/(_gamma-1) +0.5*momentum.size_sq()/rho;
 }
 
 Real ShockVortexProblem::pressure(Real t, const Point &p)
