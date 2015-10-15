@@ -184,7 +184,7 @@
 #include "FunctionSideIntegral.h"
 #include "ExecutionerAttributeReporter.h"
 #include "PercentChangePostprocessor.h"
-#include "RealParameterReporter.h"
+//#include "RealParameterReporter.h"
 
 // vector PPS
 #include "ConstantVectorPostprocessor.h"
@@ -663,7 +663,7 @@ void ParakeetApp::registerMooseObjects(Factory & factory)
 	registerPostprocessor(FunctionSideIntegral);
 	registerPostprocessor(ExecutionerAttributeReporter);
 	registerPostprocessor(PercentChangePostprocessor);
-	registerPostprocessor(RealParameterReporter);
+//	registerPostprocessor(RealParameterReporter);
 
 	// vector PPS
 	registerVectorPostprocessor(ConstantVectorPostprocessor);
