@@ -274,8 +274,8 @@
 #include "BDF2.h"
 #include "CrankNicolson.h"
 #include "ExplicitEuler.h"
-#include "ExplicitMidpoint.h"
-#include "Dirk.h"
+//#include "ExplicitMidpoint.h"
+//#include "Dirk.h"
 #include "LStableDirk2.h"
 #include "ImplicitMidpoint.h"
 #include "Heun.h"
@@ -756,9 +756,9 @@ void ParakeetApp::registerMooseObjects(Factory & factory)
 	registerTimeIntegrator(BDF2);
 	registerTimeIntegrator(CrankNicolson);
 	registerTimeIntegrator(ExplicitEuler);
-	registerDeprecatedObjectName(ExplicitMidpoint, "RungeKutta2", "09/25/2015 12:00");
-	registerTimeIntegrator(ExplicitMidpoint);
-	registerDeprecatedObjectName(Dirk, "Dirk", "09/22/2015 12:00");
+//	registerDeprecatedObjectName(ExplicitMidpoint, "RungeKutta2", "09/25/2015 12:00");
+//	registerTimeIntegrator(ExplicitMidpoint);
+//	registerDeprecatedObjectName(Dirk, "Dirk", "09/22/2015 12:00");
 	registerTimeIntegrator(LStableDirk2);
 	registerTimeIntegrator(ImplicitMidpoint);
 	registerTimeIntegrator(Heun);
