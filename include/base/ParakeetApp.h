@@ -18,6 +18,9 @@ public:
   static void registerApps();
   static void registerObjects(Factory & factory);
   static void associateSyntax(Syntax & syntax, ActionFactory & action_factory);
+
+private:
+  void registerMooseObjects(Factory & factory);
 };
 
 #endif /* PARAKEETAPP_H */

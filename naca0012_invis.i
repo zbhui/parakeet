@@ -1,9 +1,9 @@
 [Mesh]
   file = grids/N0012-coarse-quad.msh
-  
+
   block_id = 0
   block_name = 'fluid'
-  
+
   boundary_id = '1 4 2 3'
   boundary_name = 'far_top far_bottom wall_top wall_bottom'
 []
@@ -14,11 +14,7 @@
   attack = 1.0
   reynolds = 40.0
   jacobian_delay = 1
-  [./Variables]
-    order = FIRST
-    family = MONOMIAL
-    variables = 'density momx momy momz rhoe'
-  [../]
+
 
   [./Kernels]
     type = CFDCellKernel
@@ -27,24 +23,28 @@
   [./DGKernels]
     type = CFDFaceKernel
   [../]
+[]
 
-  [./BCs]
-    [./euler_far_field]
+[Variables]
+  order = FIRST
+  family = MONOMIAL
+  variables = 'density momx momy momz rhoe'
+  type = CFDInitialCondition
+[]
+
+
+
+[BoundaryCondition]
+  [./euler_far_field]
     type = FarFieldPressure
     boundary = '1 4'
   [../]
 
   [./euler_wall]
     type = SlipWall
-    boundary = '2 3' 
+    boundary = '2 3'
   [../]
-
 []
-
-[ICs]
-  type = CFDInitialCondition
-[]
-
 
 [Preconditioning]
   [./SMP]
@@ -75,20 +75,20 @@
 [Executioner]
   no_fe_reinit = true
   type = Transient
-  solve_type = newton
+  solve_type = NEWTON
   num_steps = 100
   l_tol = 1e-01
-  l_max_its = 30
- 	
-  nl_max_its = 10
-  nl_rel_tol = 1e-01
+  l_max_its = 10
+
+  nl_max_its = 5
+  nl_rel_tol = 1E-01
 
   [./TimeStepper]
     type = RatioTimeStepper
-    dt = 0.0010
+    dt = 1E-01
     ratio = 2
     step = 2
-    max_dt = 20000	
+    max_dt = 20000
   [../]
 []
 
@@ -101,7 +101,7 @@
 [Outputs]
   csv = true
   [./console]
-    type = Console	
+    type = Console
     perf_log = true
     execute_on = 'linear nonlinear'
   [../]
@@ -111,8 +111,5 @@
     execute_on = 'initial timestep_end'
     interval = 1
   [../]
-	
+
 []
-
-
-

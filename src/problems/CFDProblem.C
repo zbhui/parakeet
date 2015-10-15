@@ -52,7 +52,7 @@ void CFDProblem::initialSetup()
 
 void CFDProblem::computeJacobian(NonlinearImplicitSystem & sys, const NumericVector<Number> & soln, SparseMatrix<Number> &  jacobian)
 {
-	if((_t_step-1) % _jacobian_delay == 0 || _app.isRecovering() || _app.isRestarting())
+	if((_t_step-1) % _jacobian_delay == 0 || _app.isRecovering() || _app.isRestarting() || !converged())
 		Parent::computeJacobian(sys, soln, jacobian);
 //	 if (!_has_jacobian || !_const_jacobian)
 //	  {

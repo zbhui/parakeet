@@ -23,7 +23,7 @@ protected:
 	std::vector<VariableValue*> _uh_neighbor;
 	std::vector<VariableGradient*> _grad_uh;
 	std::vector<VariableGradient*> _grad_uh_neighbor;
-//	int _var_order;
+	int _var_order;
 };
 
 template<>

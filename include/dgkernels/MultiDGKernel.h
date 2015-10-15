@@ -2,18 +2,11 @@
 #pragma once
 
 #include "DGKernel.h"
+#include "MultiVariableInterface.h"
 
-class MultiDGKernel;
-
-
-template<>
-InputParameters validParams<MultiDGKernel>();
-
-/**
- * \p MultiDGKernel 计算多个变量的单元积分
- */
 class MultiDGKernel :
-  public DGKernel
+  public DGKernel,
+  public MultiVariableInterface
 {
 public:
 	MultiDGKernel(const InputParameters & parameters);
@@ -35,13 +28,9 @@ protected:
 	FEProblem & _fe_problem;
 	virtual Real computeQpResidual(Moose::DGResidualType type);
 	virtual Real computeQpJacobian(Moose::DGJacobianType type);
-
-	unsigned int _n_equation;
-	std::vector<NonlinearVariableName> _variables;
-	std::vector<VariableValue*> _uh;
-	std::vector<VariableValue*> _uh_neighbor;
-	std::vector<VariableGradient*> _grad_uh;
-	std::vector<VariableGradient*> _grad_uh_neighbor;
-	int _var_order;
 };
+
+
+template<>
+InputParameters validParams<MultiDGKernel>();
 

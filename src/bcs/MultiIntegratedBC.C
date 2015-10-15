@@ -5,25 +5,13 @@ template<>
 InputParameters validParams<MultiIntegratedBC>()
 {
 	InputParameters params = validParams<IntegratedBC>();
-
-	params.addRequiredParam<std::vector<NonlinearVariableName> >("variables", "多个求解变量");
+	params += validParams<MultiVariableInterface>();
 	return params;
 }
 MultiIntegratedBC::MultiIntegratedBC(const InputParameters & parameters):
-		IntegratedBC(parameters),
-		_variables(getParam<std::vector<NonlinearVariableName> >("variables")),
-		_var_order(_fe_problem.getVariable(_tid, _variables[0]).order())
+	IntegratedBC(parameters),
+	MultiVariableInterface(parameters)
 {
-	MooseVariable &val0 = _sys.getVariable(_tid, _variables[0]);
-	_n_equation = _variables.size();
-	for (size_t i = 0; i < _n_equation; ++i)
-	{
-		MooseVariable &val = _sys.getVariable(_tid, _variables[i]);
-		if(val.feType() != val0.feType()) mooseError("MultiIntegratedBC中变量的类型不一致");
-
-		_uh.push_back(&val.sln());
-		_grad_uh.push_back(&val.gradSln());
-	}
 }
 
 void MultiIntegratedBC::computeResidual()

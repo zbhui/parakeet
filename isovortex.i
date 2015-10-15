@@ -21,20 +21,6 @@
 
 [Problem]
   type = IsoVortexProblem
-  [./Variables]
-    order = FIRST
-    family = MONOMIAL
-    variables = 'rho momx momy momz rhoe'
-  [../]
-
-  [./BCs]
-	  [./euler_far_field]
-		type = CFDBC
-		boundary = '0 1 2 3'
-	  [../]
-  [../]
-
-
   [./Kernels]
     type = CFDCellKernel
   [../]
@@ -44,10 +30,19 @@
   [../]
 []
 
-[ICs]
-  type = CFDInitialCondition
+[Variables]
+    type =  CFDInitialCondition
+    order = FIRST
+    family = MONOMIAL
+    variables = 'rho momx momy momz rhoe'
 []
 
+[BoundaryCondition]
+    [./euler_far_field]
+        type =  CFDBC
+        boundary = '0 1 2 3'
+    [../]
+[]
 
 [Preconditioning]
   [./SMP]

@@ -2,14 +2,11 @@
 #pragma once
 
 #include "IntegratedBC.h"
-
-class MultiIntegratedBC;
-
-template<>
-InputParameters validParams<MultiIntegratedBC>();
+#include "MultiVariableInterface.h"
 
 class MultiIntegratedBC :
-public IntegratedBC
+public IntegratedBC,
+public MultiVariableInterface
 {
 public:
 	  MultiIntegratedBC(const InputParameters & params);
@@ -24,15 +21,10 @@ public:
 	  virtual void precalculateJacobian() = 0;
 	  virtual Real computeQpJacobian(unsigned int p, unsigned int q) = 0;
 
-
 protected:
 	  virtual Real computeQpResidual();
 	  virtual Real computeQpJacobian();
-
-	  std::vector<NonlinearVariableName> _variables;
-	  unsigned int _n_equation;
-	  std::vector<VariableValue*> _uh;
-	  std::vector<VariableGradient*> _grad_uh;
-	  int _var_order;
 };
 
+template<>
+InputParameters validParams<MultiIntegratedBC>();
