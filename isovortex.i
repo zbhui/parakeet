@@ -44,21 +44,16 @@
     [../]
 []
 
-[Preconditioning]
-  [./SMP]
-    type = SMP
-    full = true
-  [../]
-[]
 
- [Adaptivity]
-   [./Indicators]
+[ArtificialViscosity]
+  [./Indicators]
      [./error]
        type = GradientJumpIndicator
        variable = rho
+
      [../]
-   [../]
-   [./Markers]
+  [../]
+  [./Markers]
      [./marker]
        type = ErrorFractionMarker
        indicator = error
@@ -66,7 +61,14 @@
        refine = 0.9
      [../]
    [../]
- []
+[]
+
+ [Preconditioning]
+   [./SMP]
+     type = SMP
+     full = true
+   [../]
+[]
 
 [Executioner]
   type = Transient

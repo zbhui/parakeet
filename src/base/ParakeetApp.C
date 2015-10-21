@@ -919,6 +919,12 @@ ParakeetApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 	registerAction(AddMultiAuxVariableAction, "add_aux_variable");
 	registerAction(AddMultiAuxVariableAction, "add_aux_kernel");
 
+	syntax.registerActionSyntax("AddElementalFieldAction", "ArtificialViscosity/Indicators/*");
+	syntax.registerActionSyntax("AddIndicatorAction", "ArtificialViscosity/Indicators/*");
+
+	syntax.registerActionSyntax("AddElementalFieldAction", "ArtificialViscosity/Markers/*");
+	syntax.registerActionSyntax("AddMarkerAction", "ArtificialViscosity/Markers/*");
+
 #undef registerAction
 #define registerAction(tplt, action) action_factory.regLegacy<tplt>(stringifyName(tplt), action)
 }

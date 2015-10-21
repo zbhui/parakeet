@@ -15,7 +15,8 @@ CFDCellKernel::CFDCellKernel(const InputParameters & parameters):
 	_cfd_problem(static_cast<CFDProblem&>(_fe_problem)),
 	_cfd_data(_cfd_problem),
 	_perturbation(getParam<Real>("perturbation")),
-	_error_vector(getErrorVector(parameters.get<IndicatorName>("indicator")))
+	_error_vector(getErrorVector(parameters.get<IndicatorName>("indicator"))),
+	_has_artificial_vis(isParamValid("indicator"))
 {
 
 }
