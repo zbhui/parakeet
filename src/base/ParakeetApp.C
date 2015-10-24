@@ -461,6 +461,7 @@
 
 #include "VariableJumpIndicator.h"
 #include "FluxJumpIndicator.h"
+#include "ErrorMaxFractionMarker.h"
 
 template<>
 InputParameters validParams<ParakeetApp>()
@@ -882,6 +883,8 @@ ParakeetApp::registerObjects(Factory & factory)
 
 	registerIndicator(VariableJumpIndicator);
 	registerIndicator(FluxJumpIndicator);
+
+	registerMarker(ErrorMaxFractionMarker);
 }
 
 // External entry point for dynamic syntax association
