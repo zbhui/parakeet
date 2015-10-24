@@ -55,7 +55,7 @@
   [../]
   [./Markers]
      [./marker]
-       type = ErrorFractionMarker
+       type = ErrorMaxFractionMarker 
        indicator = error
        coarsen = 0.7
        refine = 0.9
