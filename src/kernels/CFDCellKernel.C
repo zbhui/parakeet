@@ -6,7 +6,7 @@ InputParameters validParams<CFDCellKernel>()
 {
   InputParameters params = validParams<MultiKernel>();
   params.addParam<Real>("perturbation", 1E-08, "有限差分求Jacobian矩阵的变量增量");
-  params.addParam<IndicatorName>("indicator", "error", "The name of the Indicator that this Marker uses.");
+  params.addParam<IndicatorName>("shock_indicator", "The name of the Indicator that this Marker uses.");
   return params;
 }
 
@@ -15,10 +15,10 @@ CFDCellKernel::CFDCellKernel(const InputParameters & parameters):
 	_cfd_problem(static_cast<CFDProblem&>(_fe_problem)),
 	_cfd_data(_cfd_problem),
 	_perturbation(getParam<Real>("perturbation")),
-	_error_vector(getErrorVector(parameters.get<IndicatorName>("indicator"))),
-	_has_artificial_vis(isParamValid("indicator"))
+	_has_artificial_vis(isParamValid("shock_indicator"))
 {
-
+	if(_has_artificial_vis)
+		_error_vector = &(getErrorVector(getParam<IndicatorName>("shock_indicator")));
 }
 
 void CFDCellKernel::reinit()
@@ -31,10 +31,17 @@ void CFDCellKernel::reinit()
 void CFDCellKernel::reinitArtificialViscous()
 {
 	Real h = _current_elem->hmax();
-	for (int q = 0; q < _n_equation; ++q)
-	{
-		_artificial_viscous[q] = h*_error_vector[_current_elem->id()]*_cfd_data.duh[q];
-	}
+	if(_has_artificial_vis)
+		for (int q = 0; q < _n_equation; ++q)
+		{
+			_artificial_viscous[q] = h*(*_error_vector)[_current_elem->id()]*_cfd_data.duh[q];
+		}
+
+	else
+		for (int q = 0; q < _n_equation; ++q)
+		{
+			_artificial_viscous[q] = 0*_cfd_data.duh[q];
+		}
 }
 
 void CFDCellKernel::reinitViscous()

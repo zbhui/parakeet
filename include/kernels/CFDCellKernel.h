@@ -38,7 +38,7 @@ protected:
 	void reinitViscous();
 
 	ErrorVector & getErrorVector(std::string indicator);
-	ErrorVector & _error_vector;
+	ErrorVector * _error_vector;
 	bool _has_artificial_vis;
 };
 

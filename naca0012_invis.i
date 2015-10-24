@@ -18,6 +18,7 @@
 
   [./Kernels]
     type = CFDCellKernel
+    shock_indicator = indicator
   [../]
 
   [./DGKernels]
@@ -55,7 +56,7 @@
 
 [Adaptivity]
   [./Indicators]
-    [./error]
+    [./indicator]
       type = VariableJumpIndicator
       variables = 'density momx momy momz rhoe'
       variable = density
@@ -65,7 +66,7 @@
   [./Markers]
     [./marker]
       type = ErrorFractionMarker
-      indicator = error
+      indicator = indicator
       coarsen = 0.7
       refine = 0.5
     [../]

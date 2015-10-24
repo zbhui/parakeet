@@ -23,6 +23,7 @@
   type = IsoVortexProblem
   [./Kernels]
     type = CFDCellKernel
+    #indicator = error
   [../]
 
   [./DGKernels]
@@ -55,7 +56,7 @@
   [../]
   [./Markers]
      [./marker]
-       type = ErrorMaxFractionMarker 
+       type = ErrorMaxFractionMarker
        indicator = error
        coarsen = 0.7
        refine = 0.9
