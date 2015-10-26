@@ -7,6 +7,7 @@ InputParameters validParams<CFDBC>()
 {
 	InputParameters params = validParams<MultiIntegratedBC>();
 	params.addParam<Real>("perturbation", 1E-08, "有限差分求Jacobian矩阵的变量增量");
+	params.addParam<Real>("penalty", 10, "IP 方法的惩罚值");
 	return params;
 }
 
@@ -18,7 +19,7 @@ CFDBC::CFDBC(const InputParameters & parameters):
 		_lift_data(_cfd_problem),
 		_flux_type(_cfd_problem._flux_type),
 		_perturbation(getParam<Real>("perturbation")),
-		_penalty(0),
+		_penalty(getParam<Real>("penalty")),
 		_gamma(_cfd_problem._gamma),
 		_mach(_cfd_problem._mach),
 		_attitude(_cfd_problem._attitude)
