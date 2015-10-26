@@ -18,6 +18,7 @@ public:
 protected:
 	CFDProblem &_cfd_problem;
 	CFDDataPack _cfd_data, _cfd_data_neighbor, _lift_data;
+	MooseEnum _flux_type;
 
 	Real _flux[10], _flux_old[10];
 	Real _flux_jacobi_variable[10][10];
@@ -39,6 +40,8 @@ protected:
 	virtual Real computeQpJacobian(unsigned int p, unsigned int q);
 	void reinit();
 	void fluxRiemann();
+	void fluxLaxF();
+	void fluxHLLCPV();
 	void liftOperator();
 };
 

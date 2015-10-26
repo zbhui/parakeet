@@ -15,7 +15,8 @@ public:
 	virtual Real initialCondition(const Point & point, int eq);
 	virtual Real boundaryCondition(Real t, const Point & point, int eq);
 	virtual Real valueExact(Real t, const Point &p, int eq);
-	static MooseEnum getViscousType();
+	static MooseEnum viscousType();
+	static MooseEnum fluxRiemannType();
 
 private:
 	typedef FEProblem Parent;
@@ -29,6 +30,7 @@ private:
 public:
 	int _var_order;
 	MooseEnum _vis_type;
+	MooseEnum _flux_type;
 	Real _mach;
 	Real _gamma;
 	Real _reynolds;

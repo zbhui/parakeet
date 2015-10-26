@@ -16,6 +16,7 @@ CFDBC::CFDBC(const InputParameters & parameters):
 		_cfd_data(_cfd_problem),
 		_cfd_data_neighbor(_cfd_problem),
 		_lift_data(_cfd_problem),
+		_flux_type(_cfd_problem._flux_type),
 		_perturbation(getParam<Real>("perturbation")),
 		_penalty(0),
 		_gamma(_cfd_problem._gamma),
@@ -65,6 +66,18 @@ Real CFDBC::computeQpJacobian(unsigned int p, unsigned int q)
 
 void CFDBC::fluxRiemann()
 {
+	if(_flux_type == 0)
+		fluxLaxF();
+	else if(_flux_type == 2)
+		fluxHLLCPV();
+	else
+	{
+		mooseError("Riemann 通量未定义，请选择Lax-F 或者 HLLC-PV");
+	}
+}
+
+void CFDBC::fluxLaxF()
+{
 	Real lam = fabs(_cfd_data.vel*_normals[_qp]) + _cfd_data.c;
 	lam += fabs(_cfd_data_neighbor.vel*_normals[_qp]) + _cfd_data_neighbor.c;
 	lam /= 2.;
@@ -73,10 +86,105 @@ void CFDBC::fluxRiemann()
 		_flux[p] = 0.5*(_cfd_data.invis_flux[p] + _cfd_data_neighbor.invis_flux[p])*_normals[_qp] +
 				    lam*(_cfd_data.uh[p] - _cfd_data_neighbor.uh[p]);
 	}
-
 	for (int p = 0; p < _n_equation; ++p)
 		_flux[p] -= 0.5*((_cfd_data.vis_flux[p] + _cfd_data_neighbor.vis_flux[p])-_penalty*_lift[p])*_normals[_qp];
+
 }
+
+void CFDBC::fluxHLLCPV()
+{
+	Real gamma = 1.4;
+
+	Real ql = _cfd_data.vel*_normals[_qp];
+	Real qr = _cfd_data_neighbor.vel*_normals[_qp];
+	Real pl = _cfd_data.p;
+	Real pr = _cfd_data_neighbor.p;
+	Real cl = _cfd_data.c;
+	Real cr = _cfd_data_neighbor.c;
+	Real rl = _cfd_data.r;
+	Real rr = _cfd_data_neighbor.r;
+
+	Real rho_bar = (rl + rr)/2.;
+	Real c_bar =   (cl + cr)/2.;
+	Real p_bar =   (pl + pr)/2.;
+	Real q_bar =   (ql + qr)/2.;
+
+	Real p_star = p_bar - 0.5*(qr-ql)*rho_bar*c_bar;
+	Real gl;
+	if(p_star <= pl)
+		gl = 1;
+	else
+		gl = sqrt(1+(gamma+1)/2./gamma*fabs(p_star/pl -1 ));
+
+	Real gr;
+	if(p_star <= pr)
+		gr = 1;
+	else
+		gr = sqrt(1+(gamma+1)/2./gamma*fabs(p_star/pr -1 ));
+
+	Real sl = ql-gl*cl;
+	Real sr = qr+gr*cr;
+	Real sm = rr*qr*(sr-qr)-rl*ql*(sl-ql)+pl-pr; sm /= rr*(sr-qr)-rl*(sl-ql);
+	std::vector<Real> ul_star, ur_star;
+	ul_star.push_back(rl*(sl-ql)/(sl-sm));
+	ur_star.push_back(rr*(sr-qr)/(sr-sm));
+
+	ul_star.push_back((_cfd_data.uh[1]*         (sl-ql)+(p_star-pl)*_normals[_qp](0))/(sl-sm));
+	ur_star.push_back((_cfd_data_neighbor.uh[1]*(sr-qr)+(p_star-pr)*_normals[_qp](0))/(sr-sm));
+
+	ul_star.push_back((_cfd_data.uh[2]*         (sl-ql)+(p_star-pl)*_normals[_qp](1))/(sl-sm));
+	ur_star.push_back((_cfd_data_neighbor.uh[2]*(sr-qr)+(p_star-pr)*_normals[_qp](1))/(sr-sm));
+
+	ul_star.push_back((_cfd_data.uh[3]*         (sl-ql)+(p_star-pl)*_normals[_qp](2))/(sl-sm));
+	ur_star.push_back((_cfd_data_neighbor.uh[3]*(sr-qr)+(p_star-pr)*_normals[_qp](2))/(sr-sm));
+
+
+	ul_star.push_back((_cfd_data.uh[4]*         (sl-ql)-pl*ql+p_star*sm)/(sl-sm));
+	ur_star.push_back((_cfd_data_neighbor.uh[4]*(sr-qr)-pr*qr+p_star*sm)/(sr-sm));
+
+//	std::cout << sl <<std::endl;
+//	std::cout << gr <<std::endl;
+//	std::cout << sr <<std::endl;
+
+	if(sl > 0)
+	{
+		for (int p = 0; p < _n_equation; ++p)
+		{
+			_flux[p] = _cfd_data.invis_flux[p]*_normals[_qp];
+		}
+	}
+	else if(sl<=0 && 0<sm)
+	{
+		for (int p = 0; p < _n_equation; ++p)
+		{
+			_flux[p] = _cfd_data.invis_flux[p]*_normals[_qp] + sl*(ul_star[p]-_cfd_data.uh[p]);
+		}
+	}
+
+	else if(sm<=0 && 0<sr)
+	{
+		for (int p = 0; p < _n_equation; ++p)
+		{
+			_flux[p] = _cfd_data_neighbor.invis_flux[p]*_normals[_qp] + sr*(ur_star[p]-_cfd_data_neighbor.uh[p]);
+		}
+	}
+
+	else if(sr < 0)
+	{
+		for (int p = 0; p < _n_equation; ++p)
+		{
+			_flux[p] = _cfd_data_neighbor.invis_flux[p]*_normals[_qp];
+		}
+	}
+
+	else
+	{
+		mooseWarning("HLLC flux error. instead of LF flux.");
+		fluxRiemann();
+	}
+
+}
+
 
 void CFDBC::liftOperator()
 {

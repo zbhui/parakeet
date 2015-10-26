@@ -21,6 +21,7 @@
 
 [Problem]
   type = IsoVortexProblem
+  flux_type = HLLC-PV
   [./Kernels]
     type = CFDCellKernel
     #indicator = error

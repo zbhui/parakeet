@@ -7,8 +7,10 @@ template<>
 InputParameters validParams<CFDProblem>()
 {
   InputParameters params = validParams<FEProblem>();
-  MooseEnum vis_type(CFDProblem::getViscousType());
+  MooseEnum vis_type(CFDProblem::viscousType());
   params.addParam<MooseEnum>("vis_type", vis_type, "粘性计算方法");
+  MooseEnum flux_type(CFDProblem::fluxRiemannType());
+  params.addParam<MooseEnum>("flux_type", flux_type, "Riemann通量类型");
   params.addParam<Real>("mach",  0.1, "马赫数");
   params.addParam<Real>("gamma", 1.4, "比热比");
   params.addParam<Real>("reynolds", 1, "雷诺数");
@@ -27,6 +29,7 @@ CFDProblem::CFDProblem(const InputParameters &params) :
 	FEProblem(params),
 	_var_order(1),
 	_vis_type(getParam<MooseEnum>("vis_type")),
+	_flux_type(getParam<MooseEnum>("flux_type")),
 	_mach(getParam<Real>("mach")),
 	_gamma(getParam<Real>("gamma")),
 	_reynolds(getParam<Real>("reynolds")),
@@ -114,9 +117,14 @@ void CFDProblem::computeJacobian(NonlinearImplicitSystem & sys, const NumericVec
 }
 
 
-MooseEnum CFDProblem::getViscousType()
+MooseEnum CFDProblem::viscousType()
 {
   return MooseEnum("INVISCOUS CONSTANT  SUTHERLAND", "CONSTANT");
+}
+
+MooseEnum CFDProblem::fluxRiemannType()
+{
+  return MooseEnum("Lax-F HLL  HLLC-PV HLLC-Roe", "Lax-F");
 }
 
 Real CFDProblem::valueExact(Real t, const Point &p, int eq)

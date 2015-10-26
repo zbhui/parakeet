@@ -16,6 +16,7 @@ CFDFaceKernel::CFDFaceKernel(const InputParameters & parameters):
 		_cfd_data(_cfd_problem),
 		_cfd_data_neighbor(_cfd_problem),
 		_lift_data(_cfd_problem),
+		_flux_type(_cfd_problem._flux_type),
 		_perturbation(getParam<Real>("perturbation")),
 		_penalty(0)
 {
@@ -30,8 +31,8 @@ void CFDFaceKernel::reinit()
 	_cfd_data_neighbor.reinit();
 
 	liftOperator();
-//	fluxRiemann();
-	fluxHLLC();
+	fluxRiemann();
+//	fluxHLLCPV();
 }
 
 void CFDFaceKernel::precalculateResidual()
@@ -49,6 +50,18 @@ void CFDFaceKernel::precalculateResidual()
 
 void CFDFaceKernel::fluxRiemann()
 {
+	if(_flux_type == 0)
+		fluxLaxF();
+	else if(_flux_type == 2)
+		fluxHLLCPV();
+	else
+	{
+		mooseError("Riemann 通量未定义，请选择Lax-F 或者 HLLC-PV");
+	}
+}
+
+void CFDFaceKernel::fluxLaxF()
+{
 	Real lam = fabs(_cfd_data.vel*_normals[_qp]) + _cfd_data.c;
 	lam += fabs(_cfd_data_neighbor.vel*_normals[_qp]) + _cfd_data_neighbor.c;
 	lam /= 2.;
@@ -62,7 +75,7 @@ void CFDFaceKernel::fluxRiemann()
 
 }
 
-void CFDFaceKernel::fluxHLLC()
+void CFDFaceKernel::fluxHLLCPV()
 {
 	Real gamma = 1.4;
 
