@@ -40,7 +40,7 @@ void AddMultiAuxVariableAction::act()
 			addAuxVariable(var_name);
 	}
 	if(_current_task == "add_aux_kernel")
-		addAuxKernel("p");
+		addAuxKernel(_type);
 }
 
 void AddMultiAuxVariableAction::addAuxKernel(std::string var_name)

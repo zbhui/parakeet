@@ -14,9 +14,15 @@
   mach = 0.2
   reynolds = 40.0
   [./Variables]
-    order = FIRST
+    order = SECOND
     family = MONOMIAL
     variables = 'density momx momy momz rhoe'
+  [../]
+  [./AuxVariables]
+     order = FIRST
+     family = MONOMIAL
+    type = NSAuxVariable
+    aux_variables = 'p m'
   [../]
 
   [./Kernels]
@@ -72,7 +78,6 @@
 []
 
 [Executioner]
-  no_fe_reinit = true
   type = Transient
   solve_type = newton
   num_steps = 100
@@ -84,7 +89,7 @@
 
   [./TimeStepper]
     type = RatioTimeStepper
-    dt = 0.0010
+    dt = 1.0
     ratio = 2
     step = 2
     max_dt = 20000

@@ -918,7 +918,7 @@ ParakeetApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 
 
 
-	syntax.registerActionSyntax("AddMultiAuxVariableAction", "Problem/AuxVariables/*");
+	syntax.registerActionSyntax("AddMultiAuxVariableAction", "Problem/AuxVariables");
 	registerAction(AddMultiAuxVariableAction, "add_aux_variable");
 	registerAction(AddMultiAuxVariableAction, "add_aux_kernel");
 
