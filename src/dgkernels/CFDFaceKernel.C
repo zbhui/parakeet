@@ -170,25 +170,27 @@ void CFDFaceKernel::liftOperator()
 	for (size_t i = 0; i < _uh.size(); ++i)
 	{
 		_lift_data.uh[i] = (_cfd_data.uh[i] + _cfd_data_neighbor.uh[i])/2.;
-		_lift_data.duh[i] = penalty*(_cfd_data.uh[i] - _cfd_data_neighbor.uh[i])*_normals[_qp];
+		_lift_data.duh[i] = (_cfd_data.uh[i] - _cfd_data_neighbor.uh[i])/2*_normals[_qp];
 	}
 
 	_lift_data.reinit();
 
 	for (int p = 0; p < _n_equation; ++p)
-		_flux[p] -= 0.5*((_cfd_data.vis_flux[p] + _cfd_data_neighbor.vis_flux[p]) - _lift_data.vis_flux[p])*_normals[_qp];
-
+	{
+		_lift[p] = _lift_data.vis_flux[p];
+		_flux[p] -= 0.5*((_cfd_data.vis_flux[p] + _cfd_data_neighbor.vis_flux[p]) - penalty*_lift_data.vis_flux[p])*_normals[_qp];
+	}
 }
 
 Real CFDFaceKernel::computeQpResidual(Moose::DGResidualType type, unsigned int p)
 {
 	if(type == Moose::Element)
 	{
-		return  _flux[p] * _test[_i][_qp] + _lift[p]*_grad_test[_i][_qp];
+		return  _flux[p] * _test[_i][_qp] - _lift[p]*_grad_test[_i][_qp];
 	}
 	if(type == Moose::Neighbor)
 	{
-		return -_flux[p] * _test_neighbor[_i][_qp] + _lift[p]*_grad_test_neighbor[_i][_qp];
+		return -_flux[p] * _test_neighbor[_i][_qp] - _lift[p]*_grad_test_neighbor[_i][_qp];
 	}
 	mooseError("face flux error.");
 	return 0.;
@@ -260,25 +262,25 @@ Real CFDFaceKernel::computeQpJacobian(Moose::DGJacobianType type, unsigned int p
 	case Moose::ElementElement:
 		r = _flux_jacobi_variable_ee[p][q]*_phi[_j][_qp]*_test[_i][_qp];
 		r += _flux_jacobi_grad_variable_ee[p][q]*_grad_phi[_j][_qp]*_test[_i][_qp];
-		r += _lift_jacobi_variable_ee[p][q]*_grad_test[_i][_qp]*_phi[_j][_qp];
+		r -= _lift_jacobi_variable_ee[p][q]*_grad_test[_i][_qp]*_phi[_j][_qp];
 		break;
 
 	case Moose::ElementNeighbor:
 		r = _flux_jacobi_variable_en[p][q]*_phi_neighbor[_j][_qp]*_test[_i][_qp];
 		r += _flux_jacobi_grad_variable_en[p][q]*_grad_phi_neighbor[_j][_qp]*_test[_i][_qp];
-		r += _lift_jacobi_variable_en[p][q]*_grad_test[_i][_qp]*_phi_neighbor[_j][_qp];
+		r -= _lift_jacobi_variable_en[p][q]*_grad_test[_i][_qp]*_phi_neighbor[_j][_qp];
 		break;
 
 	case Moose::NeighborElement:
 		r = -_flux_jacobi_variable_ee[p][q]*_phi[_j][_qp]*_test_neighbor[_i][_qp];
 		r += -_flux_jacobi_grad_variable_ee[p][q]*_grad_phi[_j][_qp]*_test_neighbor[_i][_qp];
-		r += _lift_jacobi_variable_ee[p][q]*_grad_test_neighbor[_i][_qp]*_phi[_j][_qp];
+		r -= _lift_jacobi_variable_ee[p][q]*_grad_test_neighbor[_i][_qp]*_phi[_j][_qp];
 		break;
 
 	case Moose::NeighborNeighbor:
 		r = -_flux_jacobi_variable_en[p][q]*_phi_neighbor[_j][_qp]*_test_neighbor[_i][_qp];
 		r += -_flux_jacobi_grad_variable_en[p][q]*_grad_phi_neighbor[_j][_qp]*_test_neighbor[_i][_qp];
-		r += _lift_jacobi_variable_en[p][q]*_grad_test_neighbor[_i][_qp]*_phi_neighbor[_j][_qp];
+		r -= _lift_jacobi_variable_en[p][q]*_grad_test_neighbor[_i][_qp]*_phi_neighbor[_j][_qp];
 		break;
 	}
 

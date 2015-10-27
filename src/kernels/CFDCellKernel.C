@@ -100,11 +100,12 @@ void CFDCellKernel::precalculateJacobian()
 	for (int beta = 0; beta < 3; ++beta)
 	{
 		_cfd_data.duh[q](beta) += _perturbation;
-		reinitViscous();
+//		reinitViscous();
+		reinit();
 		for (int p = 0; p < _n_equation; ++p)
 		for (int alpha = 0; alpha< 3; ++alpha)
-//			_flux_jacobi_grad_variable[p][q](alpha, beta) = (_flux[p](alpha) - _flux_old[p](alpha))/_perturbation;
-			_flux_jacobi_grad_variable[p][q](alpha, beta) = (_viscous[p](alpha) - _viscous_old[p](alpha))/_perturbation;
+			_flux_jacobi_grad_variable[p][q](alpha, beta) = (_flux[p](alpha) - _flux_old[p](alpha))/_perturbation;
+//			_flux_jacobi_grad_variable[p][q](alpha, beta) = (_viscous[p](alpha) - _viscous_old[p](alpha))/_perturbation;
 
 		_cfd_data.duh[q](beta) -= _perturbation;
 	}

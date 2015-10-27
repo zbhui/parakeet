@@ -14,12 +14,12 @@
   mach = 0.2
   reynolds = 40.0
   [./Variables]
-    order = SECOND
+    order =  SECOND
     family = MONOMIAL
     variables = 'density momx momy momz rhoe'
   [../]
   [./AuxVariables]
-     order = FIRST
+     order = SECOND
      family = MONOMIAL
     type = NSAuxVariable
     aux_variables = 'p m'
@@ -82,14 +82,14 @@
   solve_type = newton
   num_steps = 100
   l_tol = 1e-01
-  l_max_its = 30
+  l_max_its = 100
 
-  nl_max_its = 10
-  nl_rel_tol = 1e-01
+  nl_max_its = 4
+  nl_rel_tol = 5e-01
 
   [./TimeStepper]
     type = RatioTimeStepper
-    dt = 1.0
+    dt = 1000
     ratio = 2
     step = 2
     max_dt = 20000
