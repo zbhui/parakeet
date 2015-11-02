@@ -2,8 +2,8 @@
   type = GeneratedMesh
   dim = 2
 
-  nx = 20
-  ny = 20
+  nx = 40
+  ny = 40
 
   xmin = -10
   xmax = 0
@@ -21,7 +21,7 @@
 
 [Problem]
   type = IsoVortexProblem
-  flux_type = HLLC-PV
+  flux_type = Lax-F
   [./Kernels]
     type = CFDCellKernel
     #indicator = error
@@ -34,7 +34,7 @@
 
 [Variables]
     type =  CFDInitialCondition
-    order = FIRST
+    order = SECOND
     family = MONOMIAL
     variables = 'rho momx momy momz rhoe'
 []
@@ -77,7 +77,7 @@
   solve_type = newton
   scheme = bdf2
   dt = 0.02
-  num_steps = 1
+  num_steps = 100
   l_tol = 1e-04
   l_max_its = 100
 
@@ -95,8 +95,15 @@
 []
 
 [Postprocessors]
+  [./l1_err]
+    type = ProblemElementalL1Error
+  [../]
   [./l2_err]
     type = ProblemElementalL2Error
+  [../]
+  [./linf_err]
+    type = ProblemElementalLinfError
+    h = 1.0
   [../]
 []
 

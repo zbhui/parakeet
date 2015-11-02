@@ -391,7 +391,7 @@
 
 #include "ParakeetApp.h"
 
-#include "ProblemElementalL2Error.h"
+
 #include "Moose.h"
 #include "AppFactory.h"
 
@@ -458,6 +458,12 @@
 #include "NumTimeStep.h"
 #include "VariableResidual.h"
 #include "CouetteFlowElementL2Error.h"
+
+#include "ProblemElementalL1Error.h"
+#include "ProblemElementalL2Error.h"
+#include "ProblemElementalLinfError.h"
+
+
 
 #include "VariableJumpIndicator.h"
 #include "FluxJumpIndicator.h"
@@ -878,7 +884,9 @@ ParakeetApp::registerObjects(Factory & factory)
 	registerPostprocessor(ElementExtremeTimeDerivative);
 	registerPostprocessor(NumTimeStep);
 	registerPostprocessor(VariableResidual);
+	registerPostprocessor(ProblemElementalL1Error);
 	registerPostprocessor(ProblemElementalL2Error);
+	registerPostprocessor(ProblemElementalLinfError);
 	registerPostprocessor(CouetteFlowElementL2Error);
 
 	registerIndicator(VariableJumpIndicator);
